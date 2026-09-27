@@ -34,3 +34,24 @@ It needs no build step: the files in the repository root are the website.
    CNAME records for `@` and `www` that point somewhere else, such as the chatgpt.site host.
 4. **Turn on HTTPS.** When DNS has updated (usually minutes, sometimes up to 24 hours), return to
    Settings → Pages and tick "Enforce HTTPS".
+
+## Splash screen (`splash/`)
+
+A first-visit intro built from the brand lockup: the rim draws on, the glass is set, the glint
+catches, the lockup forms, and then the camera flies through the octagon into the site. It uses
+inline SVG, CSS and the Web Animations API, with no libraries, and is about 7.6 KB gzipped.
+
+- `splash.css`: inline it in a `<style>` in `<head>`, so the dark ground is on the first paint.
+- `splash.html`: paste it as the first thing inside `<body>`.
+- `splash.js`: load it with `<script src="/splash/splash.js" defer></script>`.
+- `demo.html`: the live site in a frame with the splash on top, plus Replay and Debug buttons.
+  It embeds copies of `splash.css` and `splash.html`, so update it when they change.
+
+It shows once per browser tab session. Add `?splash=1` to force it, or `?splash=debug` for a
+scrubber at quarter speed. Any click, tap, key or scroll skips it. With reduced motion turned on,
+it shows the finished logo for 0.6 s, then fades. When it finishes, it fires `splash:done` on
+`window`. All timings live in `CONFIG` at the top of `splash.js`.
+
+Safety: the overlay hides itself after 7 s if the script never runs, and `<noscript>` hides it
+immediately. The script is the only thing that makes the page inert, so a script failure cannot
+lock the site.
