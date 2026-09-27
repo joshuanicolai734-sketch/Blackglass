@@ -1,6 +1,6 @@
 # Instructions for coding agents (Codex, Claude Code and others)
 
-Read `BLACKGLASS_HANDOFF.md` first, then `docs/MAINTAINING.md`. `docs/DIRECTION.md` explains what the product is and why the site looks as it does.
+Read `BLACKGLASS_HANDOFF.md` first, then `docs/MAINTAINING.md` and `docs/PUBLISHING.md`. `docs/DIRECTION.md` explains what the product is and why the site looks as it does.
 
 ## Ground rules
 
