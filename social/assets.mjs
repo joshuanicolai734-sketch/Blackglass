@@ -1,6 +1,7 @@
 // Blackglass launch kit: OG images, profile image, nine posts (two carousels) and three vertical videos.
 // Edit copy here, then run `node render.mjs` (see README.md). Captions, alt text and links live in KIT.md.
 import { C, arrow, base, bezierSrc, foot, label, lockup, mark, octOutline, P, pane, screens } from "./lib.mjs";
+import { teasers } from "./teaser.mjs";
 
 const post = (body, css = "") => base({ w: 1080, h: 1350, body, css });
 const slideNo = (n, of) => `${String(n).padStart(2, "0")} / ${String(of).padStart(2, "0")}`;
@@ -249,4 +250,4 @@ export const videos = [
      $('#lb').style.opacity=1-out;$('#end').style.opacity=eOut(k(t,8.6,9.2));`) },
 ];
 
-export const all = [...ogImages, ...profile, ...posts, ...videos];
+export const all = [...ogImages, ...profile, ...posts, ...videos, ...teasers];

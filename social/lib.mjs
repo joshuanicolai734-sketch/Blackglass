@@ -9,7 +9,9 @@ export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const url = (p) => pathToFileURL(resolve(ROOT, p)).href;
 
 const brandSrc = readFileSync(resolve(ROOT, "content/brand.ts"), "utf8");
-const path = (name) => brandSrc.match(new RegExp(`${name}: "([^"]+)"`))[1];
+// Read only the `paths` block: the `colours` object above it has keys with the same names.
+const pathsSrc = brandSrc.slice(brandSrc.indexOf("export const paths"));
+const path = (name) => pathsSrc.match(new RegExp(`${name}: "([^"]+)"`))[1];
 export const P = { pane: path("pane"), facet: path("facet"), glint: path("glint"), rim: path("rim"), wordmark: path("wordmark") };
 export const C = { ink: "#101113", pane: "#18191C", facet: "#2B2D32", bone: "#F4F5EF", volt: "#D5FF3F", grey: "#8E949B", line: "#2A2C30", text2: "#C3C6C0", text3: "#A4A9AE" };
 export const screens = { today: url("public/assets/dashboard.webp"), plan: url("public/assets/program.webp"), move: url("public/assets/movement.webp") };

@@ -3,7 +3,7 @@
 //   node render.mjs p01-intro v2-plan-to-last-set          # selected ids
 // Needs Chromium (Playwright) and, for video, ffmpeg with libx264 (set FFMPEG=/path/to/ffmpeg if not on PATH).
 import { spawn } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { chromium } from "playwright";
@@ -43,6 +43,14 @@ for (const job of jobs) {
     }
     ff.stdin.end();
     await done;
+    // Optional soundtrack (e.g. teaser-sound.py output): keep a silent master and mux an audio version.
+    if (job.audio && existsSync(resolve(ROOT, job.audio))) {
+      const silent = out.replace(/\.mp4$/, "-silent.mp4");
+      renameSync(out, silent);
+      await new Promise((r, j) => spawn(process.env.FFMPEG || "ffmpeg", ["-y", "-loglevel", "error", "-i", silent, "-i", resolve(ROOT, job.audio),
+        "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], { stdio: "inherit" })
+        .on("close", (code) => (code === 0 ? r() : j(new Error(`ffmpeg mux exited ${code}`)))));
+    }
     console.log("video", job.id, `(${frames} frames) →`, job.out);
   }
   await page.close();
