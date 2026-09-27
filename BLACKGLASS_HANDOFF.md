@@ -15,30 +15,26 @@ This ZIP contains the tracked website source, brand assets, lockfile, migrations
 
 ## Where things live
 
+Start with `docs/MAINTAINING.md` (what to edit for common changes), `docs/DIRECTION.md` (what exists and why the site looks the way it does) and `docs/SEO.md`.
+
 | Area | Files |
 | --- | --- |
-| Landing content, copy, splash markup | `app/landing-source.html` (the splash is the `#bgs` block at the top of `<body>`) |
-| Generated markup consumed by the home page | `app/landing-markup.ts` — regenerate after editing the HTML with `node scripts/generate-landing-markup.mjs` |
-| Styling and responsive design | `app/globals.css` (splash styles are the last section, from `/* First-visit splash`) |
-| Splash sequence: timings in its `CONFIG`, skip, session flag | `public/splash.js` |
-| Page interactions, lead-form behavior | `public/site.js` |
-| Fonts (Inter Tight, Geist Mono; self-hosted, OFL) | `public/fonts/`, licences in `licenses/` |
-| Font preloads, SEO metadata | `app/layout.tsx` |
-| Home page and client script mounting | `app/page.tsx`, `app/site-effects.tsx` |
-| Brand mark and app screenshots | `public/brand/`, `public/assets/` |
-| Lead form endpoint | `app/api/enquiries/route.ts` |
-| Owner inbox and its status/delete endpoint | `app/admin/`, `app/api/admin/enquiries/route.ts` |
+| Settings: app availability, links, prices, socials, nav, UTMs | `content/site.ts` |
+| Questions and answers | `content/faq.ts` |
+| Pages | `app/page.tsx` (home), `app/get/`, `app/coaching/`, `app/links/`, `app/privacy/`, `app/not-found.tsx` |
+| Shared components | `components/site/` (header, footer, buttons, panes, FAQ, intro) |
+| Design system and page styles | `app/site.css` (owner inbox styles are in `app/globals.css`) |
+| Intro sequence | `components/site/intro.tsx` + `intro.js`, gated in `app/layout.tsx` |
+| Enhancements: demo, menu, forms, reveals, ambient light, measurement | `public/site.js` |
+| Logo geometry used by the intro, OG images and social kit | `content/brand.ts` |
+| Brand mark, lockup, app screens, fonts, OG images, QR | `public/brand/`, `public/assets/`, `public/fonts/`, `public/og/`, `public/qr/` |
+| Enquiry and preview-list endpoint | `app/api/enquiries/route.ts` |
+| Daily action counts | `app/api/events/route.ts`, `db/events.ts` |
+| Owner inbox, with a 30-day activity view | `app/admin/`, `app/api/admin/enquiries/route.ts` |
 | Auth checks and database access | `app/chatgpt-auth.ts`, `db/enquiries.ts`, `db/schema.ts` |
-| Database migrations and Sites binding | `drizzle/`, `.openai/hosting.json` |
-
-## Splash screen
-
-Shown once per browser-tab session on the home page. `?splash=1` forces it; `?splash=debug` adds a
-scrubber at quarter speed. Any click, tap, key or scroll skips it, a deep link such as `/#apply`
-never shows it, and reduced-motion visitors see the finished logo for 0.6 s. When it finishes it
-fires `splash:done` on `window`. Its held frame is pixel-identical to `public/brand/blackglass-lockup.svg`;
-keep settled states as plain attributes (see the note in `splash.js`) or that stops being true.
-The overlay hides itself after 7 s if the script never runs, and `<noscript>` hides it at once.
+| Database migrations and Sites binding | `drizzle/` (0002 adds `events`), `.openai/hosting.json` |
+| Sitemap, robots, redirects | `app/sitemap.ts`, `app/robots.ts`, `next.config.ts` |
+| Social launch kit (artwork, captions, schedule) | `social/` (`KIT.md`, `exports/`) |
 
 ## Backend and hosting
 
@@ -50,4 +46,4 @@ The overlay hides itself after 7 s if the script never runs, and `<noscript>` hi
 
 ## Product status
 
-The site currently sells a conversation about coaching, with a founding coaching offer and an enquiry form. The Android app section is a preview of an app in development; website and app do not currently share accounts, client workouts, subscriptions, or payments. Preserve that distinction when revising copy or adding a checkout.
+The site now leads with the Blackglass Android app, which is in development: its primary action is the Android preview list at /get, a real saved submission. Coaching (NZ$59/week, 12 weeks) is the paid service, with its own page and enquiry form. Website and app do not share accounts, client workouts, subscriptions or payments. Keep that distinction when revising copy or adding a checkout. When a build is downloadable, switch it on in `content/site.ts → app` (see docs/MAINTAINING.md).

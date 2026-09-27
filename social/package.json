@@ -1,0 +1,8 @@
+{
+  "name": "blackglass-social-kit",
+  "private": true,
+  "type": "module",
+  "description": "Renders the Blackglass launch kit and the site's OG images. Separate from the website so the site gains no dependencies.",
+  "scripts": { "render": "node render.mjs" },
+  "devDependencies": { "playwright": "1.63.0" }
+}

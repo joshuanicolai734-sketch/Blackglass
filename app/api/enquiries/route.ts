@@ -1,4 +1,5 @@
 import { enquiriesDb, sameOrigin } from "../../../db/enquiries";
+import { countEvent } from "../../../db/events";
 
 const noStore = { "Cache-Control": "no-store" };
 const routes = new Set(["coaching", "programme", "app"]);
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
   const phoneDigits = phone.replace(/\D/g, "");
   if (!name || name.length > 80 || !email || email.length > 120 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !routes.has(route) ||
-      !goal || goal.length > 600 ||
+      (route !== "app" && !goal) || goal.length > 600 ||
       (phone && (phone.length > 30 || phoneDigits.length < 7 || phoneDigits.length > 15 || !/^\+?[0-9\s().-]+$/.test(phone)))) {
     return Response.json({ error: "Check your details and try again" }, { status: 400, headers: noStore });
   }
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
     if (recent) return Response.json({ error: "An enquiry from this email was received in the last two minutes" }, { status: 409, headers: noStore });
     await db.prepare("INSERT INTO enquiries (id, created_at, name, email, phone, route, goal, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'new')")
       .bind(crypto.randomUUID(), new Date().toISOString(), name, email, phone || null, route, goal).run();
+    await countEvent(db, route === "app" ? "preview_signup" : "enquiry_sent", value("src")).catch(() => {});
     return Response.json({ ok: true }, { status: 201, headers: noStore });
   } catch {
     return Response.json({ error: "Enquiry storage is temporarily unavailable" }, { status: 503, headers: noStore });
