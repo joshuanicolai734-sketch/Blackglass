@@ -17,17 +17,28 @@ This ZIP contains the tracked website source, brand assets, lockfile, migrations
 
 | Area | Files |
 | --- | --- |
-| Landing content, copy, splash markup | `app/landing-source.html` |
+| Landing content, copy, splash markup | `app/landing-source.html` (the splash is the `#bgs` block at the top of `<body>`) |
 | Generated markup consumed by the home page | `app/landing-markup.ts` — regenerate after editing the HTML with `node scripts/generate-landing-markup.mjs` |
-| Styling, splash sequence, responsive design | `app/globals.css` |
-| Intro skip/timing, page interactions, lead-form behavior | `public/site.js` |
-| Intro prepaint gate, SEO metadata | `app/layout.tsx` |
+| Styling and responsive design | `app/globals.css` (splash styles are the last section, from `/* First-visit splash`) |
+| Splash sequence: timings in its `CONFIG`, skip, session flag | `public/splash.js` |
+| Page interactions, lead-form behavior | `public/site.js` |
+| Fonts (Inter Tight, Geist Mono; self-hosted, OFL) | `public/fonts/`, licences in `licenses/` |
+| Font preloads, SEO metadata | `app/layout.tsx` |
 | Home page and client script mounting | `app/page.tsx`, `app/site-effects.tsx` |
 | Brand mark and app screenshots | `public/brand/`, `public/assets/` |
 | Lead form endpoint | `app/api/enquiries/route.ts` |
 | Owner inbox and its status/delete endpoint | `app/admin/`, `app/api/admin/enquiries/route.ts` |
 | Auth checks and database access | `app/chatgpt-auth.ts`, `db/enquiries.ts`, `db/schema.ts` |
 | Database migrations and Sites binding | `drizzle/`, `.openai/hosting.json` |
+
+## Splash screen
+
+Shown once per browser-tab session on the home page. `?splash=1` forces it; `?splash=debug` adds a
+scrubber at quarter speed. Any click, tap, key or scroll skips it, a deep link such as `/#apply`
+never shows it, and reduced-motion visitors see the finished logo for 0.6 s. When it finishes it
+fires `splash:done` on `window`. Its held frame is pixel-identical to `public/brand/blackglass-lockup.svg`;
+keep settled states as plain attributes (see the note in `splash.js`) or that stops being true.
+The overlay hides itself after 7 s if the script never runs, and `<noscript>` hides it at once.
 
 ## Backend and hosting
 

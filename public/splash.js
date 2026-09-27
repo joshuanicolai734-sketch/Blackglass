@@ -27,11 +27,18 @@
   const mode = new URLSearchParams(location.search).get('splash');
   const debug = mode === 'debug';
   let seen = null;
-  try { seen = sessionStorage.getItem(C.key); sessionStorage.setItem(C.key, '1'); } catch (e) {}
-  if (seen && !mode) { root.remove(); return done(); }
+  try { seen = sessionStorage.getItem(C.key); sessionStorage.setItem(C.key, '1'); } catch { /* storage blocked: still play once */ }
+  // Once per session, and never in the way of a deep link such as /#apply.
+  if ((seen || location.hash) && !mode) { root.remove(); return done(); }
 
   root.style.animation = 'none'; // cancel the CSS fail-safe
-  const inerted = [...d.body.children].filter(n => n !== root && !n.inert && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(n.tagName));
+  // Everything beside the overlay, at each level up to <body>, is inert until splash:done.
+  const inerted = [];
+  for (let n = root; n !== d.body && n.parentElement; n = n.parentElement) {
+    for (const s of n.parentElement.children) {
+      if (s !== n && !s.inert && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(s.tagName)) inerted.push(s);
+    }
+  }
   inerted.forEach(n => { n.inert = true; });
 
   const speed = C.speed * (debug ? C.debugSpeed : 1);
@@ -111,7 +118,8 @@
       const on = t >= s.at;
       if (s.on === on) return;
       const v = (s.on = on) ? s.after : s.before;
-      v === null ? s.n.removeAttribute(s.attr) : s.n.setAttribute(s.attr, v);
+      if (v === null) s.n.removeAttribute(s.attr);
+      else s.n.setAttribute(s.attr, v);
     });
   };
 
@@ -193,7 +201,7 @@
       dog = setTimeout(teardown, (C.exit.cap + C.exit.ms + 2000) / speed);
     }
     raf = requestAnimationFrame(tick);
-  } catch (e) {
+  } catch {
     teardown();
   }
 })();

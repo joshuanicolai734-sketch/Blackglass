@@ -26,20 +26,6 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#101113" };
 
-// This runs before the body is painted, so an anchor or reduced-motion visit
-// reaches the destination without a frame of the opening sequence.
-const introGate = `(() => {
-  try {
-    if (location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.dataset.skipIntro = 'true';
-    } else {
-      window.__blackglassIntroStart = performance.now();
-    }
-  } catch (_) {
-    window.__blackglassIntroStart = performance.now();
-  }
-})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,7 +33,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-NZ" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: introGate }} /></head>
+      <head>
+        <link rel="preload" href="/fonts/inter-tight-latin-wght.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <link rel="preload" href="/fonts/geist-mono-latin-500.woff2" as="font" type="font/woff2" crossOrigin="" />
+      </head>
       <body>{children}</body>
     </html>
   );

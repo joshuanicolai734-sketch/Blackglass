@@ -4,7 +4,8 @@ import SiteEffects from "./site-effects";
 export default function Home() {
   return (
     <>
-      <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />
+      {/* splash.js edits this markup before hydration (inert, removing the overlay); React must leave it alone. */}
+      <div dangerouslySetInnerHTML={{ __html: landingMarkup }} suppressHydrationWarning />
       <SiteEffects />
     </>
   );
