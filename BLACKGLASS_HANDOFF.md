@@ -2,6 +2,8 @@
 
 Source repository: https://github.com/joshuanicolai734-sketch/Blackglass (default branch: `claude/blackglass-domain-migration-0pxc6q`). Live site: https://blackglass.co.nz. This repository imported the exact Sites version 9 source and then continued with newer work. Always check what version Sites is running before assuming a GitHub commit is live.
 
+**Latest live release (28 September 2026, NZ):** Sites version 10 was published from GitHub commit `86fd915dccfb4478aec60ae5934bc45e8a4c637d` (Sites source commit `7a823ede127f4ce0a50a35fff9a5fc2d1094a5a7`). Both commits have Git tree `5fa0d64bd565f19718f6b4930e88681a6c9dbfa8`, so the published source matches the selected GitHub version. Later GitHub commits do not go live until a separate Sites publish. The public domain and `DB` binding were preserved; the `events` migration is present in production.
+
 This repository contains the tracked website source, brand assets, lockfile, migrations, and hosting configuration. It does not contain the production enquiry database, deployment credentials, DNS account access, `.env` files, or installed dependencies.
 
 ## Open with Claude Code
