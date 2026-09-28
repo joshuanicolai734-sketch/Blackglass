@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { Reel } from "@/components/site/reel";
-import { Button, JsonLd, Label, Pane, TextLink } from "@/components/site/ui";
+import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink } from "@/components/site/ui";
+import { paths } from "@/content/brand";
 import { homeFaq } from "@/content/faq";
 import { app, coaching, contact, site, socialLinks } from "@/content/site";
 
@@ -37,11 +38,12 @@ const demo = [
   },
 ];
 
-const benefits = [
-  { title: "Walk in with a plan.", text: "No notes to scroll at the rack. The day's exercises and sets are waiting when you open the app." },
-  { title: "Lose less to interruptions.", text: "An unfinished session waits for you. Resume it where you stopped instead of starting again." },
-  { title: "Move with better control.", text: "Guides show each exercise in phases, so the next rep is more deliberate than the last." },
-  { title: "Keep food in the picture.", text: "Calorie and protein targets sit beside your training, not in a separate app." },
+// Each card points at the real screen that backs it.
+const benefits: { key: string; title: string; text: string; specs: [string, string][] }[] = [
+  { key: "Plan", title: "Walk in with a plan.", text: "No notes to scroll at the rack. The day's exercises and sets are waiting when you open the app.", specs: [["Screen", "Train › Plan"], ["Shows", "5 exercises a day"]] },
+  { key: "Today", title: "Lose less to interruptions.", text: "An unfinished session waits for you. Resume it where you stopped instead of starting again.", specs: [["Screen", "Today"], ["Shows", "Session in progress"]] },
+  { key: "Learn", title: "Move with better control.", text: "Guides show each exercise in phases, so the next rep is more deliberate than the last.", specs: [["Screen", "Exercise guide"], ["Phases", "Brace · Reach · Return"]] },
+  { key: "Fuel", title: "Keep food in the picture.", text: "Calorie and protein targets sit beside your training, not in a separate app.", specs: [["Screen", "Today › Nutrition"], ["Targets", "kcal · protein"]] },
 ];
 
 const hasDownload = Boolean(app.android.playUrl || app.android.apkUrl);
@@ -59,43 +61,45 @@ export default function Home() {
       { "@type": "WebSite", "@id": `${site.url}/#website`, name: site.name, url: site.url, publisher: { "@id": `${site.url}/#org` }, inLanguage: "en-NZ" },
     ],
   };
+  const steps = hasDownload
+    ? [["Open Get Blackglass", "On your Android phone, or scan the code from your computer."], ["Install the app", "Follow the steps shown for your phone."], ["Set up your plan", "Choose your programme and open Today."]]
+    : [["Join the preview list", "Your name and email. It’s free and takes a few seconds."], ["Hear when it’s ready", `${site.founder} emails you when there’s an Android build you can try.`], ["Install and set up", "The Get Blackglass page will show exactly how to install it."]];
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
       <Header />
       <main id="main">
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="ambient" data-ambient aria-hidden="true" />
-          <div className="wrap hero-grid">
+        <section className="hero" aria-labelledby="hero-title" data-sec>
+          <div className="wrap">
             <div className="hero-copy">
-              <Label>Training app · Built in Dunedin</Label>
+              <SectionHead index="00" title="Training app" meta="Built in Dunedin" />
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
                 <TextLink href="#how-it-works" down>See how it works</TextLink>
               </div>
-              <p className="status"><span className="dot" aria-hidden="true" />{hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
+              <p className="status label"><Signal />Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
             </div>
           </div>
         </section>
 
         <Reel />
 
-        <section className="section demo" id="how-it-works" aria-labelledby="how-title">
+        <section className="section demo" id="how-it-works" aria-labelledby="how-title" data-sec>
           <span id="app" aria-hidden="true" />
           <div className="wrap">
             <div className="section-head">
-              <Label index="01">How it works</Label>
-              <h2 id="how-title" className="display" data-wipe>From the plan<br />to the last set.</h2>
-              <p className="section-intro">Three screens from the current Android build. Tap through the flow.</p>
+              <SectionHead index="01" title="How it works" meta={`${String(demo.length).padStart(2, "0")} screens`} />
+              <h2 id="how-title" className="display">From the plan to the last set.</h2>
+              <p className="body-2">Three screens from the current Android build. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
               <div className="demo-tabs" role="tablist" aria-label="App screens">
                 {demo.map((d, i) => (
                   <button key={d.id} type="button" role="tab" id={`tab-${d.id}`} aria-controls={`panel-${d.id}`}
                     aria-selected={i === 0} tabIndex={i === 0 ? 0 : -1} data-demo-tab={d.id}>
-                    <span className="demo-tab-index">0{i + 1}</span>{d.tab}
+                    <Signal />0{i + 1} {d.tab}
                   </button>
                 ))}
               </div>
@@ -115,89 +119,70 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section why" id="method" aria-labelledby="why-title">
+        <section className="section why paper" id="method" aria-labelledby="why-title" data-sec>
           <div className="wrap why-grid">
             <div className="section-head">
-              <Label index="02">Why it helps</Label>
-              <h2 id="why-title" className="display" data-wipe>Less guessing.<br />More training.</h2>
+              <SectionHead index="02" title="Why it helps" meta={`${String(benefits.length).padStart(2, "0")} principles`} />
+              <h2 id="why-title" className="display">Less guessing. More training.</h2>
             </div>
-            <ol className="benefits">
-              {benefits.map((b) => (
-                <li key={b.title} data-reveal><h3>{b.title}</h3><p>{b.text}</p></li>
+            <Pane src="/assets/program.webp" alt="The Train screen: this week’s plan, five exercises a day" sizes="(min-width: 900px) 300px, 70vw" />
+            <ol className="cards">
+              {benefits.map((b, i) => (
+                <SpecCard key={b.title} as="li" index={`0${i + 1}`} kicker={b.key} title={b.title} specs={b.specs}><p>{b.text}</p></SpecCard>
               ))}
             </ol>
           </div>
         </section>
 
-        <section className="section begin" aria-labelledby="begin-title">
+        <section className="section begin" aria-labelledby="begin-title" data-sec>
           <div className="wrap">
             <div className="section-head">
-              <Label index="03">How to start</Label>
-              <h2 id="begin-title" className="display" data-wipe>Three steps in.</h2>
+              <SectionHead index="03" title="How to start" meta="03 steps" />
+              <h2 id="begin-title" className="display">Three steps in.</h2>
             </div>
             <ol className="steps">
-              {hasDownload ? (
-                <>
-                  <li data-reveal><span className="step-n">01</span><h3>Open Get Blackglass</h3><p>On your Android phone, or scan the code from your computer.</p></li>
-                  <li data-reveal><span className="step-n">02</span><h3>Install the app</h3><p>Follow the steps shown for your phone.</p></li>
-                  <li data-reveal><span className="step-n">03</span><h3>Set up your plan</h3><p>Choose your programme and open Today.</p></li>
-                </>
-              ) : (
-                <>
-                  <li data-reveal><span className="step-n">01</span><h3>Join the preview list</h3><p>Your name and email. It&rsquo;s free and takes a few seconds.</p></li>
-                  <li data-reveal><span className="step-n">02</span><h3>Hear when it&rsquo;s ready</h3><p>{site.founder} emails you when there&rsquo;s an Android build you can try.</p></li>
-                  <li data-reveal><span className="step-n">03</span><h3>Install and set up</h3><p>The Get Blackglass page will show exactly how to install it.</p></li>
-                </>
-              )}
+              {steps.map(([t, x], i) => <SpecCard key={t} as="li" index={`0${i + 1}`} title={t}><p>{x}</p></SpecCard>)}
             </ol>
             <div className="actions"><Button href="/get" track="cta_get_steps">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button></div>
           </div>
         </section>
 
         {coaching.available && (
-          <section className="section coach-band" id="coaching" aria-labelledby="coach-title">
+          <section className="section coach-band paper" id="coaching" aria-labelledby="coach-title" data-sec>
             <div className="wrap coach-grid" id="apply">
               <div>
-                <Label index="04">Coaching</Label>
-                <h2 id="coach-title" className="display" data-wipe>Want someone<br />in your corner?</h2>
+                <SectionHead index="04" title="Coaching" meta={`${coaching.weeks} weeks`} />
+                <h2 id="coach-title" className="display">Want someone in your corner?</h2>
               </div>
               <div className="coach-copy">
                 <p>Work directly with {site.founder} for {coaching.weeks} weeks: a plan built around your week, a check-in every week, and adjustments as you progress.</p>
-                <p className="price"><strong>{coaching.currency}{coaching.weekly}</strong><span>a week for {coaching.weeks} weeks<br />{coaching.currency}{coaching.total} total · founding price</span></p>
-                <Button href="/coaching" variant="ghost" track="cta_coaching_home">Explore coaching</Button>
+                <div className="price">
+                  <p className="monument">{coaching.weekly}</p>
+                  <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span><span>Founding price</span></p>
+                </div>
+                <Button href="/coaching" track="cta_coaching_home">Explore coaching</Button>
               </div>
             </div>
           </section>
         )}
 
-        <section className="section questions" id="questions" aria-labelledby="faq-title">
+        <section className="section questions" id="questions" aria-labelledby="faq-title" data-sec>
           <div className="wrap faq-grid">
             <div className="section-head">
-              <Label index="05">Questions</Label>
-              <h2 id="faq-title" className="display" data-wipe>Straight<br />answers.</h2>
+              <SectionHead index={coaching.available ? "05" : "04"} title="Questions" meta={`${String(homeFaq.length).padStart(2, "0")} answers`} />
+              <h2 id="faq-title" className="display">Straight answers.</h2>
             </div>
             <Faqs items={homeFaq} />
           </div>
         </section>
 
-        <section className="section closer" aria-labelledby="closer-title">
+        <section className="section closer" aria-labelledby="closer-title" data-sec>
           <div className="wrap closer-inner">
-            <svg className="closer-mark" viewBox="0 0 88 88" aria-hidden="true" focusable="false" data-closer>
-              <defs>
-                <mask id="cm-rim" maskUnits="userSpaceOnUse" x="-10" y="-10" width="108" height="108">
-                  <path className="cm-rs" d="M10.361 13.189 20.05 3.5H67.95L84.5 20.05V67.95L74.811 77.639" />
-                  <path className="cm-rs" d="M13.189 10.361 3.5 20.05V67.95L20.05 84.5H67.95L77.639 74.811" />
-                </mask>
-                <clipPath id="cm-oc"><path d="M7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" /></clipPath>
-                <linearGradient id="cm-lg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="8" y2="8"><stop offset="0" stopColor="#F4F5EF" stopOpacity="0" /><stop offset=".5" stopColor="#F4F5EF" stopOpacity=".38" /><stop offset="1" stopColor="#F4F5EF" stopOpacity="0" /></linearGradient>
-              </defs>
-              <path className="m-pane" d="M7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
-              <path className="m-facet" d="M73.45 14.55 65.899 7H22.101L7 22.101v43.798l7.55 7.551Z" />
-              <path className="m-glint" d="M22.101 7H41L7 41V22.101Z" />
-              <g clipPath="url(#cm-oc)"><path className="m-sweep" fill="url(#cm-lg)" d="M-100 100 100-100h16L-84 100Z" /></g>
-              <path className="m-rim" mask="url(#cm-rim)" fillRule="evenodd" d="M0 18 18 0h52l18 18v52L70 88H18L0 70ZM7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
+            <svg className="closer-mark" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
+              <path fill="var(--c-pane)" d={paths.pane} /><path fill="var(--c-facet)" d={paths.facet} />
+              <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
             </svg>
-            <h2 id="closer-title" className="display closer-title">{site.tagline}</h2>
+            <h2 id="closer-title" className="display">{site.tagline}</h2>
             <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
             <Button href="/get" track="cta_get_closer">Get Blackglass</Button>
           </div>

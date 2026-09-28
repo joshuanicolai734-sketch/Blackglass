@@ -68,52 +68,24 @@
 
   /* ---- Scroll reveals, only for content still below the fold, so nothing on screen blinks out. ---- */
   if (!reduce.matches && 'IntersectionObserver' in w) {
-    const io = new IntersectionObserver((entries) => entries.forEach((en) => {
-      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-    }), { rootMargin: '0px 0px -8% 0px' });
+    const pending = new Set();
+    const show = (el) => { el.classList.add('in'); pending.delete(el); io.unobserve(el); };
+    const io = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) show(en.target); }), { rootMargin: '0px 0px -8% 0px' });
     d.querySelectorAll('[data-reveal]').forEach((el, i) => {
       if (el.getBoundingClientRect().top > innerHeight) {
         el.classList.add('pre');
         el.style.transitionDelay = `${(i % 3) * 60}ms`;
+        pending.add(el);
         io.observe(el);
       }
     });
-  }
-
-  /* ---- Heading wipes and the closing mark: the same 45° facet cut as the panes, drawn in once. ---- */
-  if (!reduce.matches && 'IntersectionObserver' in w) {
-    const once = new IntersectionObserver((entries) => entries.forEach((en) => {
-      if (en.isIntersecting) { en.target.classList.add('in'); once.unobserve(en.target); }
-    }), { rootMargin: '0px 0px -12% 0px' });
-    d.querySelectorAll('[data-wipe]').forEach((el) => {
-      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pre-wipe'); once.observe(el); }
-    });
-    const closer = d.querySelector('[data-closer]');
-    if (closer && closer.getBoundingClientRect().top > innerHeight) { closer.classList.add('armed'); once.observe(closer); }
-  }
-
-  /* ---- Living glass: panes lean toward a fine pointer and catch its light. ---- */
-  if (!reduce.matches && w.matchMedia('(pointer: fine)').matches) {
-    d.querySelectorAll('.pane').forEach((pane) => {
-      let frame = 0;
-      pane.addEventListener('pointermove', (e) => {
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          const r = pane.getBoundingClientRect();
-          const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-          pane.style.setProperty('--ry', `${((x - .5) * 8).toFixed(2)}deg`);
-          pane.style.setProperty('--rx', `${((.5 - y) * 8).toFixed(2)}deg`);
-          pane.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-          pane.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
-          pane.classList.add('is-live');
-        });
-      }, { passive: true });
-      pane.addEventListener('pointerleave', () => {
-        cancelAnimationFrame(frame);
-        ['--rx', '--ry', '--mx', '--my'].forEach((k) => pane.style.removeProperty(k));
-        pane.classList.remove('is-live');
-      });
-    });
+    // A jump (an anchor link, a fast fling) can carry content past the viewport without it ever intersecting:
+    // reveal anything that is already above the bottom edge.
+    let tick = 0;
+    w.addEventListener('scroll', () => {
+      if (tick || !pending.size) return;
+      tick = requestAnimationFrame(() => { tick = 0; pending.forEach((el) => { if (el.getBoundingClientRect().top < innerHeight) show(el); }); });
+    }, { passive: true });
   }
 
   /* ---- Showreel: loaded once the page has finished loading, so it never competes with first paint. ---- */
@@ -223,87 +195,30 @@
     msg?.setAttribute('tabindex', '-1');
   });
 
-  /* ---- Ambient light: light passing through black glass. WebGL at reduced resolution, ~30 fps,
-     paused offscreen, in background tabs and on request; skipped entirely for reduced motion. ---- */
-  const hosts = [...d.querySelectorAll('[data-ambient]')];
-  const toggle = d.querySelector('[data-motion-toggle]');
-  if (hosts.length && !reduce.matches) {
-    const host = hosts[0];
-    const canvas = d.createElement('canvas');
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false, powerPreference: 'low-power', preserveDrawingBuffer: false });
-    if (gl) {
-      const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;
-float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1)),f.x),f.y);}
-void main(){vec2 p=(gl_FragCoord.xy-.5*r)/r.y;
-float w=n(p*1.4+vec2(t*.021,-t*.015))*.5+n(p*2.9-vec2(t*.013))*.25;
-float dg=(p.x+p.y)*.7071+w*.22;
-vec2 k=vec2(.42+m.x*.12,.12+m.y*.08);float key=exp(-dot(p-k,p-k)*2.4);
-float b1=smoothstep(.5,0.,abs(fract(dg*.62-t*.016)-.5)*2.);
-float b2=smoothstep(.5,0.,abs(fract(dg*1.35+.3-t*.011)-.5)*2.);
-float l=key*.42+key*(b1*b1*.55+b2*b2*.22)+b1*.035;
-vec3 c=vec3(.0627,.0667,.0745)+l*vec3(.15,.158,.17)+key*b1*b1*b1*vec3(.018,.024,0.);
-c+=(fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))))-.5)/255.;
-gl_FragColor=vec4(c,1.);}`;
-      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
-      const prog = gl.createProgram();
-      gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs));
-      gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
-      gl.linkProgram(prog);
-      if (gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        gl.useProgram(prog);
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-        const loc = gl.getAttribLocation(prog, 'p');
-        gl.enableVertexAttribArray(loc);
-        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-        const uR = gl.getUniformLocation(prog, 'r'), uT = gl.getUniformLocation(prog, 't'), uM = gl.getUniformLocation(prog, 'm');
-        host.append(canvas);
-        const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-        let visible = true, raf = 0, last = 0, t0 = performance.now(), shown = false;
-        let paused = store.get('bg-motion') === 'paused';
-        const size = () => {
-          const s = Math.min(.5 * (w.devicePixelRatio || 1), 1);
-          canvas.width = Math.max(2, Math.round(host.clientWidth * s));
-          canvas.height = Math.max(2, Math.round(host.clientHeight * s));
-          gl.viewport(0, 0, canvas.width, canvas.height);
-        };
-        const frame = (now) => {
-          raf = 0;
-          if (paused || !visible || d.hidden) return;
-          raf = requestAnimationFrame(frame);
-          if (now - last < 33) return;
-          last = now;
-          mouse.x += (mouse.tx - mouse.x) * .04; mouse.y += (mouse.ty - mouse.y) * .04;
-          gl.uniform2f(uR, canvas.width, canvas.height);
-          gl.uniform1f(uT, (now - t0) / 1000);
-          gl.uniform2f(uM, mouse.x, mouse.y);
-          gl.drawArrays(gl.TRIANGLES, 0, 3);
-          if (!shown) { shown = true; canvas.classList.add('on'); }
-        };
-        const run = () => { if (!raf && !paused && visible && !d.hidden) raf = requestAnimationFrame(frame); };
-        const setPaused = (p) => {
-          paused = p;
-          root.dataset.motion = p ? 'paused' : '';
-          store.set('bg-motion', p ? 'paused' : 'on');
-          if (toggle) { toggle.setAttribute('aria-pressed', String(p)); toggle.textContent = p ? 'Play background motion' : 'Pause background motion'; }
-          if (p) { cancelAnimationFrame(raf); raf = 0; } else run();
-        };
-        size();
-        new ResizeObserver(size).observe(host);
-        new IntersectionObserver((e) => { visible = e[0].isIntersecting; run(); }).observe(host);
-        d.addEventListener('visibilitychange', run);
-        reduce.addEventListener('change', (e) => { if (e.matches) setPaused(true); });
-        if (w.matchMedia('(pointer: fine)').matches) {
-          host.parentElement.addEventListener('pointermove', (e) => {
-            const r = host.getBoundingClientRect();
-            mouse.tx = (e.clientX - r.left) / r.width - .5; mouse.ty = .5 - (e.clientY - r.top) / r.height;
-          }, { passive: true });
-        }
-        if (toggle) { toggle.hidden = false; toggle.addEventListener('click', () => setPaused(!paused)); }
-        setPaused(paused);
-      }
-    }
+  /* ---- Scroll gauge (desktop): a tick scale on the right edge. Major ticks are this page's sections; the
+     signal square sits on the one in view. Decorative: the page's own navigation carries the same information. ---- */
+  const secs = [...d.querySelectorAll('main [data-sec]')];
+  if (secs.length > 1 && 'IntersectionObserver' in w) {
+    const STEP = 10, MINOR = 3;
+    const gauge = d.createElement('div');
+    gauge.className = 'gauge';
+    gauge.setAttribute('aria-hidden', 'true');
+    const n = (secs.length - 1) * (MINOR + 1) + 1;
+    // Ticks are difference-blended so they read on Glass and Paper; the square is a separate layer so it stays volt.
+    gauge.innerHTML = Array.from({ length: n }, (_, i) => `<i class="${i % (MINOR + 1) === 0 ? 'M' : ''}" style="top:${i * STEP}px"></i>`).join('');
+    const sq = d.createElement('span');
+    sq.className = 'gauge-sq';
+    sq.setAttribute('aria-hidden', 'true');
+    gauge.style.height = `${(n - 1) * STEP + 1}px`;
+    gauge.style.marginTop = sq.style.marginTop = `${-((n - 1) * STEP) / 2}px`;
+    d.body.append(gauge, sq);
+    const seen = new Map();
+    const place = () => {
+      let best = 0, bestV = -1;
+      secs.forEach((s, i) => { const v = seen.get(s) || 0; if (v > bestV) { bestV = v; best = i; } });
+      sq.style.transform = `translateY(${best * (MINOR + 1) * STEP}px)`;
+    };
+    const io = new IntersectionObserver((es) => { es.forEach((e) => seen.set(e.target, e.intersectionRatio * e.boundingClientRect.height)); place(); }, { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
+    secs.forEach((s) => io.observe(s));
   }
 })();

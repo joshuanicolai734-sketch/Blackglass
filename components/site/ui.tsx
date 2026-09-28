@@ -44,16 +44,6 @@ export function TextLink({ href, children, down, track, arrow = true }: { href: 
   );
 }
 
-/** Mono label, optionally led by an index number, e.g. "02 Why it helps". */
-export function Label({ children, index }: { children: ReactNode; index?: string }) {
-  return (
-    <p className="label">
-      {index && <span className="sh-i">{index} </span>}
-      {children}
-    </p>
-  );
-}
-
 /** Section header: `01 — TITLE ———— meta`. Meta must be real (a count, a place), never decoration. */
 export function SectionHead({ index, title, meta }: { index?: string; title: ReactNode; meta?: ReactNode }) {
   return (
@@ -81,7 +71,7 @@ export function SpecCard({ index, kicker, title, children, specs, signal = false
   index?: string; kicker?: ReactNode; title: ReactNode; children?: ReactNode; specs?: [string, ReactNode][]; signal?: boolean; as?: "article" | "li";
 }) {
   return (
-    <Tag className="spec snap">
+    <Tag className="spec snap" data-reveal>
       <Brackets />
       {(index || kicker) && (
         <p className="spec-k label">{signal && <Signal />}{index && <span className="i">{index}</span>}{kicker && <span>{kicker}</span>}</p>

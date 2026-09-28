@@ -39,33 +39,50 @@ Paste the full profile URL into `content/site.ts → social` (for example `insta
 
 ## Design system
 
-- **Tokens** (colour, type, spacing, motion) are at the top of `app/site.css`.
-- **Colour:** ink `#101113` ground · pane `#18191C` · facet `#2B2D32` · bone `#F4F5EF` · volt `#D5FF3F`. Volt is the glint: primary buttons and small markers only.
-- **Type:** Inter Tight for display and body (self-hosted variable font). Geist Mono for labels. Both are in `public/fonts`, with licences in `licenses/`.
-- **The motif is the facet.**
-  - Chamfer the top-left and bottom-right corners (`--chamfer`, `--cut`).
-  - Light the upper-left half of panes (`.pane`).
-  - Wipe reveals along 45° (`facet-wipe`).
-  - Use the octagon outline as the section marker and the hero "window".
-- **Components** (`components/site/`): `Button` (primary / ghost / quiet), `Label`, `Pane` (real app screens in glass), `Faqs`, `Header`, `Footer`.
-- **Motion:** use `--ease-out`, `--ease-in-out`, `--t-fast` (160 ms), `--t-med` (320 ms) and `--t-slow` (640 ms). Keep new motion on the 45° axis and under 700 ms. Everything must work with reduced motion and without JavaScript.
+The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE.md`. In short:
+
+- **Tokens:** `app/tokens.css` is the only place values live (colour, type, spacing, hairlines, motion). `site.css`, the admin styles and the shadcn variables in `globals.css` all read from it. Change a value there, never on top of it.
+- **Grounds:**
+  - **Glass** (`#101113`) is home.
+  - **Paper** (`#ECEAE3`, add `class="paper"` to a section) is for one or two feature sections per page. It switches every semantic token and adds a 3% grain.
+  - On Paper, volt only ever appears inside ink shapes (it's 1.04:1 against Paper).
+- **Signal colours:**
+  - **Volt** is for primary buttons on Glass, markers and active states.
+  - **Ember** (`#DE7F4E`) is one moment per page and fill only. On the home page that moment is the showreel.
+  - Never have both loud in one viewport.
+- **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (light, uppercase, +0.3em) and monument (heavy numerals, one per viewport).
+- **Annotation vocabulary:** only four marks are used. Each must point at something real, and there are at most three per viewport.
+  1. Hairline rule.
+  2. Tick scale. The desktop scroll gauge counts as one tick scale, including its marker.
+  3. Registration bracket (`Brackets`, snaps in on hover and focus inside `.snap`).
+  4. 6px signal square (`Signal`).
+- **Corners:** square, or 45° chamfers (`--chamfer`). No rounded corners.
+- **Components** (`components/site/ui.tsx`):
+  - `Button` (primary: volt on Glass, ink on Paper; ghost: hairline chamfer)
+  - `TextLink` (the hairline draws on hover)
+  - `SectionHead` (`01 — TITLE ———— meta`)
+  - `SpecCard` (label–value rows)
+  - `Pane` (a real screen as black glass with one specular edge)
+  - `Brackets` and `Signal`
+  - `Faqs`, `Header`, `Footer` (a colophon) and `Reel`
+- **Motion:**
+  - Use `--t-1…4` (150 / 250 / 350 / 600 ms) with `--ease-expo` or `--ease-quart`, ease-out only.
+  - Animate transform and opacity only.
+  - With reduced motion, everything collapses to fades.
 
 ## Motion pieces
 
-- **Intro:** `components/site/intro.tsx` (markup) and `intro.js` (timings in `T`, about 1.9 s).
-  - The head gate in `app/layout.tsx` decides before first paint whether it plays: homepage only, once per tab session, and never for deep links, `utm_` campaign links or reduced motion.
-  - `?intro=1` forces it and `?intro=0` skips it.
-  - If anything fails, the page is shown immediately. A CSS fail-safe also lifts it after 3.5 s.
-- **Ambient light:** the WebGL shader in `public/site.js` (search "Ambient light"). It renders at half resolution and about 30 fps. It pauses offscreen, in background tabs and via the footer's "Pause background motion" button (remembered per visitor), and never starts with reduced motion. The static CSS light (`.ambient`) is the fallback.
-- **Reveals and demo tabs:** also in `public/site.js`. The demo shows all three screens without JavaScript.
-- **Polish layer** (CSS at the end of `app/site.css`, behaviour in `public/site.js`):
-  - **Living glass:** with a mouse, panes tilt slightly toward the pointer and catch its light. A slow sheen crosses each pane's glass.
-  - **Kinetic band:** "Plan. Train. Learn. Fuel." after the hero. It only runs while on screen, and stops with the footer pause button or reduced motion.
-  - **Heading wipes:** homepage `h2`s marked `data-wipe` cut in on the 45° axis when they scroll into view.
-  - **Closing mark:** the mark above "Train with intent." draws its rim and sweeps its glint once.
-  - **Page transitions:** a cross-fade between pages in supporting browsers.
-  - **Scroll hairline:** a progress line under the header.
-  - **Teaser:** "Watch the teaser" opens `public/media/teaser-*.mp4` in a dialog, choosing the vertical cut on portrait screens. It's counted as `teaser_open`. Without JavaScript the link opens the MP4 directly. The teaser is a 22 s, 150 BPM cut at 60 fps. To update it, follow the teaser steps in `social/README.md`, then replace the posters (frames at 3.7 s) and `teaser-thumb.webp`.
+- **Showreel:** `components/site/reel.tsx` (the band, poster and pause control) and `public/reel.js` (the engine and beat sheet).
+  - It's 24 s, loops seamlessly and has no audio.
+  - `site.js` loads it after the page's load event and never with reduced motion. The static lockup poster is the first paint and the reduced-motion version.
+  - It pauses offscreen, in background tabs and with its own control.
+  - `window.blackglassReel.seek(t)` renders any frame, for capturing it to MP4.
+- **Reveals, demo tabs and scroll gauge:** in `public/site.js`.
+  - Content below the fold fades in, and spec cards draw their hairline first.
+  - The demo shows all three screens without JavaScript.
+  - The gauge (1100px and wider) puts a tick on the right edge for each `[data-sec]` section on the page.
+- **Page transitions:** a short cross-fade in supporting browsers.
+- **The launch teaser** is a social asset only (`social/`). The site no longer plays it.
 
 ## Measurement
 

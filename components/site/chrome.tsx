@@ -36,6 +36,7 @@ export function Header({ current }: { current?: string }) {
   );
 }
 
+/** The footer is a colophon: what, where and how to reach Josh, as label–value rows. */
 export function Footer() {
   return (
     <footer className="ftr">
@@ -43,23 +44,27 @@ export function Footer() {
         <div className="ftr-brand">
           {/* eslint-disable-next-line @next/next/no-img-element -- vector lockup */}
           <img src="/brand/blackglass-lockup.svg" alt="Blackglass" width="241" height="40" loading="lazy" />
-          <p>{site.tagline} Training, technique and food in one place. Built in {site.location}.</p>
+          <dl className="colophon label">
+            <dt>Made in</dt><dd>{site.location}</dd>
+            <dt>At</dt><dd>45°52′S 170°30′E</dd>
+            <dt>Line</dt><dd>{site.tagline}</dd>
+          </dl>
         </div>
         <nav className="ftr-col" aria-label="Product">
-          <p className="ftr-head">Blackglass</p>
+          <p className="label">Blackglass</p>
           <a href="/#how-it-works">How it works</a>
           <a href="/get">Get Blackglass</a>
           <a href="/#questions">Questions</a>
         </nav>
         {coaching.available && (
           <nav className="ftr-col" aria-label="Coaching">
-            <p className="ftr-head">Coaching</p>
+            <p className="label">Coaching</p>
             <a href="/coaching">Coaching with {site.founder}</a>
             <a href="/coaching#enquire">Make an enquiry</a>
           </nav>
         )}
         <nav className="ftr-col" aria-label="Contact">
-          <p className="ftr-head">Contact</p>
+          <p className="label">Contact</p>
           <a href={`mailto:${contact.email}`}>{contact.email}</a>
           <a href={`sms:${contact.phone}`}>Text {contact.phoneDisplay}</a>
           {socialLinks.map((s) => (
@@ -67,10 +72,9 @@ export function Footer() {
           ))}
         </nav>
       </div>
-      <div className="wrap ftr-base">
+      <div className="wrap ftr-base label">
         <span>© <span data-year>2026</span> Blackglass</span>
         <a href="/privacy">Privacy</a>
-        <button type="button" className="motion-toggle" data-motion-toggle aria-pressed="false" hidden>Pause background motion</button>
       </div>
     </footer>
   );

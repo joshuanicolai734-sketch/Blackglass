@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { Button, JsonLd, Label, Pane } from "@/components/site/ui";
+import { Brackets, Button, JsonLd, Pane, SectionHead, Signal } from "@/components/site/ui";
 import { getFaq, getFaqLive } from "@/content/faq";
 import { app, coaching, contact, site } from "@/content/site";
 
@@ -29,10 +29,9 @@ export default function Get() {
       <a className="skip" href="#main">Skip to content</a>
       <Header current="/get" />
       <main id="main" data-page="get">
-        <section className="page-hero" aria-labelledby="get-title">
-          <div className="ambient" data-ambient aria-hidden="true" />
+        <section className="page-hero" aria-labelledby="get-title" data-sec>
           <div className="wrap">
-            <nav className="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / Get Blackglass</nav>
+            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / Get Blackglass</nav>
             <h1 id="get-title" className="display">{hasDownload ? "Blackglass for Android." : "Be first on the Android build."}</h1>
             <p className="body-2">
               {hasDownload
@@ -42,14 +41,16 @@ export default function Get() {
           </div>
         </section>
 
-        <section className="section" aria-label="Platforms">
+        <section className="section" aria-label="Platforms" data-sec>
           <div className="wrap split">
             <div>
               <p className="platform-note" data-platform-note hidden />
               <div className="platforms">
-                <article className="platform is-primary" id="android">
-                  <div className="platform-head"><h2 className="title">Android</h2>
-                    <span className={hasDownload ? "badge live" : "badge"}>{hasDownload ? "Available" : "In development"}</span></div>
+                <article className="spec snap platform" id="android">
+                  <Brackets />
+                  <p className="spec-k label"><Signal /><span className="i">01</span><span>Platform</span></p>
+                  <h2 className="title">Android</h2>
+                  <dl className="label"><dt>Status</dt><dd>{hasDownload ? "Available" : "In development"}</dd></dl>
                   {hasPlay && <>
                     <p>Install from Google Play. Updates come through the Play Store.</p>
                     <div className="actions"><Button href={app.android.playUrl!} track="outbound_play" external>Open Google Play</Button></div>
@@ -57,7 +58,7 @@ export default function Get() {
                   {hasApk && <>
                     <p>Blackglass is downloaded as an APK file, the standard Android app package, directly from this site rather than from the Play Store.</p>
                     <div className="actions"><Button href={app.android.apkUrl!} track="outbound_apk">Download the APK</Button></div>
-                    <p className="fileinfo">
+                    <p className="fileinfo label">
                       {app.android.apkVersion && <>Version {app.android.apkVersion}<br /></>}
                       {app.android.apkSize && <>Size {app.android.apkSize}<br /></>}
                       {app.android.minAndroid && <>Needs Android {app.android.minAndroid} or later<br /></>}
@@ -76,12 +77,18 @@ export default function Get() {
                     <div className="actions"><Button href="#preview" track="cta_preview_anchor" down>Join the preview list</Button></div>
                   </>}
                 </article>
-                <article className="platform" id="iphone">
-                  <div className="platform-head"><h2 className="title">iPhone</h2><span className="badge">Not available</span></div>
+                <article className="spec snap platform" id="iphone">
+                  <Brackets />
+                  <p className="spec-k label"><span className="i">02</span><span>Platform</span></p>
+                  <h2 className="title">iPhone</h2>
+                  <dl className="label"><dt>Status</dt><dd>Not available</dd></dl>
                   <p>There is no iPhone app.{coaching.available && <> If you want structured training now, <a href="/coaching">coaching with {site.founder}</a> works with any phone.</>}</p>
                 </article>
-                <article className="platform" id="web">
-                  <div className="platform-head"><h2 className="title">Web</h2><span className="badge">Not available</span></div>
+                <article className="spec snap platform" id="web">
+                  <Brackets />
+                  <p className="spec-k label"><span className="i">03</span><span>Platform</span></p>
+                  <h2 className="title">Web</h2>
+                  <dl className="label"><dt>Status</dt><dd>Not available</dd></dl>
                   <p>There is no web version of the app. This website is for finding out about Blackglass and getting in touch.</p>
                 </article>
               </div>
@@ -95,7 +102,7 @@ export default function Get() {
             <div>
               {!hasDownload ? (
                 <form className="form-card" id="preview" data-form="preview" data-email={contact.email} data-founder={site.founder} noValidate>
-                  <h2>Join the Android preview list</h2>
+                  <h2 className="title">Join the Android preview list</h2>
                   <p>Free. One email when there’s a build you can try. No newsletter.</p>
                   <div className="field"><label htmlFor="p-name">Your name</label>
                     <input id="p-name" name="name" type="text" autoComplete="name" maxLength={80} required /></div>
@@ -118,9 +125,9 @@ export default function Get() {
           </div>
         </section>
 
-        <section className="section" aria-labelledby="get-faq" style={{ paddingTop: 0 }}>
+        <section className="section" aria-labelledby="get-faq" data-sec>
           <div className="wrap faq-grid">
-            <div className="section-head"><Label>Questions</Label><h2 id="get-faq" className="display">Before you<br />sign up.</h2></div>
+            <div className="section-head"><SectionHead title="Questions" meta={`${String((hasDownload ? getFaqLive : getFaq).length).padStart(2, "0")} answers`} /><h2 id="get-faq" className="display">Before you sign up.</h2></div>
             <Faqs items={hasDownload ? getFaqLive : getFaq} />
           </div>
         </section>

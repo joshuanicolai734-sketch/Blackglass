@@ -1,6 +1,6 @@
 # Blackglass design language: phase 0 (audit and direction)
 
-Status: **awaiting approval.** No production code has changed. The style frames are in `design/frames/`. Rebuild them with `node design/frames/build.mjs`.
+Status: **approved** (Ember `#DE7F4E`, Inter Tight kept, recommendations taken). Phases 1–3 are built. The style frames are in `design/frames/`. Rebuild them with `node design/frames/build.mjs`.
 
 ## Decisions I need from you
 

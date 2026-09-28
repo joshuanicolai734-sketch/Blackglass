@@ -224,7 +224,7 @@ The calmer first cut (24 s, a slow glass-and-light piece) is kept as `teaser.mjs
 - **YouTube description:** `Blackglass keeps your programme, today's session, movement guides and food targets in one Android app. It's in development: join the preview list at https://blackglass.co.nz/get?utm_source=youtube&utm_medium=social&utm_campaign=launch_2026&utm_content=teaser`
 - **CTA:** Join the preview list · **Destination:** bio → `/links`, or the tracked /get link above.
 - **Alt text / description:** A fast, beat-cut teaser. The Blackglass logo, a chamfered octagon with a green highlight, draws itself on a futuristic display and slams in as an octagonal tunnel opens. "Know what today asks of you." flashes one word per beat. The words Plan, Train, Learn and Fuel each appear with the matching real app screen, then comes a strobing montage. It ends on "Train with intent. blackglass.co.nz. Android app in development."
-- **Where it fits:** post it on day 1 in place of V1, or as a day-15 "launch week wrap". Pin it on TikTok and YouTube. The website plays it from the "Watch the teaser" button on the homepage.
+- **Where it fits:** post it on day 1 in place of V1, or as a day-15 "launch week wrap". Pin it on TikTok and YouTube. It is for social only. The website has its own code-driven showreel.
 
 ---
 

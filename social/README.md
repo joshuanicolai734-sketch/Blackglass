@@ -16,13 +16,7 @@ Video needs `ffmpeg` with libx264 on your PATH, or `FFMPEG=/path/to/ffmpeg node 
 ```sh
 python3 teaser-hype-sound.py && node render.mjs teaser-vertical teaser-landscape
 ```
-The exports are high-bitrate masters for uploading to social platforms. The website uses lighter encodes (CRF 30, which looks the same at about a third of the size):
-```sh
-for s in 1920x1080:landscape 1080x1920:vertical; do
-  ffmpeg -y -i exports/video/blackglass-teaser-${s%%:*}.mp4 -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p \
-    -c:a aac -b:a 160k -movflags +faststart ../public/media/teaser-${s##*:}.mp4
-done
-```
+The exports are high-bitrate masters for uploading to social platforms. The website no longer plays the teaser: its home page has the code-driven showreel instead (`public/reel.js`).
 
 - **Copy and layout:** `assets.mjs`. Each asset is HTML built from the real logo paths (`../content/brand.ts`), site fonts and app screens.
 - **Design system:** `lib.mjs` (colours, facet pane, labels, lockup, button).

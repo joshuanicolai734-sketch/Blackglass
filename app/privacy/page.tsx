@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
-import { Label } from "@/components/site/ui";
+import { SectionHead } from "@/components/site/ui";
 import { contact, site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -15,14 +15,14 @@ export default function Privacy() {
       <a className="skip" href="#main">Skip to content</a>
       <Header />
       <main id="main">
-        <section className="page-hero">
+        <section className="page-hero" data-sec>
           <div className="wrap">
-            <Label>Privacy</Label>
+            <SectionHead title="Privacy" meta="This website" />
             <h1 className="display">Your details. Your choice.</h1>
             <p className="body-2">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list and the site&rsquo;s visit counts.</p>
           </div>
         </section>
-        <section className="section" style={{ paddingTop: 64 }}>
+        <section className="section" style={{ paddingTop: 64 }} data-sec>
           <div className="wrap prose">
             <h2>What you send</h2>
             <p><strong>Coaching enquiries</strong> collect your name, email address, what you&rsquo;re looking for and the goal you write. You can add a mobile number if you&rsquo;d like a text reply. Please don&rsquo;t include medical information.</p>

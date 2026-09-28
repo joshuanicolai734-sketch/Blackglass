@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Pages use full document loads so the enhancement script initialises on each one. */
 import type { Metadata } from "next";
 import { Arrow } from "@/components/site/ui";
+import { paths } from "@/content/brand";
 import { app, coaching, contact, site, socialLinks } from "@/content/site";
 
 const hasDownload = Boolean(app.android.playUrl || app.android.apkUrl);
@@ -24,15 +25,12 @@ function Item({ href, title, note, primary, track }: { href: string; title: stri
 export default function Links() {
   return (
     <main className="links-page" data-page="links">
-      <div className="ambient" data-ambient aria-hidden="true" />
       <div className="links-inner">
         <svg className="links-mark" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
-          <path fill="#18191C" d="M7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
-          <path fill="#2B2D32" d="M73.45 14.55 65.899 7H22.101L7 22.101v43.798l7.55 7.551Z" />
-          <path fill="#D5FF3F" d="M22.101 7H41L7 41V22.101Z" />
-          <path fill="#F4F5EF" fillRule="evenodd" d="M0 18 18 0h52l18 18v52L70 88H18L0 70ZM7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
+          <path fill="var(--c-pane)" d={paths.pane} /><path fill="var(--c-facet)" d={paths.facet} />
+          <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
         </svg>
-        <h1>{site.name}</h1>
+        <h1 className="display">{site.name}</h1>
         <p>Training, technique and food in one Android app. Built in Dunedin.</p>
         <div className="link-list">
           <Item primary href="/get" track="links_get" title="Get Blackglass"
@@ -44,7 +42,7 @@ export default function Links() {
             <Item key={s.key} href={s.href} track={`links_${s.key}`} title={s.label} note="Follow Blackglass" />
           ))}
         </div>
-        <p className="links-foot">
+        <p className="links-foot label">
           <a href={`mailto:${contact.email}`}>{contact.email}</a><br />
           <a href="/">blackglass.co.nz</a> · <a href="/privacy">Privacy</a>
         </p>
