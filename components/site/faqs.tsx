@@ -4,7 +4,7 @@ export function Faqs({ items }: { items: Faq[] }) {
   return (
     <div className="faqs">
       {items.map((f) => (
-        <details key={f.q} className="faq" data-reveal>
+        <details key={f.q} className="faq">
           <summary><span>{f.q}</span><i aria-hidden="true" /></summary>
           <p>{f.a}</p>
         </details>

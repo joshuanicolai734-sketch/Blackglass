@@ -70,9 +70,11 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
   - `Brackets` and `Signal`
   - `Faqs`, `Header`, `Footer` (a colophon) and `Reel`
 - **Motion:**
-  - Use `--t-1…4` (150 / 250 / 350 / 600 ms) with `--ease-expo` or `--ease-quart`, ease-out only.
+  - Content is complete on first paint. Nothing waits to be revealed and nothing moves on load or on scroll.
+  - Motion answers the visitor (hover, focus, a tab, a page change) or lives in the showreel. Don't add entrance animations back.
+  - Use `--t-1…4` (150 / 250 / 350 / 600 ms) with `--ease-expo` or `--ease-quart`, ease-out only. Interface responses stay at `--t-2` or `--t-3`.
   - Animate transform and opacity only.
-  - With reduced motion, everything collapses to fades.
+  - With reduced motion, state changes are colour and opacity only.
 
 ## Motion pieces
 
@@ -80,24 +82,17 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
   - It's 24 s, loops seamlessly and has no audio.
   - `site.js` loads it after the page's load event and never with reduced motion. The static lockup poster is the first paint and the reduced-motion version.
   - It pauses offscreen, in background tabs and with its own control.
+  - **Chapters:** a hairline timeline of the six beats sits under the reel. It shows on hover, on focus and while paused, and each chapter is a button that jumps to its beat.
   - `window.blackglassReel.seek(t)` renders any frame, for capturing it to MP4.
-- **Reveals, demo tabs and scroll gauge:** in `public/site.js`.
-  - Content below the fold fades in, and spec cards draw their hairline first.
-  - The demo shows all three screens without JavaScript.
-  - The gauge (1100px and wider) puts a tick on the right edge for each `[data-sec]` section on the page.
-- **Choreography** (CSS in the "Motion" block of `site.css`, triggers in `site.js`):
-  - **Hero:** the headline rises word by word out of hairline masks (`Words`). The section-header hairlines draw. On 1100px and wider, the Glass Pane outline draws side by side, then its hairlines retract segment by segment as the hero leaves (a scroll timeline). The paragraph is left still, so first paint is never held back.
-  - **Sections:** headers draw their hairlines and tick their index up (`data-enter`, `data-tick`). Headings rise word by word. The coaching price counts up (`data-count`).
-  - **Paper sections:** Glass wipes down off them along a hairline once they are 35% into view. A scroll fallback opens them if a jump skips the trigger.
-  - **Demo tabs:** the new screen is uncovered by a mask travelling down with a scan hairline.
-  - **Specular sweep:** one light edge crosses a black-glass screen when it arrives, on each demo swap, and on hover (`.pg-sweep`).
-  - **Section seams:** the hairline between Glass sections draws across as you reach it.
-  - **Reel chapters:** a hairline timeline of the six beats sits under the reel. It shows on hover, on focus and while paused, and each chapter is a button that jumps to its beat.
-  - **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
-  - **Reticle:** with a mouse, one set of registration brackets glides between hovered targets and locks onto their bounds. Keyboard focus keeps the per-card brackets.
-  - **Scroll gauge:** shows the index of the section in view.
-  - **FAQ:** answers ease in when opened.
-  - Everything is transform and opacity. None of it runs with reduced motion, and without JavaScript every element is in its final state.
+- **Interface responses** (CSS in `site.css`):
+  - **Links:** a full-strength hairline draws across the resting one on hover and focus.
+  - **Buttons:** the arrow nudges along the 45° axis on hover.
+  - **Cards:** registration brackets snap in on hover and focus (`.snap`).
+  - **Demo tabs:** the chosen screen cross-fades in (`--t-2`). Without JavaScript, all three screens show.
+  - **FAQ:** answers fade in when opened.
+- **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square slides to the section in view. Decorative, and hidden from assistive tech.
+- **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
+- **Hero octagon** (1100px and wider): the Glass Pane's outline in still hairline, the hero's one dominant shape.
 - **Page transitions:** a short cross-fade in supporting browsers.
 - **The launch teaser** is a social asset only (`social/`). The site no longer plays it.
 

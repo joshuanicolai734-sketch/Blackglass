@@ -73,6 +73,34 @@ After both, everything was re-checked:
 - **Tests:** 39 journeys pass, including keyboard chapters.
 - **Fallbacks:** reduced motion and no-JS leave every element in its final state.
 
+## Calm pass (supersedes the motion passes)
+
+The site now holds still, and all the movement is in the reel. Removed:
+- word rises, section-header draws and index count-ups
+- the price count-up
+- scroll reveals
+- Paper wipes and seam draws
+- the specular sweep and the demo scan wipe
+- the hero-octagon draw and retract
+- the snapping reticle
+- the gauge's number
+
+Kept:
+- the showreel and its chapters
+- hover and focus responses: link hairlines, the button arrow, bracket snap
+- a 250 ms cross-fade on demo tabs and page changes
+- the gauge's sliding square
+
+Re-checked after the change:
+- **Hard limits:** 59 viewports, 0 violations. Least empty space is 46%, marks are at most 3, and no static viewport has both volt and ember.
+- **Lighthouse (mobile):**
+  - Home 97–98, LCP 2.2–2.3 s, TBT 0 ms.
+  - Get 98, LCP 2.1 s.
+  - Coaching 98, LCP 2.1 s.
+  - Accessibility, best practices and SEO are 100 on all three.
+- **Script:** `site.js` dropped from 17 KB to 11 KB, and the motion CSS dropped by about 100 lines.
+- **Tests:** 41 journeys pass. A new check confirms every heading, paragraph, card and screen is at rest on load, before any scroll.
+
 ## Deliberately left out
 
 - **Rolling section numbers:** the third signature option. The reel already rolls an index, and two signatures is the limit.
@@ -82,5 +110,5 @@ After both, everything was re-checked:
 
 ## Known limits
 
-- **The contour athlete** is built from capsules on a skeleton. It reads as the kneeling rollout, but it's stylised rather than anatomical. A figure asset from the app (the exercise-guide render) would make it sharper.
+- **The contour athlete** is built from capsules on a skeleton. It reads as the back squat, but it's stylised rather than anatomical. A figure asset from the app (the exercise-guide render) would make it sharper.
 - **The mark's own glint is volt.** It appears in the lockup beside the ember field, and it's intrinsic to the logo.

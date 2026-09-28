@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /** Diagonal arrow drawn on the brand's 45° axis. */
 export function Arrow({ down = false }: { down?: boolean }) {
@@ -44,17 +44,11 @@ export function TextLink({ href, children, down, track, arrow = true }: { href: 
   );
 }
 
-/** Splits a line into words that rise out of hairline masks (hero on load, headings as they enter). Text stays whole for assistive tech. */
-export function Words({ children }: { children: string }) {
-  const words = children.split(" ");
-  return <>{words.map((w, i) => <span key={i}><span className="w"><span className="wi" style={{ "--i": i } as CSSProperties}>{w}</span></span>{i < words.length - 1 ? " " : ""}</span>)}</>;
-}
-
 /** Section header: `01 — TITLE ———— meta`. Meta must be real (a count, a place), never decoration. */
 export function SectionHead({ index, title, meta }: { index?: string; title: ReactNode; meta?: ReactNode }) {
   return (
-    <p className="sh label" data-enter>
-      {index && <><span className="sh-i" data-tick={index}>{index}</span><span className="sh-dash" aria-hidden="true" /></>}
+    <p className="sh label">
+      {index && <><span className="sh-i">{index}</span><span className="sh-dash" aria-hidden="true" /></>}
       <span>{title}</span>
       <span className="sh-rule" aria-hidden="true" />
       {meta && <span className="sh-meta">{meta}</span>}
@@ -77,7 +71,7 @@ export function SpecCard({ index, kicker, title, children, specs, signal = false
   index?: string; kicker?: ReactNode; title: ReactNode; children?: ReactNode; specs?: [string, ReactNode][]; signal?: boolean; as?: "article" | "li";
 }) {
   return (
-    <Tag className="spec snap" data-reveal>
+    <Tag className="spec snap">
       <Brackets />
       {(index || kicker) && (
         <p className="spec-k label">{signal && <Signal />}{index && <span className="i">{index}</span>}{kicker && <span>{kicker}</span>}</p>
@@ -96,16 +90,13 @@ export function Pane({ src, alt, width = 720, height = 1560, priority = false, c
   src: string; alt: string; width?: number; height?: number; priority?: boolean; caption?: ReactNode; className?: string; sizes?: string;
 }) {
   return (
-    <figure className={`pane ${className}`.trim()} data-enter>
+    <figure className={`pane ${className}`.trim()}>
       <div className="pane-glass">
-        <span className="pg-mask"><span className="pg-in">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
-          <img src={src} alt={alt} width={width} height={height} decoding="async"
-            srcSet={src.endsWith(".webp") ? `${src.replace(".webp", "-480.webp")} 480w, ${src} 720w` : undefined}
-            sizes={sizes}
-            {...(priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} />
-        </span><span className="pg-scan" aria-hidden="true" /></span>
-        <span className="pg-sweep" aria-hidden="true" />
+        {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
+        <img src={src} alt={alt} width={width} height={height} decoding="async"
+          srcSet={src.endsWith(".webp") ? `${src.replace(".webp", "-480.webp")} 480w, ${src} 720w` : undefined}
+          sizes={sizes}
+          {...(priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} />
       </div>
       {caption && <figcaption className="label">{caption}</figcaption>}
     </figure>

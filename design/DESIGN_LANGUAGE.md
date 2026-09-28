@@ -132,6 +132,10 @@ The screens are shown as app UI, never as a client's results.
 
 Rolling section numbers are left out, because the reel already rolls an index.
 
+## Site motion
+
+The site is still; the reel is where things move. Content is complete on first paint, with no entrance, reveal or scroll-driven animation. Motion only answers the visitor: link hairlines, the button arrow, the bracket snap, a 250 ms cross-fade on demo tabs and page changes, and the gauge's sliding square.
+
 ## Reel beat sheet
 
 The reel is 24.0 s, a seamless loop with no audio, and every cut lands on the 0.5 s grid. Motion is time-based with seeded randomness, so `seek(t)` can drive either live playback or an MP4 capture.

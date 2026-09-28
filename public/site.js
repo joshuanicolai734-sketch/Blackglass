@@ -66,45 +66,6 @@
     });
   }
 
-  /* ---- Scroll reveals, only for content still below the fold, so nothing on screen blinks out. ---- */
-  if (!reduce.matches && 'IntersectionObserver' in w) {
-    const pending = new Set();
-    // Numbers tick: a count from 00 up to the element's value (the monumental price, section indices).
-    const countUp = (el, to) => {
-      const n = parseInt(to, 10), width = String(to).length, t0 = performance.now();
-      if (!Number.isFinite(n)) return;
-      const step = (t) => { const k = Math.min(1, (t - t0) / 600); el.textContent = String(Math.round(n * (1 - Math.pow(1 - k, 4)))).padStart(width, '0'); if (k < 1) requestAnimationFrame(step); };
-      requestAnimationFrame(step);
-    };
-    const show = (el) => {
-      el.classList.add('in'); pending.delete(el); io.unobserve(el);
-      if (el.dataset.count) countUp(el, el.dataset.count);
-      el.querySelectorAll('[data-tick]').forEach((t) => countUp(t, t.dataset.tick));
-    };
-    const io = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) show(en.target); }), { rootMargin: '0px 0px -8% 0px' });
-    // Paper sections wipe open once they are well into view, so the wipe happens where it can be seen.
-    const ioPaper = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); pending.delete(en.target); ioPaper.unobserve(en.target); } }), { rootMargin: '0px 0px -35% 0px' });
-    // Sections are targets too: their seam hairline draws across as you reach them.
-    d.querySelectorAll('[data-reveal], [data-enter], main > .section').forEach((el, i) => {
-      if (el.getBoundingClientRect().top > innerHeight) {
-        el.classList.add('pre');
-        if (el.hasAttribute('data-reveal')) el.style.transitionDelay = `${(i % 3) * 60}ms`;
-        pending.add(el);
-        if (el.matches('section.paper, .offer-coach')) ioPaper.observe(el); else io.observe(el);
-      }
-    });
-    // A jump (an anchor link, a fast fling) can carry content past the viewport without it ever intersecting:
-    // reveal anything that is already above the bottom edge.
-    let tick = 0;
-    w.addEventListener('scroll', () => {
-      if (tick || !pending.size) return;
-      tick = requestAnimationFrame(() => { tick = 0; pending.forEach((el) => {
-        const paper = el.matches('section.paper, .offer-coach');
-        if (el.getBoundingClientRect().top < innerHeight * (paper ? 0.65 : 1)) { if (paper) { el.classList.add('in'); pending.delete(el); ioPaper.unobserve(el); } else show(el); }
-      }); });
-    }, { passive: true });
-  }
-
   /* ---- Showreel: loaded once the page has finished loading, so it never competes with first paint. ---- */
   if (d.querySelector('[data-reel]') && !reduce.matches) {
     const load = () => { const s = d.createElement('script'); s.src = '/reel.js'; s.async = true; d.body.appendChild(s); };
@@ -212,9 +173,6 @@
     msg?.setAttribute('tabindex', '-1');
   });
 
-  /* ---- Specular sweep runs once on arrival; after that only hover replays it. ---- */
-  d.addEventListener('animationend', (e) => { if (e.animationName === 'sweep') e.target.closest('.pane')?.classList.add('swept'); });
-
   /* ---- Colophon: the time in Dunedin, to the minute. ---- */
   const clock = d.querySelector('[data-clock]');
   if (clock) {
@@ -222,38 +180,6 @@
     const set = () => { clock.textContent = fmt.format(new Date()); };
     set(); setInterval(set, 20000);
     d.querySelectorAll('[data-clock-row]').forEach((e) => { e.hidden = false; });
-  }
-
-  /* ---- Snapping reticle (desktop, fine pointer): one set of registration brackets that glides between the
-     targets you hover and locks onto their bounds. Keyboard focus keeps the per-card brackets. ---- */
-  if (!reduce.matches && w.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const ret = d.createElement('div');
-    ret.className = 'reticle';
-    ret.setAttribute('aria-hidden', 'true');
-    ret.innerHTML = '<i></i><i></i><i></i><i></i>';
-    d.body.appendChild(ret);
-    root.classList.add('has-reticle');
-    const corners = [...ret.children];
-    const SEL = '.btn, .link, .spec, .demo-tabs button, .faq summary, .reel-toggle, .hdr-brand, .ftr-col a, .ftr-base a, .field input, .field select, .field textarea';
-    let cur = null;
-    const place = () => {
-      if (!cur) return;
-      const r = cur.getBoundingClientRect(), p = cur.matches('.spec') ? 10 : 6;
-      const x0 = r.left - p, y0 = r.top - p, x1 = r.right + p - 12, y1 = r.bottom + p - 12;
-      [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].forEach(([x, y], i) => { corners[i].style.transform = `translate(${x}px, ${y}px)`; });
-    };
-    d.addEventListener('pointerover', (e) => {
-      const t = e.target.closest?.(SEL) || null;
-      if (t === cur) return;
-      const wasOff = !cur;
-      cur = t;
-      if (!t) { ret.classList.remove('on'); return; }
-      if (wasOff) { ret.classList.add('jump'); place(); void ret.offsetWidth; ret.classList.remove('jump'); } else place();
-      ret.classList.add('on');
-    });
-    d.addEventListener('pointerleave', () => { cur = null; ret.classList.remove('on'); });
-    let raf = 0;
-    w.addEventListener('scroll', () => { if (cur && !raf) raf = requestAnimationFrame(() => { raf = 0; place(); }); }, { passive: true });
   }
 
   /* ---- Scroll gauge (desktop): a tick scale on the right edge. Major ticks are this page's sections; the
@@ -272,22 +198,12 @@
     sq.setAttribute('aria-hidden', 'true');
     gauge.style.height = `${(n - 1) * STEP + 1}px`;
     gauge.style.marginTop = sq.style.marginTop = `${-((n - 1) * STEP) / 2}px`;
-    const num = d.createElement('span');
-    num.className = 'gauge-n';
-    num.setAttribute('aria-hidden', 'true');
-    num.style.marginTop = sq.style.marginTop;
-    d.body.append(gauge, sq, num);
-    const idx = secs.map((s) => s.querySelector('.sh-i')?.dataset.tick || '');
+    d.body.append(gauge, sq);
     const seen = new Map();
     const place = () => {
       let best = 0, bestV = -1;
       secs.forEach((s, i) => { const v = seen.get(s) || 0; if (v > bestV) { bestV = v; best = i; } });
       sq.style.transform = `translateY(${best * (MINOR + 1) * STEP}px)`;
-      num.style.transform = sq.style.transform;
-      // The index ticks between values rather than jumping.
-      const to = parseInt(idx[best], 10), from = parseInt(num.textContent, 10);
-      if (!Number.isFinite(to) || !Number.isFinite(from) || from === to || reduce.matches) num.textContent = idx[best];
-      else { const t0 = performance.now(); const step = (t) => { const k = Math.min(1, (t - t0) / 260); num.textContent = String(Math.round(from + (to - from) * k)).padStart(2, '0'); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
     };
     const io = new IntersectionObserver((es) => { es.forEach((e) => seen.set(e.target, e.intersectionRatio * e.boundingClientRect.height)); place(); }, { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
     secs.forEach((s) => io.observe(s));

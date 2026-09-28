@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, Words } from "@/components/site/ui";
+import { Brackets, Button, JsonLd, Pane, SectionHead, Signal } from "@/components/site/ui";
 import { getFaq, getFaqLive } from "@/content/faq";
 import { app, coaching, contact, site } from "@/content/site";
 
@@ -32,7 +32,7 @@ export default function Get() {
         <section className="page-hero" aria-labelledby="get-title" data-sec>
           <div className="wrap">
             <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / Get Blackglass</nav>
-            <h1 id="get-title" className="display"><Words>{hasDownload ? "Blackglass for Android." : "Be first on the Android build."}</Words></h1>
+            <h1 id="get-title" className="display">{hasDownload ? "Blackglass for Android." : "Be first on the Android build."}</h1>
             <p className="body-2">
               {hasDownload
                 ? "Your programme, today's session, movement guides and food targets, on your phone."
@@ -127,7 +127,7 @@ export default function Get() {
 
         <section className="section" aria-labelledby="get-faq" data-sec>
           <div className="wrap faq-grid">
-            <div className="section-head"><SectionHead title="Questions" meta={`${String((hasDownload ? getFaqLive : getFaq).length).padStart(2, "0")} answers`} /><h2 id="get-faq" className="display" data-enter><Words>Before you sign up.</Words></h2></div>
+            <div className="section-head"><SectionHead title="Questions" meta={`${String((hasDownload ? getFaqLive : getFaq).length).padStart(2, "0")} answers`} /><h2 id="get-faq" className="display">Before you sign up.</h2></div>
             <Faqs items={hasDownload ? getFaqLive : getFaq} />
           </div>
         </section>
