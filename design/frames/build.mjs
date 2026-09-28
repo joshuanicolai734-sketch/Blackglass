@@ -215,7 +215,7 @@ for (const [id, html] of frames) {
     const p = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     await p.goto(pathToFileURL(file).href);
     await p.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); });
-    if (id.startsWith("03")) await p.reload(), await p.evaluate(() => document.fonts.ready);
+    if (id.startsWith("03")) { await p.reload(); await p.evaluate(() => document.fonts.ready); }
     const out = resolve(HERE, `${id}-${w}.png`);
     mkdirSync(dirname(out), { recursive: true });
     await p.screenshot({ path: out });
