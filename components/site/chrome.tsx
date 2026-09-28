@@ -26,9 +26,11 @@ export function Header({ current }: { current?: string }) {
           <span>Enquire</span><Arrow down />
         </a>
       ) : (
-        <a className="btn btn-ghost btn-sm hdr-cta" href="/get" data-track="cta_get_header"
-          aria-current={current === "/get" ? "page" : undefined}>
-          {hasDownload ? <span>{appCta}</span> : <span><span className="hdr-cta-long">Join the </span>preview list</span>}<Arrow />
+        // On /get it jumps to the form on this page instead of reloading it. Phones show a short label; the
+        // accessible name is always the full one.
+        <a className="btn btn-ghost btn-sm hdr-cta" href={current === "/get" ? "#preview" : "/get"}
+          data-track={current === "/get" ? "cta_preview_header" : "cta_get_header"} aria-label={appCta}>
+          {hasDownload ? <span>{appCta}</span> : <span><span className="hdr-cta-long">Join the preview list</span><span className="hdr-cta-short">Join list</span></span>}<Arrow down={current === "/get"} />
         </a>
       )}
       {/* A native disclosure, so the menu works before (and without) JavaScript. */}

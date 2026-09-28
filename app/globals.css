@@ -95,11 +95,9 @@
 
 
 
-@font-face{font-family:"Inter Tight";src:url(/fonts/inter-tight-latin-wght.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
-@font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-500.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-700.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
 
-/* Owner inbox (/admin). The public site is styled by app/site.css. */
+/* Owner inbox (/admin). Imported only by app/admin/layout.tsx, so public pages never load Tailwind, tw-animate or
+   the shadcn layer. The public site is styled by app/site.css; fonts live in app/tokens.css. */
 .admin-page{min-height:100svh;background:var(--c-glass);color:var(--c-bone)}
 
 .simple-header{padding:24px clamp(22px,5vw,80px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:20px}

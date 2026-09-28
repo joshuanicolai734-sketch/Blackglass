@@ -23,14 +23,14 @@ const demo = [
     points: ["Resume or preview the day's session", "Calorie and protein targets on the same screen", "Log food, or estimate a quick meal and log it"],
   },
   {
-    id: "plan", tab: "Plan", src: "/assets/program.webp",
+    id: "plan", tab: "Train", src: "/assets/program.webp",
     alt: "Blackglass Train screen showing an active six-day programme, week 1 of 6, with Push, Pull and Legs days listed",
     title: "See the whole week.",
     text: "Your programme lays out every training day, so you know what each session asks of you before you get there.",
     points: ["A six-day split: Push, Pull and Legs, twice through", "Programmes run in blocks. This is week 1 of 6, a build phase", "The movement library sits one tab away"],
   },
   {
-    id: "technique", tab: "Technique", src: "/assets/movement.webp",
+    id: "technique", tab: "Learn", src: "/assets/movement.webp",
     alt: "Blackglass exercise guide for the ab wheel rollout, playing the movement with phases labelled Brace, Reach and Return",
     title: "Know how the lift should look.",
     text: "Each exercise guide plays the movement and breaks it into phases, so you can learn the pattern and control it.",
@@ -40,7 +40,7 @@ const demo = [
 
 // Each card points at the real screen that backs it.
 const benefits: { key: string; title: string; text: string; specs: [string, string][] }[] = [
-  { key: "Plan", title: "Walk in with a plan.", text: "No notes to scroll at the rack. The day's exercises and sets are waiting when you open the app.", specs: [["Screen", "Train › Plan"], ["Shows", "5 exercises a day"]] },
+  { key: "Train", title: "Walk in with a plan.", text: "No notes to scroll at the rack. The day's exercises and sets are waiting when you open the app.", specs: [["Screen", "Train › Plan"], ["Shows", "5 exercises a day"]] },
   { key: "Today", title: "Lose less to interruptions.", text: "An unfinished session waits for you. Resume it where you stopped instead of starting again.", specs: [["Screen", "Today"], ["Shows", "Session in progress"]] },
   { key: "Learn", title: "Move with better control.", text: "Guides show each exercise in phases, so the next rep is more deliberate than the last.", specs: [["Screen", "Exercise guide"], ["Phases", "Brace · Reach · Return"]] },
   { key: "Fuel", title: "Keep food in the picture.", text: "Calorie and protein targets sit beside your training, not in a separate app.", specs: [["Screen", "Today › Nutrition"], ["Targets", "kcal · protein"]] },
@@ -66,11 +66,13 @@ export default function Home() {
     <>
       <a className="skip" href="#main">Skip to content</a>
       <Header />
+      <StickyCta />
       <main id="main">
         <section className="hero" aria-labelledby="hero-title" data-sec>
           <div className="wrap hero-grid">
+            {/* The section rule runs across both columns, tying the copy to the screen. */}
+            <div className="hero-head"><SectionHead index="00" title="Strength training app" meta="Built in Dunedin" /></div>
             <div className="hero-copy">
-              <SectionHead index="00" title="Training app" meta="Built in Dunedin" />
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
@@ -79,12 +81,17 @@ export default function Home() {
                   ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</Button>
                   : <TextLink href="#how-it-works" down>See how it works</TextLink>}
               </div>
-              <p className="status label"><Signal /><span>Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}{coaching.available && " · Coaching available now"}</span></p>
+              {/* One clause per line, so no separator is ever left dangling. */}
+              <p className="status label"><Signal /><span className="status-lines">
+                <span>Status</span>
+                {hasDownload ? <span>Available for Android</span> : <><span>Android app in development</span><span>Preview list open</span></>}
+                {coaching.available && <span>Coaching available now</span>}
+              </span></p>
             </div>
-            {/* The hero's one dominant shape: the real Today screen. Desktop only; phones never fetch it, so the
-                phone LCP stays the headline. */}
-            <Pane src="/assets/dashboard.webp" className="hero-pane" priority media="(min-width: 1100px)" sizes="340px"
-              alt="Blackglass Today screen showing a Push A session in progress with 5 exercises and 12 sets, and calorie and protein targets" />
+            {/* The hero's one dominant shape: the real Train screen (the demo below opens on Today, so no screen
+                repeats). Desktop only; phones never fetch it, so the phone LCP stays the headline. */}
+            <Pane src="/assets/program.webp" className="hero-pane" priority media="(min-width: 1100px)" sizes="300px"
+              alt="Blackglass Train screen: an active six-day strength programme, week 1 of 6, with Push, Pull and Legs days listed" />
           </div>
         </section>
 
@@ -109,8 +116,9 @@ export default function Home() {
               </div>
               {demo.map((d, i) => (
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
-                  data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined}>
-                  <Pane src={d.src} alt={d.alt} className="demo-pane" />
+                  data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
+                  {/* Screens behind the other tabs cost nothing before load: site.js warms them near the demo. */}
+                  <Pane src={d.src} alt={d.alt} className="demo-pane" defer={i !== 0} />
                   <div className="demo-copy">
                     <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
@@ -157,13 +165,14 @@ export default function Home() {
                   {!hasDownload && <><dt>Cost</dt><dd>Free to join</dd></>}
                   <dt>Phones</dt><dd>Android · no iPhone app</dd>
                 </dl>
-                <ol className="install">{steps.map(([t, x]) => <li key={t}><strong>{t}.</strong> {x}</li>)}</ol>
+                <ol className="install offer-steps">{steps.map(([t, x]) => <li key={t}><strong>{t}.</strong> {x}</li>)}</ol>
+                <p className="offer-steps-short">{hasDownload ? "Open Get Blackglass on your Android phone and follow the install steps." : `Join the free list; ${site.founder} emails you when there’s a build.`}</p>
                 <div className="actions"><Button href="/get" track="cta_offer_app">{appCta}</Button></div>
               </article>
               {coaching.available && (
                 <article className="offer-card offer-coach paper" id="coaching" aria-labelledby="offer-coach-title">
                   <span id="apply" aria-hidden="true" />
-                  <p className="spec-k label"><span className="i">02</span><span>Coaching with {site.founder}</span></p>
+                  <p className="spec-k label"><span className="i">02</span><span>Coaching with {site.founder}</span><span className="live-tag"><Signal />Available now</span></p>
                   <h3 id="offer-coach-title" className="title">Work directly with {site.founder}.</h3>
                   <p className="body-2">A plan built around your week, a check-in every week, and adjustments as you progress. Available now, with any phone.</p>
                   <div className="price">
@@ -175,11 +184,11 @@ export default function Home() {
                     <li>One check-in with {site.founder} each week</li>
                     <li>Adjustments as you progress, instead of starting over</li>
                   </ul>
+                  <p className="form-note">No payment is taken on this site. You&rsquo;ll see the written scope and payment terms before you commit.</p>
                   <div className="actions">
                     <Button href="/coaching#enquire" track="cta_offer_coaching">Enquire about coaching</Button>
                     <TextLink href="/coaching">How coaching works</TextLink>
                   </div>
-                  <p className="form-note">No payment is taken on this site. You&rsquo;ll see the written scope and payment terms before you commit.</p>
                 </article>
               )}
             </div>
@@ -206,13 +215,12 @@ export default function Home() {
             <p className="body-2">{hasDownload ? "One place for the plan, the lift and the food. Get Blackglass for Android and open today’s session." : "One place for the plan, the lift and the food. Join the preview list to hear first when the Android build is ready."}</p>
             <div className="actions closer-actions">
               <Button href="/get" track="cta_get_closer">{appCta}</Button>
-              {coaching.available && <TextLink href="/coaching" track="cta_coaching_closer">{`Or work directly with ${site.founder}`}</TextLink>}
+              {coaching.available && <Button href="/coaching" variant="ghost" track="cta_coaching_closer">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</Button>}
             </div>
           </div>
         </section>
       </main>
       <Footer />
-      <StickyCta />
       <JsonLd data={jsonLd} />
     </>
   );

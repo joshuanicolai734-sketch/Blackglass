@@ -70,7 +70,8 @@ These will move into one authoritative file in phase 1 (`app/tokens.css`). The s
 | `--t-1…4` | 150 / 250 / 350 / 600 ms **CHANGED** | Replaces 160/320/640 |
 | `--ease-expo` | `cubic-bezier(.16,1,.3,1)` | Default |
 | `--ease-quart` | `cubic-bezier(.25,1,.5,1)` **NEW** | Numbers and small moves. `--ease-in-out` is retired. |
-| `--t-load` / `--t-drive` / `--t-rack` | 350 / 150 / 80 ms | The motion grammar: load (leaving, quart), drive (arriving, expo), rack (a press). See Site motion. |
+| `--t-load` / `--t-drive` / `--t-snap` | 350 / 220 / 120 ms | The motion grammar: load (leaving, `--ease-load`), drive (arriving, expo), snap (a press or hover colour). See Site motion. |
+| `--ease-load` | `cubic-bezier(.45,0,.55,1)` | Every exit: a symmetric, controlled ease-in-out, so a leaving thing gathers and travels instead of snapping away. |
 
 Colour rules:
 - **One loud colour per viewport.** Volt and Ember never share a viewport.
@@ -136,21 +137,21 @@ Rolling section numbers are left out: numbers never count or roll.
 ## Site motion
 
 **Load · Drive · Lockout.** Every interface move is a rep:
-- **Load (eccentric):** anything leaving or closing moves under control, `--t-load` 350 ms, `--ease-quart`.
-- **Drive (concentric):** anything arriving, opening or answering is explosive, `--t-drive` 150 ms, `--ease-expo`.
-- **Rack:** a press settles in `--t-rack` 80 ms, then releases at drive speed.
+- **Load (eccentric):** anything leaving or closing moves under control, `--t-load` 350 ms, `--ease-load` (symmetric ease-in-out).
+- **Drive (concentric):** anything arriving, opening or answering is explosive, `--t-drive` 220 ms, `--ease-expo`: it lands in 4–6 frames at 60 fps, so a 24 px push is actually seen.
+- **Snap:** a press settles in `--t-snap` 120 ms, then releases at drive speed. Hover lifts a primary 1px along 45° (the unrack); the press undoes it (the rack).
 - **Lockout:** every move ends dead still. No bounce, overshoot or springs. The volt square marks where a move lands.
 - Travel runs along the 45° facet vector or the reading axis.
 
 Content is complete on first paint: no entrance, reveal or scroll-driven animation, and nothing waits. Motion only answers the visitor:
 - link hairlines and the button arrow (drive in, load out), and the rack press
 - the bracket snap on cards
-- the demo tabs: one shared indicator drives to the chosen tab; the outgoing screen loads out and the incoming one drives in 24px along the tab direction
-- the FAQ height (drive open, load closed)
+- the demo tabs: one shared indicator drives to the chosen tab; the incoming screen drives in 24px along the tab direction on top of the outgoing one, so the pane is never empty
+- the FAQ height (drive open; on close the words fade first, then the height loads down). This is the one layout-property animation on the site: a short list, height only, Chromium only, and it's accepted as an exception to transform/opacity/clip-path.
 - the gauge square stepping between section ticks
-- the phone action bar (drives in after the hero; loads out at the fork, forms, the closer and the footer)
+- the phone action bar (drives in after the hero, loads out for good at the fork or the enquiry form: two changes per page)
 - form success: the volt rule locks in after the server confirms
-- page cross-fades, and the `/get` button morphing into the preview form's button
+- page changes (the old page loads out, then the new one drives in), and the `/get` button morphing into the preview form's button
 
 With reduced motion, state changes are colour and opacity only, and view transitions are off. Without JavaScript every state is already painted.
 
@@ -158,22 +159,23 @@ With reduced motion, state changes are colour and opacity only, and view transit
 
 ## Reel beat sheet
 
-The reel is a 12.0 s tempo film: a seamless loop with no audio, and every cut lands on the beat. `seek(t)` is pure (no randomness, no state), so it drives both live playback and an MP4 capture, and `seek(12)` is the same frame as `seek(0)`. Every layer is server-rendered by `components/site/reel.tsx`; `public/reel.js` only moves them.
+The reel is a 12.0 s tempo film: a seamless loop with no audio, and every cut lands on a full frame. `seek(t)` is pure (no randomness, no state), so it drives both live playback and an MP4 capture, and `seek(12)` is the same frame as `seek(0)`. Every layer is server-rendered by `components/site/reel.tsx`; `public/reel.js` only moves them.
 
 | Time | Scene | What happens |
 |---|---|---|
-| 0.0–6.0 | **1 Squat** | A black-glass athlete (one rim, one inner contour) does one back squat at **3-1-1**. Brace, still (0–0.6). Lower for 3 s with a steady, controlled descent to below parallel (0.6–3.6). Pause in the hole (3.6–4.6). Drive up in 0.85 s, fast off the bottom and decelerating into lockout (4.6–5.45). Lockout, dead still (to 6.0). The pose is solved per frame from one depth value, and the torso leans exactly enough to keep the bar over midfoot, so the plate's hub travels a vertical line (drawn as a faint dotted bar path). The readout "3 · 1 · 1 / Lower · Pause · Drive" lights the phase in play (lighting at `--t-drive`, dimming at `--t-load`), and the volt square steps under it at drive speed. At lockout the whole tempo lights again: the poster state. |
-| 6.0–10.0 | **2 The app** | A hard cut on each second: Today (session in progress, 5 exercises · 12 sets), Train (6 days per week, week 1 of 6), Learn (exercise guide, phase by phase), Fuel (kcal · protein targets). Each module drives in 2% along the reading axis in 150 ms. Facts are read off the screens in `public/assets/`. |
-| 10.0–12.0 | **3 Lockup** | Hard cut. The mark drives in along the 45° facet, the wordmark and "Train with intent." follow 100 ms apart along the reading axis. Dead still to 12.0, then a hard cut back to the braced athlete. |
+| 0.0–6.4 | **1 Squat** | A black-glass athlete (a `--c-facet` body with one bone rim and a lit edge along the upper back, the octagon's lit-facet language) does one back squat at **3-1-1**. Brace: a 1.5% hip set (0.15–0.6). Lower for 3 s at a steady, controlled speed to below parallel (0.6–3.6). Pause in the hole (3.6–4.6). Drive 4.6–5.3: fast through the middle, decelerating only in the top 30%. Lockout held dead still 5.3–6.4. The pose is solved per frame from one depth value, and the torso leans exactly enough to keep the bar over midfoot, so the plate's hub travels a vertical line (a faint dotted bar path). The readout "3 · 1 · 1 / Lower · Pause · Drive" is annotation-sized; it lights the phase in play (drive in, load out) and the volt square steps under it. At lockout all three light: the poster state. |
+| 6.4–10.0 | **2 The app** | Hard cuts every 1.2 s between three real screens (the demo's own files, fetched only once the reel starts): Today ("Resume where you stopped"), Train ("The whole week, planned") and Learn ("Phase by phase", cropped to the phase control; the exercise render is never shown). Each lands fully visible on its cut and drives the last 2% along the reading axis. |
+| 10.0–12.0 | **3 Lockup** | Hard cut: the mark and the wordmark land as one object; "Train with intent." follows at 10.1. Dead still to 12.0, then a hard cut back to the braced athlete. |
 
 Rules for the reel:
-- **The first frame is the poster.** The braced athlete with the full readout is the first paint, the no-JavaScript view and the reduced-motion view, and the live reel starts on exactly that frame.
-- **No rejected vocabulary.** No count-ups, rolling numbers, sweeps, wipes, hairline draws, snapping brackets or ember. Scene changes are hard cuts; arrivals drive in; nothing overshoots.
-- **Colour:** the volt square (scenes 1–2) or the mark's own glint (scene 3) is the only volt in frame.
-- **Loading:** reel.js loads after the page's load event and never with reduced motion.
-- **Performance:** transform and opacity only. Writes are cached, so still layers cost nothing; moving layers are promoted only while the reel is in view. It plays only while at least half of it is on screen and the tab is visible.
-- **Controls:** a pause button, and the chapters as one toolbar (one tab stop; arrow keys, Home and End move between Squat, The app and Lockup).
-- **Stage:** 4:5 below 700px, 16:9 above, laid out in container units.
+- **The first frame is the poster.** The braced athlete with the full readout is the first paint, the no-JavaScript view and the reduced-motion view, and the live reel starts on exactly that frame (pixel-identical).
+- **No empty frames.** Every cut, including the loop seam, lands on a full frame. Scene changes are hard cuts; arrivals drive in; nothing overshoots.
+- **No rejected vocabulary.** No count-ups, rolling numbers, sweeps, wipes, hairline draws, snapping brackets, staggered rises or ember.
+- **Colour:** the volt square (scene 1) or the mark's own glint (scene 3) is the reel's only volt marker; the site hides the gauge square while the reel is in view.
+- **Loading:** reel.js loads after the page's load event and never with reduced motion. The screens load only after it starts.
+- **Performance:** transform and opacity only. Each limb is its own compositor layer moved by a CSS transform, so the squat never repaints. It plays only while at least half of it is on screen and the tab is visible.
+- **Controls:** Pause at the top-right. On wider screens, the chapters (Squat, The app, Lockup) are one toolbar along the bottom: one tab stop, with arrow keys, Home and End.
+- **Stage:** 1:1 below 700px; 16:9 above, capped at `min(72svh, 720px)`. Laid out in container units. A "Choose your start" link sits under it.
 
 ## Style frames (`design/frames/`, screenshots at 390 and 1440)
 

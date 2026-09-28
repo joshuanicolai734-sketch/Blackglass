@@ -91,17 +91,29 @@ const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAA
 /**
  * A real product screen set in a chamfered black-glass pane with its lit facet. The Android status bar is cropped
  * off in CSS (`.pane-glass img`). With `media`, the screen is only fetched when that media query matches
- * (the hero screen is desktop-only, so phones never download it).
+ * (the hero screen is desktop-only, so phones never download it). With `defer`, the image ships as `data-src` and
+ * public/site.js fetches it after the page's load event; a <noscript> copy keeps it for visitors without JavaScript.
  */
-export function Pane({ src, alt, width = 720, height = 1560, priority = false, caption, className = "", sizes = "(min-width: 900px) 380px, 76vw", media }: {
-  src: string; alt: string; width?: number; height?: number; priority?: boolean; caption?: ReactNode; className?: string; sizes?: string; media?: string;
+export function Pane({ src, alt, width = 720, height = 1560, priority = false, caption, className = "", sizes = "(min-width: 900px) 380px, 76vw", media, defer = false }: {
+  src: string; alt: string; width?: number; height?: number; priority?: boolean; caption?: ReactNode; className?: string; sizes?: string; media?: string; defer?: boolean;
 }) {
   const srcSet = src.endsWith(".webp") ? `${src.replace(".webp", "-480.webp")} 480w, ${src} 720w` : src;
   const load = priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const };
   return (
     <figure className={`pane ${className}`.trim()}>
       <div className="pane-glass">
-        {media ? (
+        {defer ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
+            <img src={BLANK} alt={alt} width={width} height={height} decoding="async" data-src={src}
+              data-srcset={src.endsWith(".webp") ? srcSet : undefined} data-sizes={sizes} />
+            <noscript>
+              {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
+              <img src={src} alt={alt} width={width} height={height} decoding="async" loading="lazy"
+                srcSet={src.endsWith(".webp") ? srcSet : undefined} sizes={sizes} />
+            </noscript>
+          </>
+        ) : media ? (
           <picture>
             <source media={media} srcSet={srcSet} sizes={sizes} />
             <img src={BLANK} alt={alt} width={width} height={height} decoding="async" {...load} />

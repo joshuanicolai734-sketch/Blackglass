@@ -1,14 +1,13 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Pages use full document loads so the enhancement script initialises on each one. */
 import type { Metadata } from "next";
+import { appCta, hasDownload } from "@/components/site/chrome";
 import { Arrow } from "@/components/site/ui";
 import { paths } from "@/content/brand";
-import { app, coaching, contact, site, socialLinks } from "@/content/site";
-
-const hasDownload = Boolean(app.android.playUrl || app.android.apkUrl);
+import { coaching, contact, site, socialLinks } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Links",
-  description: "Get Blackglass, see how the app works, and coaching with Josh.",
+  description: "Join the Blackglass preview list, see how the app works, and coaching with Josh.",
   alternates: { canonical: "/links" },
   robots: { index: false, follow: true },
   openGraph: { title: "Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
@@ -31,13 +30,13 @@ export default function Links() {
           <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
         </svg>
         <h1 className="display">{site.name}</h1>
-        <p>Training, technique and food in one Android app. Built in Dunedin.</p>
+        <p>Strength training, technique and food in one Android app. Built in Dunedin.</p>
         <div className="link-list">
-          <Item primary href="/get" track="links_get" title="Get Blackglass"
-            note={hasDownload ? "Android · download and install" : "Android · in development · preview list open"} />
+          <Item primary href="/get" track="links_get" title={appCta}
+            note={hasDownload ? "Android · download and install" : "Free · in development · no iPhone app"} />
           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
-            note={`${coaching.currency}${coaching.weekly} a week · ${coaching.weeks} weeks`} />}
+            note={`Available now · ${coaching.currency}${coaching.weekly} a week · ${coaching.weeks} weeks · any phone`} />}
           {socialLinks.map((s) => (
             <Item key={s.key} href={s.href} track={`links_${s.key}`} title={s.label} note="Follow Blackglass" />
           ))}

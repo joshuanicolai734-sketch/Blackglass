@@ -5,7 +5,7 @@ export const EVENTS = new Set([
   "cta_get_header", "cta_get_menu", "cta_get_hero", "cta_get_steps", "cta_get_closer",
   "cta_preview_anchor", "cta_coaching_home", "cta_enquire_hero",
   "cta_coaching_hero", "cta_offer_app", "cta_offer_coaching", "cta_coaching_closer",
-  "cta_get_sticky", "cta_coaching_sticky", "cta_enquire_sticky", "cta_enquire_header",
+  "cta_get_sticky", "cta_preview_header", "cta_coaching_sticky", "cta_enquire_sticky", "cta_enquire_header",
   "links_get", "links_how", "links_coaching", "links_instagram", "links_tiktok", "links_youtube", "links_facebook",
   "outbound_play", "outbound_apk", "demo_engaged", "teaser_open",
   // Counted on the server when the database insert succeeds, never from the browser:

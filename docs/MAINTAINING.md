@@ -72,7 +72,7 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
 - **Motion:**
   - Content is complete on first paint. Nothing waits to be revealed and nothing moves on load or on scroll.
   - Motion answers the visitor (hover, focus, a tab, a page change) or lives in the showreel. Don't add entrance animations back.
-  - The grammar is **Load · Drive · Lockout** (`app/tokens.css`). Anything arriving, opening or answering drives at `--t-drive` (150 ms, `--ease-expo`); anything leaving or closing loads at `--t-load` (350 ms, `--ease-quart`); a press racks in `--t-rack` (80 ms). Every move ends dead still: no bounce or overshoot. Travel runs along the 45° axis or the reading axis.
+  - The grammar is **Load · Drive · Lockout** (`app/tokens.css`). Anything arriving, opening or answering drives at `--t-drive` (220 ms, `--ease-expo`, landing in 4–6 frames); anything leaving or closing loads at `--t-load` (350 ms, `--ease-load`, a symmetric ease-in-out); a press or a hover colour takes `--t-snap` (120 ms). `--ease-quart` is for settles only. Every move ends dead still: no bounce or overshoot. Travel runs along the 45° axis or the reading axis.
   - Before adding a motion, name its load, its drive and its lockout. If you can't, don't add it.
   - Animate transform and opacity only (the FAQ height, via `interpolate-size`, is the one exception).
   - With reduced motion, state changes are colour and opacity only.
@@ -80,25 +80,30 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
 ## Motion pieces
 
 - **Showreel:** `components/site/reel.tsx` (every layer, the athlete's geometry and the first frame, which is the poster) and `public/reel.js` (the engine: a pure `seek(t)` that only sets transform and opacity).
-  - It's a 12 s tempo film (a 3-1-1 back squat, the app's four areas, the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
-  - `site.js` loads it after the page's load event and never with reduced motion. The server-rendered first frame is the first paint, the no-JS view and the reduced-motion view.
-  - The squat pose is solved from one depth value. `pose()` exists in both files and must stay identical (the journeys check compares the poster pose with the live frame 0); tune proportions in `PARTS` (reel.tsx) and joints in `MODEL`.
-  - It plays only while at least half is on screen, pauses in background tabs and has its own pause control.
-  - **Chapters:** a hairline timeline of the three scenes, shown on hover, on focus and while paused. It is one toolbar: one tab stop, arrow keys move between chapters, Enter jumps.
+  - It's a 12 s tempo film (a 3-1-1 back squat with a held lockout, three real app screens, the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
+  - `site.js` loads it after the page's load event and never with reduced motion. The server-rendered first frame is the first paint, the no-JS view and the reduced-motion view. The app screens are fetched only once it starts.
+  - The athlete: each limb is an SVG layer moved with a CSS transform in figure units (`--u`). `pose()` exists in both files and must stay identical (a journeys check compares the poster pose with live frame 0). Tune the body in `PARTS` (reel.tsx) and the joints in `MODEL`.
+  - It plays only while at least half is on screen, pauses in background tabs and has its own Pause control at the top-right.
+  - **Chapters** (700px and wider): a hairline timeline of the three scenes along the bottom, shown on hover, on focus, while paused, and whenever in view on touch screens. It is one toolbar: one tab stop, arrow keys move between chapters, Enter jumps.
   - `window.blackglassReel.seek(t)` renders any frame, for capturing it to MP4.
 - **Interface responses** (CSS in `site.css`, small helpers in `public/site.js`):
   - **Links:** a full-strength hairline drives across the resting one on hover and focus, and loads back out. The header nav has no resting hairline.
-  - **Buttons:** the arrow drives 3px along the 45° axis on hover. On press the button racks (1px down and in, `--t-rack`) and releases at drive speed. `site.js` holds `data-press` for at least `--t-rack`, so a quick phone tap still shows it.
+  - **Buttons:** hover is the unrack: the arrow drives 4px along the 45° axis and a primary fill lifts 1px along it. Press is the rack: the button settles 1px down and in (`--t-snap`), undoing the lift, and releases at drive speed. `site.js` holds `data-press` for at least `--t-snap`, so a quick phone tap still shows it.
   - **Cards:** registration brackets drive in on hover and focus (`.snap`) and load out.
-  - **Demo tabs:** one shared indicator (a hairline and the volt square) drives to the chosen tab. The outgoing screen loads out against the direction of travel, and the incoming one drives in 24px along it. All three panels share one grid cell, so nothing below moves. Without JavaScript all three screens show; with reduced motion the swap is instant.
-  - **FAQ:** a 32px hairline box with a plus that becomes a minus. The answer's height drives open and loads closed (`interpolate-size`, Chromium; other browsers snap open).
-  - **Form success:** after the server confirms, the message's volt rule locks in top to bottom (`.msg.is-ok`). Failures never animate.
+  - **Demo tabs:** one shared indicator (a hairline and the volt square) drives to the chosen tab. The incoming screen drives in 24px along the direction of travel on top of the outgoing one, whose frame stays until it lands, so the pane is never empty (checked frame by frame at 60 fps). All three panels share one grid cell, so nothing below moves. A horizontal swipe on the screen steps the tabs. Without JavaScript all three screens show; with reduced motion the swap is instant.
+  - **Demo screens:** only the first screen loads with the page. The other two ship as `data-src` (`Pane defer`) and `site.js` warms them after the load event once the demo is within about 600px, or on the first touch of the tabs. A swap waits for the incoming image to decode, capped at 300 ms.
+  - **FAQ:** a 32px hairline box with a plus that becomes a minus. The answer's height drives open; closing fades the words first (`--t-snap`), then loads the height down (`interpolate-size`, Chromium; other browsers snap open). This is the site's one layout animation.
+  - **Form success:** after the server confirms, the confirmation replaces the form and takes focus, and its volt rule locks in top to bottom (`.msg.is-ok`). Failures never animate; the email fallback is a ghost button.
 - **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square steps to the section in view at drive speed. Decorative, and hidden from assistive tech.
-- **Phone action bar** (`StickyCta` in `components/site/chrome.tsx`, below 900px): on the home page (preview list and coaching) and `/coaching` (enquire). It drives in once the hero has left view and loads out while the fork, a form, the closer, the reel's pause control or the footer is on screen. It ships `hidden`, so without JavaScript it isn't shown.
+- **Phone action bar** (`StickyCta` in `components/site/chrome.tsx`, below 900px): on the home page (preview list and coaching) and `/coaching` (enquire). It sits right after the header in the DOM, so keyboard users reach it early. It drives in once the hero has left view and loads out for good at the page's decision point (the fork, or the enquiry form): two state changes per page. It steps aside only while a reel control is under it, and moves focus to the page if it hides while focused. It ships `hidden`, so without JavaScript it isn't shown.
+- **Phone menu:** while open, `main`, the footer, the phone bar and the rest of the header are `inert`, so Tab stays in the sheet.
+- **Volt discipline:** the gauge square rests while the hero, the reel or the closer holds the screen (each has its own volt). Screens sit above the column grid (`.pane-glass` z-index 61); the header and phone bar sit above screens (70). The hero screen's own volt is muted beside the real CTA and returns to full colour on hover.
 - **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
-- **Hero screen** (1100px and wider): the real Today screen in a `Pane`, the hero's one dominant shape. It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
-- **Screens:** the Android status bar is cropped off every `Pane` in CSS (`.pane-glass img`). Remove the crop once the screens are re-captured cleanly.
-- **Page transitions:** a short cross-fade in supporting browsers. A tapped `/get` button morphs into the preview form's button (`view-transition-name: cta`), but only when that button is on screen as `/get` opens (the `pagereveal` hook in `app/layout.tsx`). All view transitions are off with reduced motion.
+- **Hero screen** (1100px and wider): the real Train screen in a `Pane`, the hero's one dominant shape (the demo opens on Today, so no screen repeats; the Technique screen is never used in the hero). It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
+- **Screens:** the Android status bar and nav bar are cropped off every `Pane` in CSS (`.pane-glass img`, 720/1400). Remove the crop once the screens are re-captured cleanly.
+- **Page transitions:** a short cross-fade in supporting browsers. The old page loads out before the new one drives in, so two headlines never double-expose. A tapped `/get` button morphs into the preview form's button (`view-transition-name: cta`, set by the `pagereveal` hook in `app/layout.tsx` through a constructed stylesheet); on a phone the hook first brings the form into view. All view transitions are off with reduced motion.
+- **Loading:** `public/site.js` is a deferred `<script>` in `app/layout.tsx`, so it runs at DOMContentLoaded without waiting for hydration. Listeners attach at once; anything that changes the page's markup waits until React has hydrated (`whenHydrated`), or hydration would fail and rebuild the DOM.
+- **Stylesheets:** public pages load only `app/tokens.css` (with the `@font-face` rules) and `app/site.css`. Tailwind, tw-animate and the shadcn layer live in `app/globals.css`, imported only by `app/admin/layout.tsx`.
 - **Call-to-action labels** come from `content/site.ts → app` (`appCta` in `chrome.tsx`): "Join the preview list" until there's a real download, then "Get Blackglass". Never hard-code availability.
 - **The launch teaser** is a social asset only (`social/`). The site no longer plays it.
 
@@ -118,6 +123,8 @@ Both forms post to `/api/enquiries` (same database table as before):
 - **Preview list:** route `app`, where the goal is optional.
 
 Validation happens in the browser (`public/site.js`) and again on the server. If a save fails, the visitor is told nothing was saved and is offered a pre-filled email instead.
+
+They work without JavaScript too. Each `<form>` has `method="post" action="/api/enquiries"`. The route accepts JSON (from `site.js`), `application/x-www-form-urlencoded` and `multipart/form-data`, with the same validation, honeypot, two-minute duplicate check and database save. A plain form post gets a `303` back to its page with only a flag: `/get?joined=1#preview`, `/coaching?sent=1#enquire`, or `?error=invalid|duplicate|…`. The page renders the matching confirmation or message (`components/site/forms.tsx`). Nothing the visitor typed ever goes into a URL or a log.
 
 ## Images
 

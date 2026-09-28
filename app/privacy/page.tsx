@@ -23,7 +23,7 @@ export default function Privacy() {
           </div>
         </section>
         <section className="section" style={{ paddingTop: 64 }} data-sec>
-          <div className="wrap prose">
+          <div className="wrap"><div className="prose">
             <h2>What you send</h2>
             <p><strong>Coaching enquiries</strong> collect your name, email address, what you&rsquo;re looking for and the goal you write. You can add a mobile number if you&rsquo;d like a text reply. Please don&rsquo;t include medical information.</p>
             <p><strong>The Android preview list</strong> collects your name and email address, and anything you choose to add about what you want from a training app.</p>
@@ -37,7 +37,7 @@ export default function Privacy() {
             <p>Ask {site.founder} for access to, correction of, or deletion of your details at <a href={`mailto:${contact.email}`}>{contact.email}</a>. You can also leave the preview list at any time by emailing the same address.</p>
             <h2>The app</h2>
             <p>The Android app is in development. Its own handling of your training and food data will be described in a separate notice before any public release.</p>
-          </div>
+          </div></div>
         </section>
       </main>
       <Footer />

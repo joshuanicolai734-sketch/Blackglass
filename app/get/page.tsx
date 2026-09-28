@@ -2,7 +2,8 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { Brackets, Button, JsonLd, Pane, SectionHead, Signal } from "@/components/site/ui";
+import { FormError, formStatus } from "@/components/site/forms";
+import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, TextLink } from "@/components/site/ui";
 import { getFaq, getFaqLive } from "@/content/faq";
 import { app, coaching, contact, site } from "@/content/site";
 
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
   openGraph: { title: "Get Blackglass for Android", description: hasDownload ? "Download Blackglass for Android." : "Blackglass for Android is in development. Join the preview list.", url: "/get", images: [{ url: "/og/get.png", width: 1200, height: 630, alt: "Get Blackglass for Android" }] },
 };
 
-export default function Get() {
+export default async function Get({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const status = formStatus(await searchParams, "joined");
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
     { "@type": "ListItem", position: 2, name: "Get Blackglass", item: `${site.url}/get` },
@@ -39,14 +41,25 @@ export default function Get() {
                   ? "Your programme, today's session, movement guides and food targets, on your phone."
                   : "Blackglass is an Android app in development. It isn’t publicly available yet. Join the preview list and you’ll hear first when there’s a build you can install."}
               </p>
-              <p className="platform-note" data-platform-note hidden />
+              {/* Both notes ship hidden; site.js shows the one for the visitor's phone (space is reserved on phones). */}
+              <div className="platform-note" data-platform-note>
+                <p data-note="ios" hidden>You&rsquo;re on an iPhone. There&rsquo;s no iPhone app{coaching.available ? <>, but <a href="/coaching">coaching</a> works with any phone.</> : "."}</p>
+                <p data-note="android" hidden>You&rsquo;re on Android, so you&rsquo;re in the right place.</p>
+              </div>
             </div>
 
             <div>
-              {!hasDownload ? (
-                <form className="form-card" id="preview" data-form="preview" data-email={contact.email} data-founder={site.founder} noValidate>
+              {!hasDownload ? status.done ? (
+                /* Landed here from a no-JavaScript post that the server saved. */
+                <div className="form-card is-done" id="preview" tabIndex={-1}>
+                  <h2 className="title">You’re on the list.</h2>
+                  <div className="msg is-ok" role="status"><p>{site.founder} will email you when there’s an Android build you can try.</p></div>
+                </div>
+              ) : (
+                <form className="form-card" id="preview" method="post" action="/api/enquiries" data-form="preview" data-email={contact.email} data-founder={site.founder} noValidate>
                   <h2 className="title">Join the Android preview list</h2>
                   <p>Free. One email when there’s a build you can try. No newsletter.</p>
+                  <FormError error={status.error} subject="Blackglass Android preview list" />
                   <div className="field"><label htmlFor="p-name">Your name</label>
                     <input id="p-name" name="name" type="text" autoComplete="name" maxLength={80} required /></div>
                   <div className="field"><label htmlFor="p-email">Email address</label>
@@ -100,7 +113,7 @@ export default function Get() {
                 </>}
                 {!hasDownload && <>
                   <p>In development and not yet publicly available. Join the preview list to hear when there’s a build you can try.</p>
-                  <div className="actions"><Button href="#preview" track="cta_preview_anchor">Join the preview list</Button></div>
+                  <div className="actions"><TextLink href="#preview" track="cta_preview_anchor">Join the preview list</TextLink></div>
                 </>}
               </article>
               <article className="spec snap platform" id="iphone">

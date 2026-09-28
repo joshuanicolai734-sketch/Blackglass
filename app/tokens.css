@@ -2,6 +2,11 @@
    Everything else (site.css, the admin styles, the shadcn variables in globals.css) reads from here.
    Direction and rules: design/DESIGN_LANGUAGE.md. */
 
+/* Brand faces (latin subset). Inter Tight is one variable file for every weight. */
+@font-face{font-family:"Inter Tight";src:url(/fonts/inter-tight-latin-wght.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-500.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-700.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
+
 :root {
   /* Palette. Signal colours are used in small doses: one loud colour per viewport. */
   --c-glass: #101113;   /* home ground */
@@ -53,15 +58,18 @@
 
   /* Motion: expo or quart ease-out only. No bounce, no overshoot, no springs.
      Grammar, "Load · Drive · Lockout": every interface move is a rep.
-     - Load (eccentric): anything leaving, closing or yielding moves under control at --t-load with --ease-quart.
-     - Drive (concentric): anything arriving, opening or answering the visitor moves at --t-drive with --ease-expo.
-     - Rack: a press settles in --t-rack, then releases at drive speed.
+     - Load (eccentric): anything leaving, closing or yielding moves under control at --t-load with --ease-load, a
+       symmetric ease-in-out: it gathers, travels and settles, so an exit never snaps away.
+     - Drive (concentric): anything arriving, opening or answering the visitor moves at --t-drive with --ease-expo:
+       it lands in 4–6 frames and locks. --ease-quart is kept for settles only.
+     - Snap: a press, or a colour answering hover or focus, takes --t-snap. A press then releases at drive speed.
      - Lockout: every move ends dead still. The volt square lands where a move completes.
      Travel runs along the 45° facet vector or the reading axis. Nothing animates on first paint.
      Test for any new motion: name its load, its drive and its lockout, or cut it. */
   --t-load: 350ms;
-  --t-drive: 150ms;
-  --t-rack: 80ms;
+  --t-drive: 220ms;
+  --t-snap: 120ms;
+  --ease-load: cubic-bezier(.45, 0, .55, 1);
   --t-1: 150ms;
   --t-2: 250ms;
   --t-3: 350ms;
