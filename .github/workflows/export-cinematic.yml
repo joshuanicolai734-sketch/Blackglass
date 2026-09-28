@@ -1,0 +1,27 @@
+name: Export exact Blackglass cinematic blobs
+on:
+  push:
+    branches:
+      - codex/export-cinematic-ead39-20260928
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export and verify exact media
+        run: |
+          mkdir -p exact
+          git cat-file blob ddc31e9a42b830d53ad0a8387a7929f7d1ff7e49 > exact/blackglass-teaser-cinematic-1080x1920.mp4
+          git cat-file blob 2f0c21e4723e95228a372b9e311734f399865864 > exact/blackglass-teaser-cinematic-1920x1080-silent.mp4
+          git cat-file blob 2cbc7c6525ba1ac631b6b1bc31a163f85afcaa22 > exact/blackglass-teaser-cinematic-1920x1080.mp4
+          test "$(git hash-object exact/blackglass-teaser-cinematic-1080x1920.mp4)" = "ddc31e9a42b830d53ad0a8387a7929f7d1ff7e49"
+          test "$(git hash-object exact/blackglass-teaser-cinematic-1920x1080-silent.mp4)" = "2f0c21e4723e95228a372b9e311734f399865864"
+          test "$(git hash-object exact/blackglass-teaser-cinematic-1920x1080.mp4)" = "2cbc7c6525ba1ac631b6b1bc31a163f85afcaa22"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exact-cinematic-ead39
+          path: exact/
+          compression-level: 0
+          retention-days: 1
