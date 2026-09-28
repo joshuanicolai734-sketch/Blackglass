@@ -33,7 +33,7 @@ No ranking is guaranteed. This follows Google Search Central guidance (people-fi
 
 | Intent | Page that answers it |
 |---|---|
-| "blackglass app", "blackglass fitness", "obsidian fitness app" (brand and former name) | Home (the FAQ explains the rename), /get |
+| "blackglass app", "blackglass fitness" (brand) | Home, /get |
 | "strength training app android", "workout planner app", "gym programme app" | Home (demo) → /get. Honest availability matters more than ranking here. |
 | "strength coaching dunedin", "personal training dunedin", "physique coaching nz" | /coaching (Dunedin-based offer, stated price) |
 | "push pull legs 6 day split", "ab wheel rollout form" (informational) | Backlog below. Only publish with Josh's review. |
@@ -44,11 +44,10 @@ New Zealand and Dunedin wording is used only where the offer is local: coaching,
 
 Each item comes from a real screen or question. Write it in Josh's voice, and have him check any training advice.
 
-1. **"Obsidian Fitness is now Blackglass."** A short, factual rename note for people searching the old name.
-2. **"How Blackglass structures a training week."** Blocks (week 1 of 6, build phase), days with a job, and sessions with a set count, using the real screens.
-3. **Exercise guide pages**, starting with the ab wheel rollout (brace, reach, return), each mirroring the in-app guide. This needs Josh's coaching cues and a clear note that it isn't medical advice.
-4. **"What coaching with Josh looks like, week by week"**, expanding the three steps with real (anonymised, consented) examples once clients agree.
-5. **"Getting the Android preview"**: what to expect from the first build, and install help. Publish when a build exists.
-6. **Josh's background and qualifications**, only once they've been supplied and can be verified.
+1. **"How Blackglass structures a training week."** Blocks (week 1 of 6, build phase), days with a job, and sessions with a set count, using the real screens.
+2. **Exercise guide pages**, starting with the ab wheel rollout (brace, reach, return), each mirroring the in-app guide. This needs Josh's coaching cues and a clear note that it isn't medical advice.
+3. **"What coaching with Josh looks like, week by week"**, expanding the three steps with real (anonymised, consented) examples once clients agree.
+4. **"Getting the Android preview"**: what to expect from the first build, and install help. Publish when a build exists.
+5. **Josh's background and qualifications**, only once they've been supplied and can be verified.
 
 Avoid thin city or keyword variants, AI-written filler, and unsupported fitness claims.

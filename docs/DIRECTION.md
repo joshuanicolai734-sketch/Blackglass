@@ -6,7 +6,7 @@
   - **Today:** session in progress, Resume workout, Preview session, calorie and protein targets, Log food, and "Quick meal · estimate & log".
   - **Train:** the active programme ("Week 1 of 6 · Build"), a six-day split, and Plan, Library, Build, Generate and Forge tabs.
   - **Exercise guide:** animated movement with phases (Brace, Reach, Return), Muscles and My record tabs, and Add to my program.
-  - Navigation: Today, Train, Fuel, Progress, More. The app still shows "obsidian FITNESS".
+  - Navigation: Today, Train, Fuel, Progress, More.
 - **Coaching:** 12 weeks with Josh, based in Dunedin; founding price NZ$59 a week (NZ$708). Enquiries are saved to the site database and read at `/admin`.
 - **Not verified, so not claimed:** what Progress, Generate or Forge do; app pricing; testimonials, results, user numbers or qualifications; social accounts; analytics.
 

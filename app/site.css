@@ -85,7 +85,7 @@ h1, h2, h3 { margin: 0; font-weight: 800; text-wrap: balance; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 36px; }
 
 /* Header */
-.hdr { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: rgba(16, 17, 19, .94); border-bottom: 1px solid var(--line); }
+.hdr { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: var(--ink); border-bottom: 1px solid var(--line); }
 .hdr-brand { display: block; margin-right: auto; }
 .hdr-brand img { height: 26px; width: auto; }
 .hdr-mark { display: none; }

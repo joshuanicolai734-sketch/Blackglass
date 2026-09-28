@@ -27,7 +27,9 @@ The short version: **settings live in `content/`, pages in `app/`, styles in `ap
    - **APK:** set `app.android.apkUrl`, `apkVersion`, `apkSize`, `apkSha256` (from `sha256sum file.apk`) and `minAndroid`.
 2. Set `app.android.status` to `"available"`.
 
-That's all. /get switches from the preview list to a download with install steps, and the home steps, FAQ and link-in-bio follow. When the app no longer shows "Obsidian", set `app.appShowsFormerName` to `false`.
+That's all. /get switches from the preview list to a download with install steps, and the home steps, FAQ and link-in-bio follow.
+
+**App name in screenshots:** the Today screen in `public/assets/dashboard*.webp` has the Blackglass lockup in place of the app's old header name. The Android build still shows the old name, so rename the app before sending preview builds out.
 
 Then email the preview list (the owner inbox at `/admin`, route "ANDROID PREVIEW LIST") and update the "preview list" captions in `social/KIT.md`.
 

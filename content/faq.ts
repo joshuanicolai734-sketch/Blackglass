@@ -20,10 +20,6 @@ export const homeFaq: Faq[] = [
     a: "It keeps your programme, today's session, movement guides and food targets together. You can see the week's plan, pick up a session where you left off, check how a lift should look phase by phase, and log food against a calorie and protein target.",
   },
   {
-    q: `Why do some screens say ${site.formerName}?`,
-    a: `Blackglass was previously called ${site.formerName} Fitness. The screens on this site come from the current Android build, and some still show the earlier name.`,
-  },
-  {
     q: "What will the app cost?",
     a: "Pricing hasn't been set. Joining the preview list is free and doesn't commit you to anything.",
   },
@@ -73,10 +69,6 @@ export const getFaqLive: Faq[] = [
     q: "Why does Android warn me about the APK?",
     a: "Android shows that warning for any app installed from outside the Play Store. The Blackglass APK is downloaded directly from blackglass.co.nz, and the SHA-256 checksum on this page lets you confirm the file is the one published here.",
   }]),
-  {
-    q: `Why does the app say ${site.formerName}?`,
-    a: `Blackglass was previously called ${site.formerName} Fitness, and some screens in the current build still show that name.`,
-  },
   {
     q: "Is there an iPhone version?",
     a: "No. Blackglass is Android only.",

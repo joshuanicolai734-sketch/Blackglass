@@ -5,7 +5,6 @@
 
 export const site = {
   name: "Blackglass",
-  formerName: "Obsidian",
   url: "https://blackglass.co.nz",
   locale: "en-NZ",
   tagline: "Train with intent.",
@@ -25,10 +24,8 @@ export type PlatformStatus = "available" | "preview" | "unavailable";
  * App availability. Only set a URL once it is live and checked.
  * - Android: set `playUrl` for a Play Store listing, or `apkUrl` (+ version, size, sha256) for a direct
  *   download. With neither set, /get offers the preview list instead of a download.
- * - `appShowsFormerName`: the installed app still displays "Obsidian". Set false once the app is rebranded.
  */
 export const app = {
-  appShowsFormerName: true,
   android: {
     status: "preview" as PlatformStatus,
     playUrl: null as string | null,

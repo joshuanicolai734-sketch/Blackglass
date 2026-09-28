@@ -1,4 +1,4 @@
-// Blackglass launch kit: OG images, profile image, nine posts (two carousels) and three vertical videos.
+// Blackglass launch kit: OG images, profile image, eight posts (two carousels) and three vertical videos.
 // Edit copy here, then run `node render.mjs` (see README.md). Captions, alt text and links live in KIT.md.
 import { C, arrow, base, bezierSrc, foot, label, lockup, mark, octOutline, P, pane, screens } from "./lib.mjs";
 import { teasers } from "./teaser.mjs";
@@ -146,15 +146,6 @@ export const posts = [
     ${kicker("Why it helps")}${headline("Keep food<br/>in the picture.", 124)}
     <div style="position:absolute;left:72px;top:500px">${pane({ src: screens.today, width: 460, crop: 620, pos: "center 86%" })}</div>
     ${ticks(["A daily calorie target", "A protein goal beside your training", "Quick meal: estimate it and log it"], 560, 590)}
-    ${foot()}`) },
-
-  // P08 · Name transparency
-  { id: "p08-formerly", out: "social/exports/posts/p08-formerly.png", w: 1080, h: 1350, html: post(`
-    ${kicker("A note on the name")}
-    <p class="display" style="position:absolute;left:72px;top:170px;font-size:112px;color:${C.grey}"><s style="text-decoration-thickness:6px">Obsidian</s></p>
-    ${headline("Now<br/>Blackglass.", 140, 290)}
-    ${body("Same app, new name. Blackglass was previously called Obsidian Fitness, and some screens in the current Android build still show the earlier name.", 600, 900)}
-    <div style="position:absolute;left:72px;top:840px">${pane({ src: screens.today, width: 936, crop: 260, pos: "center 5%" })}</div>
     ${foot()}`) },
 
   // P09 · Getting started

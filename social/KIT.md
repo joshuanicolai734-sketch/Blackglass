@@ -42,7 +42,7 @@ Pin **P01** on Instagram (with P02 as the second pin once posted) and **V1** on 
 
 ---
 
-## The nine posts
+## The eight posts
 
 ### P01 · Brand introduction (pinned)
 - **Artwork:** `exports/posts/p01-intro.png`
@@ -54,7 +54,7 @@ Pin **P01** on Instagram (with P02 as the second pin once posted) and **V1** on 
   >
   > Built in Dunedin. The app is in development and not publicly available yet. Join the free preview list to hear first when there's a build you can try.
   >
-  > Link in bio. (Formerly Obsidian Fitness.)
+  > Link in bio.
 - **CTA:** Join the preview list · **Destination:** bio → `/links` → `/get`
 - **Alt text:** The Blackglass logo, a chamfered octagon of black glass with a bright green highlight in its top-left corner, above the words "Train with intent." and a line explaining that Blackglass is a training app built in Dunedin.
 
@@ -147,18 +147,6 @@ Pin **P01** on Instagram (with P02 as the second pin once posted) and **V1** on 
 - **CTA:** Join the preview list · **Destination:** bio → `/get`
 - **Alt text:** The headline "Keep food in the picture." beside the app's nutrition panel showing a calorie target, a 180 g protein goal and a quick meal button.
 
-### P08 · A note on the name
-- **Artwork:** `exports/posts/p08-formerly.png`
-- **Hook:** Obsidian → Blackglass.
-- **Caption:**
-  > Same app, new name.
-  >
-  > Blackglass was previously called Obsidian Fitness. You'll still see the earlier name on some screens in the current Android build.
-  >
-  > Everything on blackglass.co.nz is the same project. Link in bio.
-- **CTA:** Visit blackglass.co.nz · **Destination:** bio → `/links`
-- **Alt text:** The word "Obsidian" struck through above "Now Blackglass.", with a strip of the app's Today screen that still shows the Obsidian logo.
-
 ### P09 · Getting started
 - **Artwork:** `exports/posts/p09-start.png`
 - **Hook:** How to get Blackglass.
@@ -250,7 +238,7 @@ The calmer first cut (24 s, a slow glass-and-light piece) is kept as `teaser.mjs
 | 4 (Thu) | Reel: **V2** | **V2** | Product in motion |
 | 5 (Fri) | **P03** walk in with a plan | | First benefit |
 | 6 (Sat) | | | |
-| 7 (Sun) | **P08** a note on the name | | Answer "is this Obsidian?" early |
+| 7 (Sun) | | | |
 | 8 (Mon) | **P04** brace, reach, return | | Demonstration |
 | 9 (Tue) | Reel: **V3** | **V3** | Demonstration in motion |
 | 10 (Wed) | **P05** tip: resume | | Practical tip |

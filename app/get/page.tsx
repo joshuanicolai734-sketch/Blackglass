@@ -67,7 +67,7 @@ export default function Get() {
                       <li>Tap <strong>Download the APK</strong>. Your browser may warn that this type of file can harm your device; that warning appears for every app installed outside the Play Store. Choose <strong>Download anyway</strong> if you trust this site.</li>
                       <li>Open the downloaded file. If Android asks, allow your browser to <strong>install unknown apps</strong> (Settings → Apps → your browser → Install unknown apps).</li>
                       <li>Tap <strong>Install</strong>. Google Play Protect may scan the app first.</li>
-                      <li>Open Blackglass.{app.appShowsFormerName && ` The app currently shows its former name, ${site.formerName}, on some screens.`}</li>
+                      <li>Open Blackglass.</li>
                     </ol>
                     <p className="footnote">You can switch “install unknown apps” off again afterwards. Updates are installed the same way until Blackglass is on the Play Store.</p>
                   </>}

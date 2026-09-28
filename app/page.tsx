@@ -139,7 +139,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <p className="footnote">Real screens recorded on an Android phone. Programme and food figures are examples.{app.appShowsFormerName && ` Some screens still show the app’s former name, ${site.formerName}.`}</p>
+            <p className="footnote">Real screens recorded on an Android phone. Programme and food figures are examples.</p>
           </div>
         </section>
 
