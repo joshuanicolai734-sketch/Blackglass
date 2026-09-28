@@ -52,9 +52,9 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
   - On Paper, volt only ever appears inside ink shapes (it's 1.04:1 against Paper).
 - **Signal colours:**
   - **Volt** is for primary buttons on Glass, markers and active states.
-  - **Ember** (`#DE7F4E`) is one moment per page and fill only. On the home page that moment is the showreel.
+  - **Ember** (`#DE7F4E`) is one moment per page and fill only. The showreel doesn't use it (it would share a frame with volt).
   - Never have both loud in one viewport.
-- **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (light, uppercase, +0.3em) and monument (heavy numerals, one per viewport).
+- **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (semibold 600, uppercase, +0.04em; the home h1 is heavier and tighter) and monument (heavy numerals, one per viewport).
 - **Annotation vocabulary:** only four marks are used. Each must point at something real, and there are at most three per viewport.
   1. Hairline rule.
   2. Tick scale. The desktop scroll gauge counts as one tick scale, including its marker.
@@ -72,28 +72,34 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
 - **Motion:**
   - Content is complete on first paint. Nothing waits to be revealed and nothing moves on load or on scroll.
   - Motion answers the visitor (hover, focus, a tab, a page change) or lives in the showreel. Don't add entrance animations back.
-  - Use `--t-1…4` (150 / 250 / 350 / 600 ms) with `--ease-expo` or `--ease-quart`, ease-out only. Interface responses stay at `--t-2` or `--t-3`.
-  - Animate transform and opacity only.
+  - The grammar is **Load · Drive · Lockout** (`app/tokens.css`). Anything arriving, opening or answering drives at `--t-drive` (150 ms, `--ease-expo`); anything leaving or closing loads at `--t-load` (350 ms, `--ease-quart`); a press racks in `--t-rack` (80 ms). Every move ends dead still: no bounce or overshoot. Travel runs along the 45° axis or the reading axis.
+  - Before adding a motion, name its load, its drive and its lockout. If you can't, don't add it.
+  - Animate transform and opacity only (the FAQ height, via `interpolate-size`, is the one exception).
   - With reduced motion, state changes are colour and opacity only.
 
 ## Motion pieces
 
-- **Showreel:** `components/site/reel.tsx` (the band, poster and pause control) and `public/reel.js` (the engine and beat sheet).
-  - It's 24 s, loops seamlessly and has no audio.
-  - `site.js` loads it after the page's load event and never with reduced motion. The static lockup poster is the first paint and the reduced-motion version.
-  - It pauses offscreen, in background tabs and with its own control.
-  - **Chapters:** a hairline timeline of the six beats sits under the reel. It shows on hover, on focus and while paused, and each chapter is a button that jumps to its beat.
+- **Showreel:** `components/site/reel.tsx` (every layer, the athlete's geometry and the first frame, which is the poster) and `public/reel.js` (the engine: a pure `seek(t)` that only sets transform and opacity).
+  - It's a 12 s tempo film (a 3-1-1 back squat, the app's four areas, the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
+  - `site.js` loads it after the page's load event and never with reduced motion. The server-rendered first frame is the first paint, the no-JS view and the reduced-motion view.
+  - The squat pose is solved from one depth value. `pose()` exists in both files and must stay identical (the journeys check compares the poster pose with the live frame 0); tune proportions in `PARTS` (reel.tsx) and joints in `MODEL`.
+  - It plays only while at least half is on screen, pauses in background tabs and has its own pause control.
+  - **Chapters:** a hairline timeline of the three scenes, shown on hover, on focus and while paused. It is one toolbar: one tab stop, arrow keys move between chapters, Enter jumps.
   - `window.blackglassReel.seek(t)` renders any frame, for capturing it to MP4.
-- **Interface responses** (CSS in `site.css`):
-  - **Links:** a full-strength hairline draws across the resting one on hover and focus.
-  - **Buttons:** the arrow nudges along the 45° axis on hover.
-  - **Cards:** registration brackets snap in on hover and focus (`.snap`).
-  - **Demo tabs:** the chosen screen cross-fades in (`--t-2`). Without JavaScript, all three screens show.
-  - **FAQ:** answers fade in when opened.
-- **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square slides to the section in view. Decorative, and hidden from assistive tech.
+- **Interface responses** (CSS in `site.css`, small helpers in `public/site.js`):
+  - **Links:** a full-strength hairline drives across the resting one on hover and focus, and loads back out. The header nav has no resting hairline.
+  - **Buttons:** the arrow drives 3px along the 45° axis on hover. On press the button racks (1px down and in, `--t-rack`) and releases at drive speed. `site.js` holds `data-press` for at least `--t-rack`, so a quick phone tap still shows it.
+  - **Cards:** registration brackets drive in on hover and focus (`.snap`) and load out.
+  - **Demo tabs:** one shared indicator (a hairline and the volt square) drives to the chosen tab. The outgoing screen loads out against the direction of travel, and the incoming one drives in 24px along it. All three panels share one grid cell, so nothing below moves. Without JavaScript all three screens show; with reduced motion the swap is instant.
+  - **FAQ:** a 32px hairline box with a plus that becomes a minus. The answer's height drives open and loads closed (`interpolate-size`, Chromium; other browsers snap open).
+  - **Form success:** after the server confirms, the message's volt rule locks in top to bottom (`.msg.is-ok`). Failures never animate.
+- **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square steps to the section in view at drive speed. Decorative, and hidden from assistive tech.
+- **Phone action bar** (`StickyCta` in `components/site/chrome.tsx`, below 900px): on the home page (preview list and coaching) and `/coaching` (enquire). It drives in once the hero has left view and loads out while the fork, a form, the closer, the reel's pause control or the footer is on screen. It ships `hidden`, so without JavaScript it isn't shown.
 - **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
-- **Hero octagon** (1100px and wider): the Glass Pane's outline in still hairline, the hero's one dominant shape.
-- **Page transitions:** a short cross-fade in supporting browsers.
+- **Hero screen** (1100px and wider): the real Today screen in a `Pane`, the hero's one dominant shape. It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
+- **Screens:** the Android status bar is cropped off every `Pane` in CSS (`.pane-glass img`). Remove the crop once the screens are re-captured cleanly.
+- **Page transitions:** a short cross-fade in supporting browsers. A tapped `/get` button morphs into the preview form's button (`view-transition-name: cta`), but only when that button is on screen as `/get` opens (the `pagereveal` hook in `app/layout.tsx`). All view transitions are off with reduced motion.
+- **Call-to-action labels** come from `content/site.ts → app` (`appCta` in `chrome.tsx`): "Join the preview list" until there's a real download, then "Get Blackglass". Never hard-code availability.
 - **The launch teaser** is a social asset only (`social/`). The site no longer plays it.
 
 ## Measurement

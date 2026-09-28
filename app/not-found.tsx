@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Footer, Header } from "@/components/site/chrome";
+import { appCta, Footer, Header } from "@/components/site/chrome";
 import { Button, SectionHead, TextLink } from "@/components/site/ui";
 import { coaching } from "@/content/site";
 
@@ -15,7 +15,7 @@ export default function NotFound() {
           <h1 className="display">Nothing here.</h1>
           <p className="body-2">That page doesn&rsquo;t exist or has moved. These will get you back on track.</p>
           <div className="actions">
-            <Button href="/get">Get Blackglass</Button>
+            <Button href="/get">{appCta}</Button>
             <Button href="/" variant="ghost">Home</Button>
             {coaching.available && <TextLink href="/coaching">Coaching</TextLink>}
           </div>

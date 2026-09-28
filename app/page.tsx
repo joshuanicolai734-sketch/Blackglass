@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Footer, Header } from "@/components/site/chrome";
+import { appCta, Footer, hasDownload, Header, StickyCta } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { Reel } from "@/components/site/reel";
 import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink } from "@/components/site/ui";
 import { paths } from "@/content/brand";
 import { homeFaq } from "@/content/faq";
-import { app, coaching, contact, site, socialLinks } from "@/content/site";
+import { coaching, contact, site, socialLinks } from "@/content/site";
 
 export const metadata: Metadata = {
   title: { absolute: "Blackglass — Training, technique and food in one app" },
@@ -46,8 +46,6 @@ const benefits: { key: string; title: string; text: string; specs: [string, stri
   { key: "Fuel", title: "Keep food in the picture.", text: "Calorie and protein targets sit beside your training, not in a separate app.", specs: [["Screen", "Today › Nutrition"], ["Targets", "kcal · protein"]] },
 ];
 
-const hasDownload = Boolean(app.android.playUrl || app.android.apkUrl);
-
 export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -70,28 +68,25 @@ export default function Home() {
       <Header />
       <main id="main">
         <section className="hero" aria-labelledby="hero-title" data-sec>
-          {/* The hero's one dominant shape: the Glass Pane's outline, still (desktop). */}
-          <svg className="hero-oct" viewBox="-1 -1 90 90" aria-hidden="true" focusable="false">
-            <path className="ho-line" d="M18 0H70L88 18V70L70 88H18L0 70V18Z" />
-            <path className="ho-line ho-seam" d="M73.45 14.55 14.55 73.45" />
-          </svg>
-          <div className="wrap">
+          <div className="wrap hero-grid">
             <div className="hero-copy">
               <SectionHead index="00" title="Training app" meta="Built in Dunedin" />
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
-                <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
+                <Button href="/get" track="cta_get_hero">{appCta}</Button>
                 {coaching.available
-                  ? <TextLink href="/coaching" track="cta_coaching_hero">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</TextLink>
+                  ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</Button>
                   : <TextLink href="#how-it-works" down>See how it works</TextLink>}
               </div>
-              <p className="status label"><Signal />Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}{coaching.available && " · Coaching available now"}</p>
+              <p className="status label"><Signal /><span>Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}{coaching.available && " · Coaching available now"}</span></p>
             </div>
+            {/* The hero's one dominant shape: the real Today screen. Desktop only; phones never fetch it, so the
+                phone LCP stays the headline. */}
+            <Pane src="/assets/dashboard.webp" className="hero-pane" priority media="(min-width: 1100px)" sizes="340px"
+              alt="Blackglass Today screen showing a Push A session in progress with 5 exercises and 12 sets, and calorie and protein targets" />
           </div>
         </section>
-
-        <Reel />
 
         <section className="section demo" id="how-it-works" aria-labelledby="how-title" data-sec>
           <span id="app" aria-hidden="true" />
@@ -109,6 +104,8 @@ export default function Home() {
                     <Signal />0{i + 1} {d.tab}
                   </button>
                 ))}
+                {/* One shared indicator: the hairline and the volt square drive to the chosen tab (public/site.js). */}
+                <span className="demo-bar" aria-hidden="true" /><span className="demo-sq" aria-hidden="true" />
               </div>
               {demo.map((d, i) => (
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
@@ -125,6 +122,8 @@ export default function Home() {
             <p className="footnote">Real screens recorded on an Android phone. Programme and food figures are examples.</p>
           </div>
         </section>
+
+        <Reel />
 
         <section className="section why paper" id="method" aria-labelledby="why-title" data-sec>
           <div className="wrap why-grid">
@@ -159,7 +158,7 @@ export default function Home() {
                   <dt>Phones</dt><dd>Android · no iPhone app</dd>
                 </dl>
                 <ol className="install">{steps.map(([t, x]) => <li key={t}><strong>{t}.</strong> {x}</li>)}</ol>
-                <div className="actions"><Button href="/get" track="cta_offer_app">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button></div>
+                <div className="actions"><Button href="/get" track="cta_offer_app">{appCta}</Button></div>
               </article>
               {coaching.available && (
                 <article className="offer-card offer-coach paper" id="coaching" aria-labelledby="offer-coach-title">
@@ -204,15 +203,16 @@ export default function Home() {
               <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
             </svg>
             <h2 id="closer-title" className="display">{site.tagline}</h2>
-            <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
+            <p className="body-2">{hasDownload ? "One place for the plan, the lift and the food. Get Blackglass for Android and open today’s session." : "One place for the plan, the lift and the food. Join the preview list to hear first when the Android build is ready."}</p>
             <div className="actions closer-actions">
-              <Button href="/get" track="cta_get_closer">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button>
+              <Button href="/get" track="cta_get_closer">{appCta}</Button>
               {coaching.available && <TextLink href="/coaching" track="cta_coaching_closer">{`Or work directly with ${site.founder}`}</TextLink>}
             </div>
           </div>
         </section>
       </main>
       <Footer />
+      <StickyCta />
       <JsonLd data={jsonLd} />
     </>
   );

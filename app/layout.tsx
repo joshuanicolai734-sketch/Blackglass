@@ -25,8 +25,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#101113", colorScheme: "dark" };
 
-// Runs before first paint: marks that scripts run, so no-JS visitors get the complete static page.
-const jsGate = `document.documentElement.classList.add('js')`;
+// Runs before first paint: marks that scripts run, so no-JS visitors get the complete static page. On a
+// cross-document view transition it also names the arriving page's preview button "cta", but only when that
+// button is on screen, so the tapped /get button morphs into it instead of flying in from off-screen.
+const jsGate = `document.documentElement.classList.add('js');addEventListener('pagereveal',function(e){if(!e.viewTransition)return;var b=document.querySelector('[data-vt-cta]');if(!b)return;var r=b.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight){b.style.viewTransitionName='cta';e.viewTransition.finished.then(function(){b.style.viewTransitionName=''})}})`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

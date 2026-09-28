@@ -39,7 +39,7 @@
   --fs-display: clamp(1.5rem, 3.1vw, 2.75rem);   /* 24–44px */
   --fs-monument: clamp(7.5rem, 22vw, 22.5rem);   /* 120–360px, numerals only */
   --tr-label: .12em;
-  --tr-display: .3em;
+  --tr-display: .04em;
   --tr-monument: -.05em;
 
   /* Space and structure. */
@@ -51,7 +51,17 @@
   --chamfer: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
   --signal-size: 6px;
 
-  /* Motion: expo or quart ease-out only, no bounce. */
+  /* Motion: expo or quart ease-out only. No bounce, no overshoot, no springs.
+     Grammar, "Load · Drive · Lockout": every interface move is a rep.
+     - Load (eccentric): anything leaving, closing or yielding moves under control at --t-load with --ease-quart.
+     - Drive (concentric): anything arriving, opening or answering the visitor moves at --t-drive with --ease-expo.
+     - Rack: a press settles in --t-rack, then releases at drive speed.
+     - Lockout: every move ends dead still. The volt square lands where a move completes.
+     Travel runs along the 45° facet vector or the reading axis. Nothing animates on first paint.
+     Test for any new motion: name its load, its drive and its lockout, or cut it. */
+  --t-load: 350ms;
+  --t-drive: 150ms;
+  --t-rack: 80ms;
   --t-1: 150ms;
   --t-2: 250ms;
   --t-3: 350ms;

@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Pages use full document loads so the enhancement script initialises on each one. */
-import { coaching, contact, nav, site, socialLinks } from "@/content/site";
-import { Arrow } from "./ui";
+import { androidDownload, coaching, contact, nav, site, socialLinks } from "@/content/site";
+import { Arrow, Button } from "./ui";
+
+/** The app's primary call to action follows `content/site.ts → app`: a waitlist until there's a real download. */
+export const hasDownload = Boolean(androidDownload);
+export const appCta = hasDownload ? "Get Blackglass" : "Join the preview list";
 
 export function Header({ current }: { current?: string }) {
   return (
@@ -16,10 +20,17 @@ export function Header({ current }: { current?: string }) {
           <a key={item.href} className="link" href={item.href} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
         ))}
       </nav>
-      <a className="btn btn-ghost btn-sm hdr-cta" href="/get" data-track="cta_get_header"
-        aria-current={current === "/get" ? "page" : undefined}>
-        <span>Get Blackglass</span><Arrow />
-      </a>
+      {/* On /coaching the header's one action is the enquiry form on that page. */}
+      {current === "/coaching" ? (
+        <a className="btn btn-ghost btn-sm hdr-cta" href="#enquire" data-track="cta_enquire_header">
+          <span>Enquire</span><Arrow down />
+        </a>
+      ) : (
+        <a className="btn btn-ghost btn-sm hdr-cta" href="/get" data-track="cta_get_header"
+          aria-current={current === "/get" ? "page" : undefined}>
+          {hasDownload ? <span>{appCta}</span> : <span><span className="hdr-cta-long">Join the </span>preview list</span>}<Arrow />
+        </a>
+      )}
       {/* A native disclosure, so the menu works before (and without) JavaScript. */}
       <details className="menu">
         <summary aria-label="Menu"><span className="menu-bars" aria-hidden="true" /></summary>
@@ -27,7 +38,7 @@ export function Header({ current }: { current?: string }) {
           <nav aria-label="Mobile">
             <a href="/">Home</a>
             {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-            <a href="/get" data-track="cta_get_menu">Get Blackglass</a>
+            <a href="/get" data-track="cta_get_menu">{appCta}</a>
           </nav>
           <p className="menu-note label">Built in {site.location.split(",")[0]} · <a className="inline-link" href={`mailto:${contact.email}`}>Email {site.founder}</a></p>
         </div>
@@ -54,7 +65,7 @@ export function Footer() {
         <nav className="ftr-col" aria-label="Product">
           <p className="label">Blackglass</p>
           <a href="/#how-it-works">How it works</a>
-          <a href="/get">Get Blackglass</a>
+          <a href="/get">{hasDownload ? "Get Blackglass" : "Preview list"}</a>
           <a href="/#questions">Questions</a>
         </nav>
         {coaching.available && (
@@ -78,5 +89,24 @@ export function Footer() {
         <a href="/privacy">Privacy</a>
       </div>
     </footer>
+  );
+}
+
+/**
+ * Phone-only action bar. It drives in once the hero has left view and loads out while the fork, a form or the
+ * footer is on screen (public/site.js). It ships `hidden`, so without JavaScript it simply isn't there.
+ */
+export function StickyCta({ enquire = false }: { enquire?: boolean }) {
+  return (
+    <aside className="sticky-cta" aria-label="Quick actions" data-sticky hidden>
+      {enquire ? (
+        <Button href="#enquire" track="cta_enquire_sticky" down>Enquire about coaching</Button>
+      ) : (
+        <>
+          <Button href="/get" track="cta_get_sticky">{appCta}</Button>
+          {coaching.available && <Button href="/coaching" variant="ghost" track="cta_coaching_sticky">Coaching</Button>}
+        </>
+      )}
+    </aside>
   );
 }

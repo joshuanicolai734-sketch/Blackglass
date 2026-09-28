@@ -13,7 +13,7 @@ export const site = {
 };
 
 export const contact = {
-  email: "Joshuanicolai@live.com",
+  email: "joshuanicolai@live.com",
   phone: "+64273279614",
   phoneDisplay: "027 327 9614",
 };

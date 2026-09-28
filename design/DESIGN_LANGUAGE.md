@@ -64,12 +64,13 @@ These will move into one authoritative file in phase 1 (`app/tokens.css`). The s
 | `--ink-2` | `#45484D` | Body text and labels on Paper (7.6:1) |
 | `--volt` | `#D5FF3F` | The signal: markers, active states, one line per frame |
 | `--paper` | `#ECEAE3` **NEW** | Counter-surface for feature sections: warm bone, ink 15.7:1 |
-| `--ember` | `#DE7F4E` **NEW, pending** | One moment per page, one in the reel. Fill only. |
+| `--ember` | `#DE7F4E` **NEW, pending** | One moment per page, never in the reel. Fill only. |
 | `--rule` | bone at 14% / ink at 18% **NEW** | Hairlines on Glass / Paper |
 | `--grid` | bone at 4% / ink at 4.5% **NEW** | Desktop column rules |
 | `--t-1…4` | 150 / 250 / 350 / 600 ms **CHANGED** | Replaces 160/320/640 |
 | `--ease-expo` | `cubic-bezier(.16,1,.3,1)` | Default |
 | `--ease-quart` | `cubic-bezier(.25,1,.5,1)` **NEW** | Numbers and small moves. `--ease-in-out` is retired. |
+| `--t-load` / `--t-drive` / `--t-rack` | 350 / 150 / 80 ms | The motion grammar: load (leaving, quart), drive (arriving, expo), rack (a press). See Site motion. |
 
 Colour rules:
 - **One loud colour per viewport.** Volt and Ember never share a viewport.
@@ -83,7 +84,7 @@ Colour rules:
 | Label / data | Geist Mono 500, uppercase, +0.12em, 11px mobile / 12px desktop |
 | Body | Display face 400, 17px / 1.6 |
 | Title | Display face 500, 20px (card titles only) |
-| Display word | Display face 300, uppercase, +0.3em, clamp(24px, 3.1vw, 44px) (h1, h2) |
+| Display word | Display face 600, uppercase, +0.04em, clamp(24px, 3.1vw, 44px) (h1, h2). The home h1 is 650 at −0.012em, 42–84px: power, not luxury. |
 | Monument | Display face 800, −0.05em, clamp(120px, 22vw, 360px) (numerals only, one per viewport) |
 
 The wordmark is only ever the wordmark paths. It's never set in type. The frames used 16px for card body text; phase 1 moves that to 17px so the count stays at five.
@@ -130,30 +131,49 @@ The screens are shown as app UI, never as a client's results.
 1. **Registration brackets snap to cards** on hover and focus: 250ms expo.
 2. **A vertical tick-gauge scroll indicator** on the right edge (desktop only). Major ticks are the page's sections, and the current section gets the signal square.
 
-Rolling section numbers are left out, because the reel already rolls an index.
+Rolling section numbers are left out: numbers never count or roll.
 
 ## Site motion
 
-The site is still; the reel is where things move. Content is complete on first paint, with no entrance, reveal or scroll-driven animation. Motion only answers the visitor: link hairlines, the button arrow, the bracket snap, a 250 ms cross-fade on demo tabs and page changes, and the gauge's sliding square.
+**Load · Drive · Lockout.** Every interface move is a rep:
+- **Load (eccentric):** anything leaving or closing moves under control, `--t-load` 350 ms, `--ease-quart`.
+- **Drive (concentric):** anything arriving, opening or answering is explosive, `--t-drive` 150 ms, `--ease-expo`.
+- **Rack:** a press settles in `--t-rack` 80 ms, then releases at drive speed.
+- **Lockout:** every move ends dead still. No bounce, overshoot or springs. The volt square marks where a move lands.
+- Travel runs along the 45° facet vector or the reading axis.
+
+Content is complete on first paint: no entrance, reveal or scroll-driven animation, and nothing waits. Motion only answers the visitor:
+- link hairlines and the button arrow (drive in, load out), and the rack press
+- the bracket snap on cards
+- the demo tabs: one shared indicator drives to the chosen tab; the outgoing screen loads out and the incoming one drives in 24px along the tab direction
+- the FAQ height (drive open, load closed)
+- the gauge square stepping between section ticks
+- the phone action bar (drives in after the hero; loads out at the fork, forms, the closer and the footer)
+- form success: the volt rule locks in after the server confirms
+- page cross-fades, and the `/get` button morphing into the preview form's button
+
+With reduced motion, state changes are colour and opacity only, and view transitions are off. Without JavaScript every state is already painted.
+
+**Test for any new motion:** name its load, its drive and its lockout. If you can't, cut it.
 
 ## Reel beat sheet
 
-The reel is 24.0 s, a seamless loop with no audio, and every cut lands on the 0.5 s grid. Motion is time-based with seeded randomness, so `seek(t)` can drive either live playback or an MP4 capture.
+The reel is a 12.0 s tempo film: a seamless loop with no audio, and every cut lands on the beat. `seek(t)` is pure (no randomness, no state), so it drives both live playback and an MP4 capture, and `seek(12)` is the same frame as `seek(0)`. Every layer is server-rendered by `components/site/reel.tsx`; `public/reel.js` only moves them.
 
-| Time | Beat | What happens |
+| Time | Scene | What happens |
 |---|---|---|
-| 0.0–3.0 | **1 Axis** | Empty Glass. The axis hairline draws from the centre outward (0–0.6). A tick scale counts the octagon's 8 sides along it (1.0–2.5). The registration bracket locks at centre (2.5). |
-| 3.0–7.0 | **2 Pane** | The rim's outer contour draws in hairline (3.0–4.5). A hard wipe along the 45° seam fills it to black glass, pane plus facet, in the exact geometry (4.5–5.5). One specular sweep (5.5–6.5). A volt square lands on the upper-left vertex (6.5). |
-| 7.0–12.0 | **3 Specimen** | A contour-line athlete in the **back squat** (bar seen end-on as a plate) draws in, standing (7.0–8.0). Floor, phase scale and "Back squat · Legs · Barbell" off the feet (8.0–8.6). A controlled descent through 8 poses to below parallel (8.8–9.6), the marker stepping Brace → Descend. At the bottom, volt traces the quads and "Working area — quads · glutes" appears (9.6–11.0). A fast drive back up, and the marker steps to Drive (11.0–11.5). The squat replaced the ab wheel rollout at the owner's request. The phases and working muscles are facts about the lift, not app data. |
-| 12.0–16.0 | **4 Modules** | Four spec cards on the second: Today, Train, Learn, Fuel (pending decision 4). Each card carries one real key:value. A giant index rolls 01 → 04 in the monument size. |
-| 16.0–19.0 | **5 Scale jump** | A hard cut to one monumental **45°**, with tiny labels only: "Facet 45°" and "The Octagon · 45°52′S 170°30′E". It's the mark's angle and Dunedin's latitude. |
-| 19.0–24.0 | **6 Ember** | The reel's only red: a flat ember octagon field rises behind (19.0–19.6). The mark lands, then the wordmark (19.5, 20.0), then "Train with intent." (20.5). The ember sinks away at 21.8–22.2, leaving the lockup on Glass, which is the poster frame. From 22.5 to 24.0 the hairlines retract to the axis and the axis closes to nothing, so the last frame is the first frame. |
+| 0.0–6.0 | **1 Squat** | A black-glass athlete (one rim, one inner contour) does one back squat at **3-1-1**. Brace, still (0–0.6). Lower for 3 s with a steady, controlled descent to below parallel (0.6–3.6). Pause in the hole (3.6–4.6). Drive up in 0.85 s, fast off the bottom and decelerating into lockout (4.6–5.45). Lockout, dead still (to 6.0). The pose is solved per frame from one depth value, and the torso leans exactly enough to keep the bar over midfoot, so the plate's hub travels a vertical line (drawn as a faint dotted bar path). The readout "3 · 1 · 1 / Lower · Pause · Drive" lights the phase in play (lighting at `--t-drive`, dimming at `--t-load`), and the volt square steps under it at drive speed. At lockout the whole tempo lights again: the poster state. |
+| 6.0–10.0 | **2 The app** | A hard cut on each second: Today (session in progress, 5 exercises · 12 sets), Train (6 days per week, week 1 of 6), Learn (exercise guide, phase by phase), Fuel (kcal · protein targets). Each module drives in 2% along the reading axis in 150 ms. Facts are read off the screens in `public/assets/`. |
+| 10.0–12.0 | **3 Lockup** | Hard cut. The mark drives in along the 45° facet, the wordmark and "Train with intent." follow 100 ms apart along the reading axis. Dead still to 12.0, then a hard cut back to the braced athlete. |
 
 Rules for the reel:
-- **Volt is off in beat 6.** The only volt there is the mark's own glint.
-- **Reduced motion:** the reel is replaced by a static lockup poster.
-- **Loading:** the poster SVG is the first paint, and the reel starts after LCP.
-- **Performance:** it only animates transform and opacity, and pauses when it's offscreen or the tab is hidden. It has a visible pause control.
+- **The first frame is the poster.** The braced athlete with the full readout is the first paint, the no-JavaScript view and the reduced-motion view, and the live reel starts on exactly that frame.
+- **No rejected vocabulary.** No count-ups, rolling numbers, sweeps, wipes, hairline draws, snapping brackets or ember. Scene changes are hard cuts; arrivals drive in; nothing overshoots.
+- **Colour:** the volt square (scenes 1–2) or the mark's own glint (scene 3) is the only volt in frame.
+- **Loading:** reel.js loads after the page's load event and never with reduced motion.
+- **Performance:** transform and opacity only. Writes are cached, so still layers cost nothing; moving layers are promoted only while the reel is in view. It plays only while at least half of it is on screen and the tab is visible.
+- **Controls:** a pause button, and the chapters as one toolbar (one tab stop; arrow keys, Home and End move between Squat, The app and Lockup).
+- **Stage:** 4:5 below 700px, 16:9 above, laid out in container units.
 
 ## Style frames (`design/frames/`, screenshots at 390 and 1440)
 

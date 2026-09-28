@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Pages use full document loads so the enhancement script initialises on each one. */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Footer, Header } from "@/components/site/chrome";
+import { Footer, Header, StickyCta } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { Button, JsonLd, SectionHead, SpecCard, TextLink } from "@/components/site/ui";
 import { coachingFaq } from "@/content/faq";
@@ -66,7 +66,7 @@ export default function Coaching() {
 
         <section className="section begin" aria-labelledby="weeks-title" data-sec>
           <div className="wrap">
-            <div className="section-head"><SectionHead index="02" title={`How the ${coaching.weeks} weeks run`} meta="03 steps" /><h2 id="weeks-title" className="display">A clear start. A reason to stay.</h2></div>
+            <div className="section-head"><SectionHead index="02" title={`How the ${coaching.weeks} weeks run`} meta="03 steps" /><h2 id="weeks-title" className="display">A clear start. A&nbsp;reason to stay.</h2></div>
             <ol className="steps">
               <SpecCard as="li" index="01" title="Start where you are"><p>Tell {site.founder} your goal, schedule and training setup. Your plan starts from there.</p></SpecCard>
               <SpecCard as="li" index="02" title="Follow your plan"><p>Know what each session asks of you, and record the work.</p></SpecCard>
@@ -116,6 +116,7 @@ export default function Coaching() {
         </section>
       </main>
       <Footer />
+      <StickyCta enquire />
       <JsonLd data={crumbs} />
     </>
   );

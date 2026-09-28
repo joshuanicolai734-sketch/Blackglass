@@ -40,20 +40,64 @@
     w.matchMedia('(min-width: 900px)').addEventListener('change', (m) => { if (m.matches) { menu.open = false; sync(); } });
   }
 
-  /* ---- Product demonstration: accessible tabs with arrow-key support. ---- */
+  /* ---- Product demonstration: accessible tabs with arrow-key support.
+     Load · Drive · Lockout: the shared indicator drives to the chosen tab (--t-drive), the outgoing screen loads
+     out against the direction of travel (--t-load, quart) and the incoming one drives in 24px along it (--t-drive,
+     expo). Panels share one grid cell, so nothing below moves. With reduced motion the swap is instant. ---- */
   const demo = d.querySelector('[data-demo]');
   if (demo) {
     const tabs = [...demo.querySelectorAll('[data-demo-tab]')];
     const panels = [...demo.querySelectorAll('[data-demo-panel]')];
+    const list = demo.querySelector('[role="tablist"]');
+    const css = getComputedStyle(root);
+    const ms = (v) => parseFloat(css.getPropertyValue(v)) || 0;
+    const ease = (v) => css.getPropertyValue(v).trim() || 'ease-out';
+    let current = Math.max(0, tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'));
     let interacted = false;
+    const ink = () => {
+      const t = tabs[current], sq = t.querySelector('.sq');
+      list.style.setProperty('--bx', t.offsetLeft);
+      list.style.setProperty('--bw', t.offsetWidth);
+      list.style.setProperty('--sx', t.offsetLeft + (sq ? sq.offsetLeft : 0));
+    };
+    ink();
+    list.setAttribute('data-ink', '');
+    requestAnimationFrame(() => requestAnimationFrame(() => list.setAttribute('data-ink-live', '')));
+    if ('ResizeObserver' in w) new ResizeObserver(ink).observe(list);
+    d.fonts?.ready.then(ink);
+    const leaving = new Map();
     const select = (i, focus) => {
-      tabs.forEach((t, j) => { t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; });
-      panels.forEach((p, j) => {
-        p.toggleAttribute('data-inactive', i !== j);
-        p.classList.remove('enter');
-        if (i === j && !reduce.matches) { void p.offsetWidth; p.classList.add('enter'); }
-      });
       if (focus) tabs[i].focus();
+      if (i === current) return;
+      const prev = current, dir = i > prev ? 1 : -1;
+      current = i;
+      tabs.forEach((t, j) => { t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; });
+      ink();
+      const out = panels[prev], inn = panels[i];
+      // Settle anything still leaving from a previous quick tap.
+      leaving.forEach((anims, p) => { anims.forEach((a) => a.cancel()); p.classList.remove('is-leaving'); p.inert = false; });
+      leaving.clear();
+      panels.forEach((p, j) => p.toggleAttribute('data-inactive', j !== i));
+      if (!reduce.matches && inn.animate) {
+        const load = ms('--t-load'), drive = ms('--t-drive');
+        out.classList.add('is-leaving'); out.inert = true;
+        const outAnims = [
+          // The screen travels out for the full load; its opacity yields in the first third, so the two screens
+          // never sit on top of each other as a double exposure.
+          out.querySelector('.pane-glass img')?.animate([
+            { opacity: 1, transform: 'none', easing: ease('--ease-quart') },
+            { opacity: 0, transform: `translateX(${-dir * 10}px)`, offset: 0.3, easing: ease('--ease-quart') },
+            { opacity: 0, transform: `translateX(${-dir * 24}px)` },
+          ], { duration: load, fill: 'forwards' }),
+          out.querySelector('.demo-copy')?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: drive * 0.7, easing: ease('--ease-quart'), fill: 'forwards' }),
+        ].filter(Boolean);
+        leaving.set(out, outAnims);
+        Promise.all(outAnims.map((a) => a.finished)).then(() => {
+          outAnims.forEach((a) => a.cancel()); out.classList.remove('is-leaving'); out.inert = false; leaving.delete(out);
+        }, () => {});
+        inn.querySelector('.pane-glass img')?.animate([{ opacity: 0, transform: `translateX(${dir * 24}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: 40, easing: ease('--ease-expo'), fill: 'backwards' });
+        inn.querySelector('.demo-copy')?.animate([{ opacity: 0, transform: `translateX(${dir * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: drive * 0.6, easing: ease('--ease-expo'), fill: 'backwards' });
+      }
       if (!interacted) { interacted = true; track('demo_engaged'); }
     };
     tabs.forEach((t, i) => {
@@ -64,6 +108,49 @@
         if (next >= 0) { e.preventDefault(); select(next, true); }
       });
     });
+  }
+
+  /* ---- Buttons: hold the rack press for at least --t-rack, so a quick phone tap still reads as a press. The
+     /get buttons carry the "cta" view-transition name to the preview form's button on the next page. ---- */
+  {
+    const rack = parseFloat(getComputedStyle(root).getPropertyValue('--t-rack')) || 80;
+    let held = null, t0 = 0;
+    const release = () => {
+      const el = held; held = null;
+      if (el) setTimeout(() => el.removeAttribute('data-press'), Math.max(0, rack - (performance.now() - t0)));
+    };
+    d.addEventListener('pointerdown', (e) => {
+      const b = e.target.closest?.('.btn');
+      if (!b || e.button > 0) return;
+      held = b; t0 = performance.now(); b.setAttribute('data-press', '');
+    }, { passive: true });
+    ['pointerup', 'pointercancel', 'dragstart'].forEach((t) => d.addEventListener(t, release, { passive: true }));
+    d.addEventListener('click', (e) => {
+      const b = e.target.closest?.('a.btn[href="/get"]');
+      if (!b || reduce.matches) return;
+      d.querySelectorAll('.btn').forEach((x) => { x.style.viewTransitionName = ''; });
+      b.style.viewTransitionName = 'cta';
+    });
+    w.addEventListener('pageshow', () => d.querySelectorAll('.btn').forEach((x) => { x.style.viewTransitionName = ''; x.removeAttribute('data-press'); }));
+  }
+
+  /* ---- Phone action bar: drives in once the hero has left view; loads out while the fork, a form, the closer, the
+     reel's pause control or the footer is on screen, so it never covers them. ---- */
+  const bar = d.querySelector('[data-sticky]');
+  if (bar && 'IntersectionObserver' in w) {
+    const hero = d.querySelector('main > section');
+    const blockers = [...d.querySelectorAll('#start, #enquire, main form, .closer, .ftr, [data-reel-toggle]')];
+    const state = new Map();
+    let heroGone = false;
+    bar.hidden = false;
+    const sync = () => {
+      const show = heroGone && ![...state.values()].some(Boolean);
+      bar.toggleAttribute('data-show', show);
+      root.toggleAttribute('data-sticky-on', show);
+    };
+    new IntersectionObserver(([e]) => { heroGone = !e.isIntersecting; sync(); }).observe(hero);
+    const bio = new IntersectionObserver((es) => { es.forEach((e) => state.set(e.target, e.isIntersecting)); sync(); });
+    blockers.forEach((b) => bio.observe(b));
   }
 
   /* ---- Showreel: loaded once the page has finished loading, so it never competes with first paint. ---- */
@@ -126,7 +213,7 @@
     form.addEventListener('input', (e) => { if (e.target.getAttribute('aria-invalid')) fieldError(e.target, ''); });
     const show = (text, ok, extra) => {
       msg.hidden = false;
-      msg.className = ok ? 'msg' : 'msg error';
+      msg.className = ok ? 'msg is-ok' : 'msg error';
       msg.innerHTML = '';
       const p = d.createElement('p'); p.textContent = text; msg.append(p);
       if (extra) msg.append(extra);
