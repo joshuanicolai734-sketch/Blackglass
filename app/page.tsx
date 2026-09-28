@@ -83,7 +83,7 @@ export default function Home() {
                     <img src="/media/teaser-thumb.webp" alt="" width="64" height="36" />
                     <svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3.5v9l7.5-4.5Z" fill="currentColor" /></svg>
                   </span>
-                  <span>Watch the teaser <small>24 s</small></span>
+                  <span>Watch the teaser <small>22 s</small></span>
                 </a>
               </div>
               <p className="status"><span className="dot" aria-hidden="true" />{hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
@@ -236,7 +236,7 @@ export default function Home() {
         <video playsInline controls preload="none" data-teaser-video
           data-poster-landscape="/media/teaser-landscape-poster.webp" data-landscape="/media/teaser-landscape.mp4" data-vertical="/media/teaser-vertical.mp4"
           data-poster-vertical="/media/teaser-vertical-poster.webp" />
-        <p className="teaser-caption">24-second teaser. Real screens from the current Android build.</p>
+        <p className="teaser-caption">22-second teaser. Real screens from the current Android build.</p>
       </dialog>
       <Footer />
       <JsonLd data={jsonLd} />
