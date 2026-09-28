@@ -2,7 +2,7 @@
 
 Source repository: https://github.com/joshuanicolai734-sketch/Blackglass (default branch: `claude/blackglass-domain-migration-0pxc6q`). Live site: https://blackglass.co.nz. This repository imported the exact Sites version 9 source and then continued with newer work. Always check what version Sites is running before assuming a GitHub commit is live.
 
-**Latest live release (28 September 2026, NZ):** Sites version 10 was published from GitHub commit `86fd915dccfb4478aec60ae5934bc45e8a4c637d` (Sites source commit `7a823ede127f4ce0a50a35fff9a5fc2d1094a5a7`). Both commits have Git tree `5fa0d64bd565f19718f6b4930e88681a6c9dbfa8`, so the published source matches the selected GitHub version. Later GitHub commits do not go live until a separate Sites publish. The public domain and `DB` binding were preserved; the `events` migration is present in production.
+**Latest live release (28 September 2026, NZ):** Sites version 12 was published from GitHub commit `ead39d2de4eb07a4d9c1b97a0de2a3c3735ab344` (Sites source commit `ca606fa0ebbb1b256054d66e96b0266631de2a43`). Both commits have Git tree `a8a677b0cb29d5bfb190bdf6ae2df603fcabacd4`, so the published source matches the selected GitHub version. Version 11 previously published `be454ff8615af52db1770eeaa64d83abbfb8f41e` (Sites source `7ad2d7e72a26994aa40892b15fde74e25e53e5ec`). Later GitHub commits do not go live until a separate Sites publish. The public domain and `DB` binding were preserved; the `events` migration is present in production.
 
 This repository contains the tracked website source, brand assets, lockfile, migrations, and hosting configuration. It does not contain the production enquiry database, deployment credentials, DNS account access, `.env` files, or installed dependencies.
 
@@ -24,10 +24,10 @@ Start with `docs/MAINTAINING.md` (what to edit for common changes), `docs/DIRECT
 | Settings: app availability, links, prices, socials, nav, UTMs | `content/site.ts` |
 | Questions and answers | `content/faq.ts` |
 | Pages | `app/page.tsx` (home), `app/get/`, `app/coaching/`, `app/links/`, `app/privacy/`, `app/not-found.tsx` |
-| Shared components | `components/site/` (header, footer, buttons, panes, FAQ, intro) |
-| Design system and page styles | `app/site.css` (owner inbox styles are in `app/globals.css`) |
-| Intro sequence | `components/site/intro.tsx` + `intro.js`, gated in `app/layout.tsx` |
-| Enhancements: demo, menu, forms, reveals, ambient light, measurement | `public/site.js` |
+| Shared components | `components/site/` (header, footer, buttons, panes, FAQ, showreel) |
+| Design system and page styles | `app/tokens.css`, `app/site.css` (owner inbox styles are in `app/globals.css`) |
+| Homepage showreel | `components/site/reel.tsx` + `public/reel.js`; see `docs/MAINTAINING.md` |
+| Enhancements: demo, menu, forms, reveals, scroll gauge, measurement | `public/site.js` |
 | Logo geometry used by the intro, OG images and social kit | `content/brand.ts` |
 | Brand mark, lockup, app screens, fonts, OG images, QR | `public/brand/`, `public/assets/`, `public/fonts/`, `public/og/`, `public/qr/` |
 | Enquiry and preview-list endpoint | `app/api/enquiries/route.ts` |
