@@ -77,6 +77,14 @@ export default function Home() {
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
                 <Button href="#how-it-works" variant="quiet" down>See how it works</Button>
+                <a className="teaser-btn" href="/media/teaser-landscape.mp4" data-teaser data-track="teaser_open">
+                  <span className="teaser-thumb" aria-hidden="true">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- tiny static poster */}
+                    <img src="/media/teaser-thumb.webp" alt="" width="64" height="36" />
+                    <svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3.5v9l7.5-4.5Z" fill="currentColor" /></svg>
+                  </span>
+                  <span>Watch the teaser <small>24 s</small></span>
+                </a>
               </div>
               <p className="status"><span className="dot" aria-hidden="true" />{hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
             </div>
@@ -92,12 +100,22 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="band" aria-hidden="true" data-band>
+          <div className="band-track">
+            {[0, 1].map((n) => (
+              <span key={n} className="band-set">
+                {["Plan.", "Train.", "Learn.", "Fuel."].map((w) => <span key={w} className="band-word"><i />{w}</span>)}
+              </span>
+            ))}
+          </div>
+        </div>
+
         <section className="section demo" id="how-it-works" aria-labelledby="how-title">
           <span id="app" aria-hidden="true" />
           <div className="wrap">
             <div className="section-head">
               <Label index="01">How it works</Label>
-              <h2 id="how-title" className="h2">From the plan<br />to the last set.</h2>
+              <h2 id="how-title" className="h2" data-wipe>From the plan<br />to the last set.</h2>
               <p className="section-intro">Three screens from the current Android build. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
@@ -129,7 +147,7 @@ export default function Home() {
           <div className="wrap why-grid">
             <div className="section-head">
               <Label index="02">Why it helps</Label>
-              <h2 id="why-title" className="h2">Less guessing.<br />More training.</h2>
+              <h2 id="why-title" className="h2" data-wipe>Less guessing.<br />More training.</h2>
             </div>
             <ol className="benefits">
               {benefits.map((b) => (
@@ -143,7 +161,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head">
               <Label index="03">How to start</Label>
-              <h2 id="begin-title" className="h2">Three steps in.</h2>
+              <h2 id="begin-title" className="h2" data-wipe>Three steps in.</h2>
             </div>
             <ol className="steps">
               {hasDownload ? (
@@ -169,7 +187,7 @@ export default function Home() {
             <div className="wrap coach-grid" id="apply">
               <div>
                 <Label index="04">Coaching</Label>
-                <h2 id="coach-title" className="h2">Want someone<br />in your corner?</h2>
+                <h2 id="coach-title" className="h2" data-wipe>Want someone<br />in your corner?</h2>
               </div>
               <div className="coach-copy">
                 <p>Work directly with {site.founder} for {coaching.weeks} weeks: a plan built around your week, a check-in every week, and adjustments as you progress.</p>
@@ -184,7 +202,7 @@ export default function Home() {
           <div className="wrap faq-grid">
             <div className="section-head">
               <Label index="05">Questions</Label>
-              <h2 id="faq-title" className="h2">Straight<br />answers.</h2>
+              <h2 id="faq-title" className="h2" data-wipe>Straight<br />answers.</h2>
             </div>
             <Faqs items={homeFaq} />
           </div>
@@ -192,11 +210,20 @@ export default function Home() {
 
         <section className="section closer" aria-labelledby="closer-title">
           <div className="wrap closer-inner">
-            <svg className="closer-mark" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
+            <svg className="closer-mark" viewBox="0 0 88 88" aria-hidden="true" focusable="false" data-closer>
+              <defs>
+                <mask id="cm-rim" maskUnits="userSpaceOnUse" x="-10" y="-10" width="108" height="108">
+                  <path className="cm-rs" d="M10.361 13.189 20.05 3.5H67.95L84.5 20.05V67.95L74.811 77.639" />
+                  <path className="cm-rs" d="M13.189 10.361 3.5 20.05V67.95L20.05 84.5H67.95L77.639 74.811" />
+                </mask>
+                <clipPath id="cm-oc"><path d="M7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" /></clipPath>
+                <linearGradient id="cm-lg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="8" y2="8"><stop offset="0" stopColor="#F4F5EF" stopOpacity="0" /><stop offset=".5" stopColor="#F4F5EF" stopOpacity=".38" /><stop offset="1" stopColor="#F4F5EF" stopOpacity="0" /></linearGradient>
+              </defs>
               <path className="m-pane" d="M7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
               <path className="m-facet" d="M73.45 14.55 65.899 7H22.101L7 22.101v43.798l7.55 7.551Z" />
               <path className="m-glint" d="M22.101 7H41L7 41V22.101Z" />
-              <path className="m-rim" fillRule="evenodd" d="M0 18 18 0h52l18 18v52L70 88H18L0 70ZM7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
+              <g clipPath="url(#cm-oc)"><path className="m-sweep" fill="url(#cm-lg)" d="M-100 100 100-100h16L-84 100Z" /></g>
+              <path className="m-rim" mask="url(#cm-rim)" fillRule="evenodd" d="M0 18 18 0h52l18 18v52L70 88H18L0 70ZM7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
             </svg>
             <h2 id="closer-title" className="display closer-title">{site.tagline}</h2>
             <p className="lede">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
@@ -204,6 +231,13 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <dialog className="teaser-dialog" data-teaser-dialog aria-label="Blackglass teaser video">
+        <button type="button" className="teaser-close" data-teaser-close aria-label="Close video"><span aria-hidden="true" /></button>
+        <video playsInline controls preload="none" data-teaser-video
+          data-poster-landscape="/media/teaser-landscape-poster.webp" data-landscape="/media/teaser-landscape.mp4" data-vertical="/media/teaser-vertical.mp4"
+          data-poster-vertical="/media/teaser-vertical-poster.webp" />
+        <p className="teaser-caption">24-second teaser. Real screens from the current Android build.</p>
+      </dialog>
       <Footer />
       <JsonLd data={jsonLd} />
     </>

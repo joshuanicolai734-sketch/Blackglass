@@ -9,7 +9,7 @@ import { nzDay } from "../../db/events";
 const routeLabels: Record<string, string> = { coaching: "COACHING", programme: "PROGRAMME", app: "ANDROID PREVIEW LIST" };
 const eventLabels: Record<string, string> = {
   home_view: "Homepage visits", get_view: "Get Blackglass visits", coaching_view: "Coaching page visits", links_view: "Link-in-bio visits",
-  preview_signup: "Preview list sign-ups", enquiry_sent: "Coaching enquiries", demo_engaged: "Used the app demo",
+  preview_signup: "Preview list sign-ups", enquiry_sent: "Coaching enquiries", demo_engaged: "Used the app demo", teaser_open: "Opened the teaser",
   outbound_play: "Play Store taps", outbound_apk: "APK download taps",
 };
 type Activity = { name: string; source: string; total: number };

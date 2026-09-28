@@ -65,6 +65,7 @@ export function Pane({ src, alt, width = 720, height = 1560, priority = false, c
           srcSet={src.endsWith(".webp") ? `${src.replace(".webp", "-480.webp")} 480w, ${src} 720w` : undefined}
           sizes={sizes}
           {...(priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} />
+        <span className="sheen" aria-hidden="true" />
       </div>
       {caption && <figcaption>{caption}</figcaption>}
     </figure>

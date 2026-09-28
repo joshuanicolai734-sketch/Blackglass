@@ -80,6 +80,70 @@
     });
   }
 
+  /* ---- Heading wipes and the closing mark: the same 45° facet cut as the panes, drawn in once. ---- */
+  if (!reduce.matches && 'IntersectionObserver' in w) {
+    const once = new IntersectionObserver((entries) => entries.forEach((en) => {
+      if (en.isIntersecting) { en.target.classList.add('in'); once.unobserve(en.target); }
+    }), { rootMargin: '0px 0px -12% 0px' });
+    d.querySelectorAll('[data-wipe]').forEach((el) => {
+      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pre-wipe'); once.observe(el); }
+    });
+    const closer = d.querySelector('[data-closer]');
+    if (closer && closer.getBoundingClientRect().top > innerHeight) { closer.classList.add('armed'); once.observe(closer); }
+  }
+
+  /* ---- Kinetic band: only runs while it is on screen. ---- */
+  const band = d.querySelector('[data-band]');
+  if (band && 'IntersectionObserver' in w) {
+    new IntersectionObserver((e) => band.classList.toggle('is-off', !e[0].isIntersecting)).observe(band);
+  }
+
+  /* ---- Living glass: panes lean toward a fine pointer and catch its light. ---- */
+  if (!reduce.matches && w.matchMedia('(pointer: fine)').matches) {
+    d.querySelectorAll('.pane').forEach((pane) => {
+      let frame = 0;
+      pane.addEventListener('pointermove', (e) => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const r = pane.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+          pane.style.setProperty('--ry', `${((x - .5) * 8).toFixed(2)}deg`);
+          pane.style.setProperty('--rx', `${((.5 - y) * 8).toFixed(2)}deg`);
+          pane.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+          pane.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+          pane.classList.add('is-live');
+        });
+      }, { passive: true });
+      pane.addEventListener('pointerleave', () => {
+        cancelAnimationFrame(frame);
+        ['--rx', '--ry', '--mx', '--my'].forEach((k) => pane.style.removeProperty(k));
+        pane.classList.remove('is-live');
+      });
+    });
+  }
+
+  /* ---- Teaser: plays in a dialog, vertical cut on portrait screens. The link still works without this. ---- */
+  const dialog = d.querySelector('[data-teaser-dialog]');
+  const video = dialog?.querySelector('[data-teaser-video]');
+  if (dialog && video && typeof dialog.showModal === 'function') {
+    const stop = () => { video.pause(); try { video.currentTime = 0; } catch { /* not loaded */ } };
+    d.querySelectorAll('[data-teaser]').forEach((btn) => btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const vertical = innerHeight > innerWidth;
+      dialog.classList.toggle('is-vertical', vertical);
+      const src = vertical ? video.dataset.vertical : video.dataset.landscape;
+      if (video.getAttribute('src') !== src) {
+        video.poster = vertical ? video.dataset.posterVertical : video.dataset.posterLandscape;
+        video.src = src;
+      }
+      dialog.showModal();
+      video.play().catch(() => { /* autoplay refused: controls are there */ });
+    }));
+    dialog.querySelector('[data-teaser-close]')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', stop);
+  }
+
   /* ---- /get: say which platform the visitor is on. ---- */
   const note = d.querySelector('[data-platform-note]');
   if (note) {

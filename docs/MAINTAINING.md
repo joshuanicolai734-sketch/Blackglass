@@ -56,6 +56,14 @@ Paste the full profile URL into `content/site.ts → social` (for example `insta
   - If anything fails, the page is shown immediately. A CSS fail-safe also lifts it after 3.5 s.
 - **Ambient light:** the WebGL shader in `public/site.js` (search "Ambient light"). It renders at half resolution and about 30 fps. It pauses offscreen, in background tabs and via the footer's "Pause background motion" button (remembered per visitor), and never starts with reduced motion. The static CSS light (`.ambient`) is the fallback.
 - **Reveals and demo tabs:** also in `public/site.js`. The demo shows all three screens without JavaScript.
+- **Polish layer** (CSS at the end of `app/site.css`, behaviour in `public/site.js`):
+  - **Living glass:** with a mouse, panes tilt slightly toward the pointer and catch its light. A slow sheen crosses each pane's glass.
+  - **Kinetic band:** "Plan. Train. Learn. Fuel." after the hero. It only runs while on screen, and stops with the footer pause button or reduced motion.
+  - **Heading wipes:** homepage `h2`s marked `data-wipe` cut in on the 45° axis when they scroll into view.
+  - **Closing mark:** the mark above "Train with intent." draws its rim and sweeps its glint once.
+  - **Page transitions:** a cross-fade between pages in supporting browsers.
+  - **Scroll hairline:** a progress line under the header.
+  - **Teaser:** "Watch the teaser" opens `public/media/teaser-*.mp4` in a dialog, choosing the vertical cut on portrait screens. It's counted as `teaser_open`. Without JavaScript the link opens the MP4 directly. To update it, re-render in `social/` (`node render.mjs teaser-vertical teaser-landscape`) and copy the exports and posters into `public/media/`.
 
 ## Measurement
 
