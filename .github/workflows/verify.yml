@@ -45,3 +45,66 @@ jobs:
           if-no-files-found: error
           retention-days: 2
           compression-level: 0
+      - name: Upload source part ac
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ac
+          path: blackglass-source.tar.gz.part-ac
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part ad
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ad
+          path: blackglass-source.tar.gz.part-ad
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part ae
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ae
+          path: blackglass-source.tar.gz.part-ae
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part af
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-af
+          path: blackglass-source.tar.gz.part-af
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part ag
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ag
+          path: blackglass-source.tar.gz.part-ag
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part ah
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ah
+          path: blackglass-source.tar.gz.part-ah
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part ai
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ai
+          path: blackglass-source.tar.gz.part-ai
+          if-no-files-found: warn
+          retention-days: 2
+          compression-level: 0
