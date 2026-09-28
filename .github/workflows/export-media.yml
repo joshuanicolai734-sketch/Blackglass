@@ -1,0 +1,31 @@
+name: Export exact Blackglass media blob
+on:
+  push:
+    branches:
+      - codex/export-media-be454f-20260928
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export and verify blob
+        run: |
+          git cat-file blob 65a1ce661470d19d2bd0b75cae89f93f175440de > exact.mp4
+          test "$(git hash-object exact.mp4)" = "65a1ce661470d19d2bd0b75cae89f93f175440de"
+          split -b 20m exact.mp4 exact.part-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exact-media-aa
+          path: exact.part-aa
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exact-media-ab
+          path: exact.part-ab
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
