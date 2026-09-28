@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import Intro from "@/components/site/intro";
+import { Reel } from "@/components/site/reel";
 import { Button, JsonLd, Label, Pane, TextLink } from "@/components/site/ui";
 import { homeFaq } from "@/content/faq";
 import { app, coaching, contact, site, socialLinks } from "@/content/site";
@@ -61,9 +61,6 @@ export default function Home() {
   };
   return (
     <>
-      {/* The hero screen is the largest paint on phones: fetch it before the stylesheet finishes. */}
-      <link rel="preload" as="image" href="/assets/program.webp" imageSrcSet="/assets/program-480.webp 480w, /assets/program.webp 720w" imageSizes="(min-width: 900px) 380px, 76vw" fetchPriority="high" />
-      <Intro />
       <a className="skip" href="#main">Skip to content</a>
       <Header />
       <main id="main">
@@ -77,38 +74,13 @@ export default function Home() {
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
                 <TextLink href="#how-it-works" down>See how it works</TextLink>
-                <a className="teaser-btn" href="/media/teaser-landscape.mp4" data-teaser data-track="teaser_open">
-                  <span className="teaser-thumb" aria-hidden="true">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- tiny static poster */}
-                    <img src="/media/teaser-thumb.webp" alt="" width="64" height="36" />
-                    <svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3.5v9l7.5-4.5Z" fill="currentColor" /></svg>
-                  </span>
-                  <span>Watch the teaser <small>22 s</small></span>
-                </a>
               </div>
               <p className="status"><span className="dot" aria-hidden="true" />{hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
-            </div>
-            <div className="hero-visual">
-              <svg className="hero-ring" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
-                <path d="M.5 18.2 18.2.5h51.6l17.7 17.7v51.6L69.8 87.5H18.2L.5 69.8Z" />
-                <path className="seam" d="M73.45 14.55 14.55 73.45" />
-              </svg>
-              <Pane className="hero-pane" src="/assets/program.webp" priority
-              alt="Blackglass Train screen showing a six-day strength and aesthetics programme"
-              caption="Plan view · current Android build" />
             </div>
           </div>
         </section>
 
-        <div className="band" aria-hidden="true" data-band>
-          <div className="band-track">
-            {[0, 1].map((n) => (
-              <span key={n} className="band-set">
-                {["Plan.", "Train.", "Learn.", "Fuel."].map((w) => <span key={w} className="band-word"><i />{w}</span>)}
-              </span>
-            ))}
-          </div>
-        </div>
+        <Reel />
 
         <section className="section demo" id="how-it-works" aria-labelledby="how-title">
           <span id="app" aria-hidden="true" />
@@ -231,13 +203,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <dialog className="teaser-dialog" data-teaser-dialog aria-label="Blackglass teaser video">
-        <button type="button" className="teaser-close" data-teaser-close aria-label="Close video"><span aria-hidden="true" /></button>
-        <video playsInline controls preload="none" data-teaser-video
-          data-poster-landscape="/media/teaser-landscape-poster.webp" data-landscape="/media/teaser-landscape.mp4" data-vertical="/media/teaser-vertical.mp4"
-          data-poster-vertical="/media/teaser-vertical-poster.webp" />
-        <p className="teaser-caption">22-second teaser. Real screens from the current Android build.</p>
-      </dialog>
       <Footer />
       <JsonLd data={jsonLd} />
     </>

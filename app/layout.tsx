@@ -25,18 +25,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#101113", colorScheme: "dark" };
 
-// Runs before first paint. The intro plays only on the homepage, at most once per tab session, and never
-// for deep links, campaign links or reduced motion, so a visitor never sees the page and then an intro.
-// `?intro=1` forces it; `?intro=0` skips it. html[data-intro] is the only state; CSS reads it.
-const introGate = `(function(){var d=document.documentElement;d.classList.add('js');try{var l=location,q=l.search,f=/[?&]intro=1/.test(q);
-if(l.pathname!=='/'||(!f&&(/[?&](intro=0|utm_[a-z]+=)/.test(q)||l.hash||sessionStorage.getItem('bg-intro')||matchMedia('(prefers-reduced-motion: reduce)').matches)))return;
-sessionStorage.setItem('bg-intro','1');d.dataset.intro='play'}catch(e){}})()`;
+// Runs before first paint: marks that scripts run, so no-JS visitors get the complete static page.
+const jsGate = `document.documentElement.classList.add('js')`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-NZ" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: introGate }} />
+        <script dangerouslySetInnerHTML={{ __html: jsGate }} />
         <link rel="preload" href="/fonts/inter-tight-latin-wght.woff2" as="font" type="font/woff2" crossOrigin="" />
       </head>
       <body>

@@ -92,12 +92,6 @@
     if (closer && closer.getBoundingClientRect().top > innerHeight) { closer.classList.add('armed'); once.observe(closer); }
   }
 
-  /* ---- Kinetic band: only runs while it is on screen. ---- */
-  const band = d.querySelector('[data-band]');
-  if (band && 'IntersectionObserver' in w) {
-    new IntersectionObserver((e) => band.classList.toggle('is-off', !e[0].isIntersecting)).observe(band);
-  }
-
   /* ---- Living glass: panes lean toward a fine pointer and catch its light. ---- */
   if (!reduce.matches && w.matchMedia('(pointer: fine)').matches) {
     d.querySelectorAll('.pane').forEach((pane) => {
@@ -122,26 +116,11 @@
     });
   }
 
-  /* ---- Teaser: plays in a dialog, vertical cut on portrait screens. The link still works without this. ---- */
-  const dialog = d.querySelector('[data-teaser-dialog]');
-  const video = dialog?.querySelector('[data-teaser-video]');
-  if (dialog && video && typeof dialog.showModal === 'function') {
-    const stop = () => { video.pause(); try { video.currentTime = 0; } catch { /* not loaded */ } };
-    d.querySelectorAll('[data-teaser]').forEach((btn) => btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const vertical = innerHeight > innerWidth;
-      dialog.classList.toggle('is-vertical', vertical);
-      const src = vertical ? video.dataset.vertical : video.dataset.landscape;
-      if (video.getAttribute('src') !== src) {
-        video.poster = vertical ? video.dataset.posterVertical : video.dataset.posterLandscape;
-        video.src = src;
-      }
-      dialog.showModal();
-      video.play().catch(() => { /* autoplay refused: controls are there */ });
-    }));
-    dialog.querySelector('[data-teaser-close]')?.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
-    dialog.addEventListener('close', stop);
+  /* ---- Showreel: loaded once the page has finished loading, so it never competes with first paint. ---- */
+  if (d.querySelector('[data-reel]') && !reduce.matches) {
+    const load = () => { const s = d.createElement('script'); s.src = '/reel.js'; s.async = true; d.body.appendChild(s); };
+    const idle = () => ('requestIdleCallback' in w ? w.requestIdleCallback(load, { timeout: 1500 }) : setTimeout(load, 200));
+    if (d.readyState === 'complete') idle(); else w.addEventListener('load', idle, { once: true });
   }
 
   /* ---- /get: say which platform the visitor is on. ---- */
