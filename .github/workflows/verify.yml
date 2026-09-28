@@ -1,0 +1,47 @@
+name: Verify Blackglass
+
+on:
+  push:
+    branches:
+      - claude/blackglass-domain-migration-0pxc6q
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm build
+      - name: Package source for Sites
+        if: github.event_name == 'push'
+        run: git archive --format=tar.gz HEAD | split -b 20m - blackglass-source.tar.gz.part-
+      - name: Upload source part one
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-aa
+          path: blackglass-source.tar.gz.part-aa
+          if-no-files-found: error
+          retention-days: 2
+          compression-level: 0
+      - name: Upload source part two
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackglass-source-ab
+          path: blackglass-source.tar.gz.part-ab
+          if-no-files-found: error
+          retention-days: 2
+          compression-level: 0
