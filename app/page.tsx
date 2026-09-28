@@ -75,10 +75,10 @@ export default function Home() {
           <svg className="hero-oct" viewBox="-1 -1 90 90" aria-hidden="true" focusable="false">
             {[[0, 18, 18, 0], [18, 0, 70, 0], [70, 0, 88, 18], [88, 18, 88, 70], [88, 70, 70, 88], [70, 88, 18, 88], [18, 88, 0, 70], [0, 70, 0, 18]].map(([x1, y1, x2, y2], i) => (
               <g key={i} transform={`translate(${x1} ${y1}) rotate(${(Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI})`}>
-                <line className="ho-seg" style={{ "--i": i } as CSSProperties} x1="0" y1="0" x2={Math.hypot(x2 - x1, y2 - y1)} y2="0" />
+                <g className="ho-r" style={{ "--i": i } as CSSProperties}><line className="ho-seg" style={{ "--i": i } as CSSProperties} x1="0" y1="0" x2={Math.hypot(x2 - x1, y2 - y1)} y2="0" /></g>
               </g>
             ))}
-            <g transform="translate(73.45 14.55) rotate(135)"><line className="ho-seg ho-seam" style={{ "--i": 8 } as CSSProperties} x1="0" y1="0" x2="83.3" y2="0" /></g>
+            <g transform="translate(73.45 14.55) rotate(135)"><g className="ho-r" style={{ "--i": 8 } as CSSProperties}><line className="ho-seg ho-seam" style={{ "--i": 8 } as CSSProperties} x1="0" y1="0" x2="83.3" y2="0" /></g></g>
           </svg>
           <div className="wrap">
             <div className="hero-copy">

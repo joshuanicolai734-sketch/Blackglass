@@ -84,7 +84,8 @@
     const io = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) show(en.target); }), { rootMargin: '0px 0px -8% 0px' });
     // Paper sections wipe open once they are well into view, so the wipe happens where it can be seen.
     const ioPaper = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); pending.delete(en.target); ioPaper.unobserve(en.target); } }), { rootMargin: '0px 0px -35% 0px' });
-    d.querySelectorAll('[data-reveal], [data-enter]').forEach((el, i) => {
+    // Sections are targets too: their seam hairline draws across as you reach them.
+    d.querySelectorAll('[data-reveal], [data-enter], main > .section').forEach((el, i) => {
       if (el.getBoundingClientRect().top > innerHeight) {
         el.classList.add('pre');
         if (el.hasAttribute('data-reveal')) el.style.transitionDelay = `${(i % 3) * 60}ms`;
@@ -211,6 +212,18 @@
     msg?.setAttribute('tabindex', '-1');
   });
 
+  /* ---- Specular sweep runs once on arrival; after that only hover replays it. ---- */
+  d.addEventListener('animationend', (e) => { if (e.animationName === 'sweep') e.target.closest('.pane')?.classList.add('swept'); });
+
+  /* ---- Colophon: the time in Dunedin, to the minute. ---- */
+  const clock = d.querySelector('[data-clock]');
+  if (clock) {
+    const fmt = new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', hour12: false, timeZoneName: 'short' });
+    const set = () => { clock.textContent = fmt.format(new Date()); };
+    set(); setInterval(set, 20000);
+    d.querySelectorAll('[data-clock-row]').forEach((e) => { e.hidden = false; });
+  }
+
   /* ---- Snapping reticle (desktop, fine pointer): one set of registration brackets that glides between the
      targets you hover and locks onto their bounds. Keyboard focus keeps the per-card brackets. ---- */
   if (!reduce.matches && w.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -271,7 +284,10 @@
       secs.forEach((s, i) => { const v = seen.get(s) || 0; if (v > bestV) { bestV = v; best = i; } });
       sq.style.transform = `translateY(${best * (MINOR + 1) * STEP}px)`;
       num.style.transform = sq.style.transform;
-      num.textContent = idx[best];
+      // The index ticks between values rather than jumping.
+      const to = parseInt(idx[best], 10), from = parseInt(num.textContent, 10);
+      if (!Number.isFinite(to) || !Number.isFinite(from) || from === to || reduce.matches) num.textContent = idx[best];
+      else { const t0 = performance.now(); const step = (t) => { const k = Math.min(1, (t - t0) / 260); num.textContent = String(Math.round(from + (to - from) * k)).padStart(2, '0'); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
     };
     const io = new IntersectionObserver((es) => { es.forEach((e) => seen.set(e.target, e.intersectionRatio * e.boundingClientRect.height)); place(); }, { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
     secs.forEach((s) => io.observe(s));

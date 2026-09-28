@@ -47,6 +47,7 @@ export function Footer() {
           <dl className="colophon label">
             <dt>Made in</dt><dd>{site.location}</dd>
             <dt>At</dt><dd>45°52′S 170°30′E</dd>
+            <dt data-clock-row hidden>Local</dt><dd data-clock-row data-clock hidden />
             <dt>Line</dt><dd>{site.tagline}</dd>
           </dl>
         </div>

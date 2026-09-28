@@ -96,7 +96,7 @@ export function Pane({ src, alt, width = 720, height = 1560, priority = false, c
   src: string; alt: string; width?: number; height?: number; priority?: boolean; caption?: ReactNode; className?: string; sizes?: string;
 }) {
   return (
-    <figure className={`pane ${className}`.trim()}>
+    <figure className={`pane ${className}`.trim()} data-enter>
       <div className="pane-glass">
         <span className="pg-mask"><span className="pg-in">
           {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
@@ -105,6 +105,7 @@ export function Pane({ src, alt, width = 720, height = 1560, priority = false, c
             sizes={sizes}
             {...(priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const })} />
         </span><span className="pg-scan" aria-hidden="true" /></span>
+        <span className="pg-sweep" aria-hidden="true" />
       </div>
       {caption && <figcaption className="label">{caption}</figcaption>}
     </figure>

@@ -60,6 +60,19 @@ Our frames were held against each ref. The comparison image isn't committed, bec
 - **Ref 3** (a primitive on an axis) against reel beat 6: our octagon, not a disc, with no tower symmetry.
 - **Ref 4** (one material object) against reel beat 3: a black-glass contour figure from the app's own exercise guide, not a chrome head.
 
+## Motion passes (after phase 4)
+
+Two further passes added more motion:
+- **Pass 1:** word-mask headline rises, section headers that draw and tick, Paper wipes, the snapping reticle, the demo scan wipe, and count-ups.
+- **Pass 2:** reel chapters, the specular sweep, section seams, the hero-octagon retract, and the live colophon clock.
+
+After both, everything was re-checked:
+- **Hard limits:** 58 viewports, all within the limits (at least 46% empty, at most 3 marks, no static volt with ember).
+- **Lighthouse:** home 97–98, with LCP at 2.2–2.3 s.
+- **Frame rate:** the reel holds 59.6–59.8 fps at 4× CPU throttle.
+- **Tests:** 39 journeys pass, including keyboard chapters.
+- **Fallbacks:** reduced motion and no-JS leave every element in its final state.
+
 ## Deliberately left out
 
 - **Rolling section numbers:** the third signature option. The reel already rolls an index, and two signatures is the limit.

@@ -206,7 +206,7 @@
     r.hud = div('rl-label rl-hud', '', dom);
     Object.assign(r.hud.style, { left: `${L.pad}px`, top: `${L.pad}px` });
 
-    stage.insertBefore(live, stage.querySelector('.reel-toggle'));
+    stage.insertBefore(live, stage.querySelector('.reel-chapters'));
     R = r;
   }
 
@@ -314,10 +314,23 @@
 
   /* ---- Playback: autoplay, pause offscreen, when the tab is hidden, or on request. Starts on the resting lockup. ---- */
   const toggle = stage.querySelector('[data-reel-toggle]');
+  // Chapters: the six beats on a hairline timeline. The fill and square follow the playhead.
+  const chapters = stage.querySelector('[data-reel-chapters]');
+  const chFill = chapters.querySelector('.rc-fill'), chSq = chapters.querySelector('.rc-sq');
+  const chBtns = [...chapters.querySelectorAll('[data-at]')];
+  let chW = 0, chOn = -1;
+  const drawChapters = (t) => {
+    if (!chW) chW = chapters.querySelector('.rc-track').getBoundingClientRect().width;
+    const p = (((t % DUR) + DUR) % DUR) / DUR;
+    chFill.style.transform = `scaleX(${p})`;
+    chSq.style.transform = `translateX(${p * chW}px)`;
+    const on = chBtns.findLastIndex((b) => t >= +b.dataset.at);
+    if (on !== chOn) { chBtns.forEach((b, i) => b.classList.toggle('is-on', i === on)); chOn = on; }
+  };
   const toggleText = toggle.querySelector('[data-reel-toggle-text]');
   let base = 22.25, t0 = 0, userPaused = false, inView = false, running = false, raf = 0, current = base;
   const now = () => (running ? (base + (performance.now() - t0) / 1000) % DUR : current);
-  const frame = () => { current = now(); seek(current); raf = requestAnimationFrame(frame); };
+  const frame = () => { current = now(); seek(current); drawChapters(current); raf = requestAnimationFrame(frame); };
   const sync = () => {
     const should = !userPaused && inView && !document.hidden;
     if (should === running) return;
@@ -329,22 +342,30 @@
     toggleText.textContent = userPaused ? 'Play' : 'Pause';
     toggle.setAttribute('aria-label', userPaused ? 'Play the showreel' : 'Pause the showreel');
     toggle.classList.toggle('is-paused', userPaused);
+    host.classList.toggle('is-paused', userPaused);
     sync();
   });
+  chBtns.forEach((b) => b.addEventListener('click', () => {
+    current = +b.dataset.at + 0.01;
+    if (running) { base = current; t0 = performance.now(); }
+    seek(current); drawChapters(current);
+  }));
   document.addEventListener('visibilitychange', sync);
   new IntersectionObserver((e) => { inView = e[0].intersectionRatio >= 0.5; sync(); }, { threshold: [0, 0.5, 1] }).observe(stage);
   let size = '';
   new ResizeObserver(() => {
     const rect = stage.getBoundingClientRect(), s = `${Math.round(rect.width)}x${Math.round(rect.height)}`;
     if (s === size || !rect.width) return;
-    size = s; build(); seek(current);
+    size = s; chW = 0; build(); seek(current); drawChapters(current);
   }).observe(stage);
 
   document.fonts.ready.then(() => {
     build(); seek(current);
     host.classList.add('is-live');
     toggle.hidden = false;
+    chapters.hidden = false;
+    drawChapters(current);
     // Frame capture: blackglassReel.seek(t) renders any moment and stops playback.
-    window.blackglassReel = { duration: DUR, seek: (t) => { userPaused = true; sync(); current = t; seek(t); } };
+    window.blackglassReel = { duration: DUR, seek: (t) => { userPaused = true; sync(); current = t; seek(t); drawChapters(t); } };
   });
 })();
