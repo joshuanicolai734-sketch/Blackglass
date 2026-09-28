@@ -13,7 +13,7 @@ export function Header({ current }: { current?: string }) {
       </a>
       <nav className="hdr-nav" aria-label="Main">
         {nav.map((item) => (
-          <a key={item.href} href={item.href} aria-current={current === item.href ? "page" : undefined}>{item.label}</a>
+          <a key={item.href} className="link" href={item.href} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
         ))}
       </nav>
       <a className="btn btn-primary btn-sm hdr-cta" href="/get" data-track="cta_get_header"
@@ -29,7 +29,7 @@ export function Header({ current }: { current?: string }) {
             {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
             <a href="/get" data-track="cta_get_menu">Get Blackglass</a>
           </nav>
-          <p className="menu-note">Built in {site.location.split(",")[0]}. <a href={`mailto:${contact.email}`}>Email Josh</a></p>
+          <p className="menu-note label">Built in {site.location.split(",")[0]} · <a className="inline-link" href={`mailto:${contact.email}`}>Email {site.founder}</a></p>
         </div>
       </details>
     </header>

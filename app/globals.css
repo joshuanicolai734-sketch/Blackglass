@@ -19,38 +19,39 @@
 }
 
 :root {
-  --background: #101113;
-  --foreground: #f4f5ef;
-  --card: #18191c;
-  --card-foreground: #f4f5ef;
-  --popover: #ffffff;
-  --popover-foreground: #171717;
-  --primary: #d5ff3f;
-  --primary-foreground: #101113;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
-  --destructive: #e7000b;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #d5ff3f;
-  --chart-1: #f54900;
-  --chart-2: #009689;
-  --chart-3: #104e64;
-  --chart-4: #ffb900;
-  --chart-5: #fe9a00;
-  --radius: 0.625rem;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #171717;
-  --sidebar-primary: #171717;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #171717;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #a1a1a1;
+  /* shadcn variables for the owner area and any UI kit component: aliases of app/tokens.css, never values. */
+  --background: var(--c-glass);
+  --foreground: var(--c-bone);
+  --card: var(--c-pane);
+  --card-foreground: var(--c-bone);
+  --popover: var(--c-pane);
+  --popover-foreground: var(--c-bone);
+  --primary: var(--c-volt);
+  --primary-foreground: var(--c-glass);
+  --secondary: var(--c-facet);
+  --secondary-foreground: var(--c-bone);
+  --muted: var(--c-facet);
+  --muted-foreground: var(--c-bone-3);
+  --accent: var(--c-facet);
+  --accent-foreground: var(--c-bone);
+  --destructive: var(--c-danger);
+  --border: var(--rule);
+  --input: var(--rule-strong);
+  --ring: var(--c-volt);
+  --chart-1: var(--c-volt);
+  --chart-2: var(--c-ember);
+  --chart-3: var(--c-bone-3);
+  --chart-4: var(--c-bone-2);
+  --chart-5: var(--c-facet);
+  --radius: 0;
+  --sidebar: var(--c-pane);
+  --sidebar-foreground: var(--c-bone);
+  --sidebar-primary: var(--c-volt);
+  --sidebar-primary-foreground: var(--c-glass);
+  --sidebar-accent: var(--c-facet);
+  --sidebar-accent-foreground: var(--c-bone);
+  --sidebar-border: var(--rule);
+  --sidebar-ring: var(--c-volt);
 }
 
 @theme inline {
@@ -85,81 +86,39 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: "Inter Tight", Arial, Helvetica, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  /* Square corners everywhere. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #171717;
-    --card-foreground: #ededed;
-    --popover: #171717;
-    --popover-foreground: #ededed;
-    --primary: #ededed;
-    --primary-foreground: #171717;
-    --secondary: #262626;
-    --secondary-foreground: #ededed;
-    --muted: #262626;
-    --muted-foreground: #a1a1a1;
-    --accent: #262626;
-    --accent-foreground: #ededed;
-    --destructive: #ff6467;
-    --border: #ffffff1a;
-    --input: #ffffff26;
-    --ring: #737373;
-    --chart-1: #8e51ff;
-    --chart-2: #00bc7d;
-    --chart-3: #fe9a00;
-    --chart-4: #ad46ff;
-    --chart-5: #ff2056;
-    --sidebar: #171717;
-    --sidebar-foreground: #ededed;
-    --sidebar-primary: #8e51ff;
-    --sidebar-primary-foreground: #ededed;
-    --sidebar-accent: #262626;
-    --sidebar-accent-foreground: #ededed;
-    --sidebar-border: #ffffff1a;
-    --sidebar-ring: #737373;
-  }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--sans);
-}
 
 @font-face{font-family:"Inter Tight";src:url(/fonts/inter-tight-latin-wght.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-500.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-700.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
 
 /* Owner inbox (/admin). The public site is styled by app/site.css. */
-.admin-page{min-height:100svh;background:#111214;color:#f5f5ef}
+.admin-page{min-height:100svh;background:var(--c-glass);color:var(--c-bone)}
 
-.simple-header{padding:24px clamp(22px,5vw,80px);border-bottom:1px solid #45474a;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.simple-header{padding:24px clamp(22px,5vw,80px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:20px}
 
 .simple-header .brand{min-width:0}
 
-.simple-header>a:last-child{font:700 12px var(--mono);color:#d5ff3f;text-decoration:underline;text-underline-offset:4px}
+.simple-header>a:last-child{font:700 12px var(--font-mono);color:var(--c-volt);text-decoration:underline;text-underline-offset:4px}
 
 .simple-content{max-width:940px;margin:0 auto;padding:clamp(70px,9vw,120px) 24px}
 
-.simple-kicker{font:700 12px var(--mono);letter-spacing:.1em;color:#d5ff3f}
+.simple-kicker{font:700 12px var(--font-mono);letter-spacing:.1em;color:var(--c-volt)}
 
 .simple-content h1{font-size:clamp(54px,10vw,110px);line-height:.9;letter-spacing:-.035em;margin:28px 0 42px}
 
 .simple-content h2{font-size:26px;letter-spacing:-.025em;margin:35px 0 10px}
 
-.simple-content p,.simple-content li{font-size:18px;line-height:1.55;color:#d0d2cc;max-width:750px}
+.simple-content p,.simple-content li{font-size:18px;line-height:1.55;color:var(--c-bone-2);max-width:750px}
 
-.simple-content a{color:#d5ff3f;text-decoration:underline;text-underline-offset:4px}
+.simple-content a{color:var(--c-volt);text-decoration:underline;text-underline-offset:4px}
 
 .simple-content ul{padding-left:22px}
 
@@ -169,31 +128,31 @@ body {
 
 .admin-counts{display:flex;gap:10px;flex-wrap:wrap;margin:35px 0 25px}
 
-.admin-counts span{border:1px solid #5f625e;padding:10px 14px;font:700 12px var(--mono);color:#d5ff3f}
+.admin-counts span{border:1px solid var(--rule-strong);padding:10px 14px;font:700 12px var(--font-mono);color:var(--c-volt)}
 
 .lead-grid{display:grid;gap:12px}
 
-.lead-card{background:#1d2021;border:1px solid #484d49;padding:24px;overflow-wrap:anywhere}
+.lead-card{background:var(--c-pane);border:1px solid var(--rule);padding:24px;overflow-wrap:anywhere}
 
 .lead-top{display:flex;gap:18px;justify-content:space-between;align-items:start}
 
 .lead-card h2{margin:0 0 5px;font-size:25px}
 
-.lead-meta{font:700 11px/1.5 var(--mono);letter-spacing:.04em;color:#aab0a8}
+.lead-meta{font:700 11px/1.5 var(--font-mono);letter-spacing:.04em;color:var(--c-bone-3)}
 
 .lead-card p{font-size:16px;white-space:pre-wrap;max-width:850px;margin:18px 0}
 
-.lead-card select{background:#111214;color:#f5f5ef;border:1px solid #8b9286;padding:9px;font:inherit;font-size:14px;min-height:42px}
+.lead-card select{background:var(--c-glass);color:var(--c-bone);border:1px solid var(--rule-strong);padding:9px;font:inherit;font-size:14px;min-height:42px}
 
 .lead-card a{font-weight:700}
 
-.lead-status-message{font-size:13px!important;color:#d5ff3f!important;margin:7px 0 0!important}
+.lead-status-message{font-size:13px!important;color:var(--c-volt)!important;margin:7px 0 0!important}
 
-.lead-delete{display:block;background:none;border:0;color:#abb1a8;text-decoration:underline;text-underline-offset:3px;font:600 12px var(--sans);padding:4px 0;cursor:pointer}
+.lead-delete{display:block;background:none;border:0;color:var(--c-bone-3);text-decoration:underline;text-underline-offset:3px;font:600 12px var(--font-sans);padding:4px 0;cursor:pointer}
 
-.lead-delete:hover{color:#f5f5ef}
+.lead-delete:hover{color:var(--c-bone)}
 
-.admin-empty{padding:32px;background:#1d2021;border:1px solid #484d49}
+.admin-empty{padding:32px;background:var(--c-pane);border:1px solid var(--rule)}
 
-.admin-activity{margin:40px 0 8px;padding:24px;border:1px solid #484d49}
+.admin-activity{margin:40px 0 8px;padding:24px;border:1px solid var(--rule)}
 .admin-activity h2{font-size:22px;margin:0 0 8px}

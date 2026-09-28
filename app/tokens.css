@@ -1,0 +1,80 @@
+/* Blackglass tokens: the one source for colour, type, spacing, hairlines and motion.
+   Everything else (site.css, the admin styles, the shadcn variables in globals.css) reads from here.
+   Direction and rules: design/DESIGN_LANGUAGE.md. */
+
+:root {
+  /* Palette. Signal colours are used in small doses: one loud colour per viewport. */
+  --c-glass: #101113;   /* home ground */
+  --c-pane: #18191c;    /* black-glass objects, raised surfaces */
+  --c-facet: #2b2d32;   /* the lit facet; object frames on Glass */
+  --c-bone: #f4f5ef;    /* text on Glass; the specular edge */
+  --c-bone-2: #c3c6c0;  /* body text on Glass, 10.9:1 */
+  --c-bone-3: #a4a9ae;  /* labels on Glass, 8.0:1 */
+  --c-paper: #eceae3;   /* the counter-surface: warm bone, ink 15.7:1 */
+  --c-ink-2: #45484d;   /* body text and labels on Paper, 7.6:1 */
+  --c-volt: #d5ff3f;    /* the signal: markers, active states, one line per frame. On Paper: fills inside ink only. */
+  --c-ember: #de7f4e;   /* rare: one moment per page. Fill only; never text on Paper (2.4:1). */
+  --c-danger: #ff8a80;  /* form errors on Glass */
+
+  /* Ground: Glass. Sections set `.paper` to switch every semantic token below. */
+  --ground: var(--c-glass);
+  --surface: var(--c-pane);
+  --fg: var(--c-bone);
+  --fg-2: var(--c-bone-2);
+  --fg-3: var(--c-bone-3);
+  --rule: rgba(244, 245, 239, .14);
+  --rule-strong: rgba(244, 245, 239, .32);
+  --grid: rgba(244, 245, 239, .04);
+  --signal: var(--c-volt);
+  --action: var(--c-volt);     /* primary button fill */
+  --on-action: var(--c-glass);
+  --focus: var(--c-volt);
+
+  /* Type: two faces, five sizes. */
+  --font-sans: "Inter Tight", Arial, Helvetica, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --fs-label: .6875rem;                          /* 11px; 12px from 900px */
+  --fs-body: 1.0625rem;                          /* 17px */
+  --fs-title: 1.25rem;                           /* 20px */
+  --fs-display: clamp(1.5rem, 3.1vw, 2.75rem);   /* 24–44px */
+  --fs-monument: clamp(7.5rem, 22vw, 22.5rem);   /* 120–360px, numerals only */
+  --tr-label: .12em;
+  --tr-display: .3em;
+  --tr-monument: -.05em;
+
+  /* Space and structure. */
+  --gutter: clamp(20px, 5vw, 72px);
+  --max: 1320px;
+  --section: clamp(88px, 11vw, 160px);
+  --hair: 1px;
+  --cut: 10px;
+  --chamfer: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  --signal-size: 6px;
+
+  /* Motion: expo or quart ease-out only, no bounce. */
+  --t-1: 150ms;
+  --t-2: 250ms;
+  --t-3: 350ms;
+  --t-4: 600ms;
+  --ease-expo: cubic-bezier(.16, 1, .3, 1);
+  --ease-quart: cubic-bezier(.25, 1, .5, 1);
+}
+
+@media (min-width: 900px) {
+  :root { --fs-label: .75rem; }
+}
+
+/* Paper: black-glass objects on warm bone. Volt appears only inside ink shapes here. */
+.paper {
+  --ground: var(--c-paper);
+  --surface: var(--c-glass);
+  --fg: var(--c-glass);
+  --fg-2: var(--c-ink-2);
+  --fg-3: var(--c-ink-2);
+  --rule: rgba(16, 17, 19, .18);
+  --rule-strong: rgba(16, 17, 19, .42);
+  --grid: rgba(16, 17, 19, .045);
+  --action: var(--c-glass);
+  --on-action: var(--c-bone);
+  --focus: var(--c-glass);
+}

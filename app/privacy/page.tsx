@@ -19,7 +19,7 @@ export default function Privacy() {
           <div className="wrap">
             <Label>Privacy</Label>
             <h1 className="display">Your details. Your choice.</h1>
-            <p className="lede">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list and the site&rsquo;s visit counts.</p>
+            <p className="body-2">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list and the site&rsquo;s visit counts.</p>
           </div>
         </section>
         <section className="section" style={{ paddingTop: 64 }}>

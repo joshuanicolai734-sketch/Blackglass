@@ -34,7 +34,7 @@ export default function Coaching() {
               <nav className="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / Coaching</nav>
               <Label>Coaching · Based in Dunedin</Label>
               <h1 id="coach-title" className="display">Coaching with {site.founder}.</h1>
-              <p className="lede">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress.</p>
+              <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress.</p>
               <div className="actions"><Button href="#enquire" track="cta_enquire_hero" down>Enquire about coaching</Button></div>
             </div>
             <div className="offer" data-reveal>
@@ -54,10 +54,10 @@ export default function Coaching() {
           <div className="wrap split">
             <div>
               <Label index="01">Who it&rsquo;s for</Label>
-              <h2 id="fit-title" className="h2">Built for<br />real weeks.</h2>
+              <h2 id="fit-title" className="display">Built for<br />real weeks.</h2>
             </div>
             <div>
-              <p className="lede" style={{ maxWidth: "44ch" }}>For people who want to get stronger, build a physique they&rsquo;re proud of, and stop guessing what comes next, while fitting training around work and everything else.</p>
+              <p className="body-2" style={{ maxWidth: "44ch" }}>For people who want to get stronger, build a physique they&rsquo;re proud of, and stop guessing what comes next, while fitting training around work and everything else.</p>
               <p style={{ color: "var(--text-2)", maxWidth: "52ch" }}>{site.founder} builds Blackglass around lifting, an interest in MMA, and the reality of training through a full work week. The idea is simple: the work you can repeat is the work that changes you.</p>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function Coaching() {
 
         <section className="section begin" aria-labelledby="weeks-title">
           <div className="wrap">
-            <div className="section-head"><Label index="02">How the {coaching.weeks} weeks run</Label><h2 id="weeks-title" className="h2">A clear start.<br />A reason to stay.</h2></div>
+            <div className="section-head"><Label index="02">How the {coaching.weeks} weeks run</Label><h2 id="weeks-title" className="display">A clear start.<br />A reason to stay.</h2></div>
             <ol className="steps">
               <li data-reveal><span className="step-n">01</span><h3>Start where you are</h3><p>Tell {site.founder} your goal, schedule and training setup. Your plan starts from there.</p></li>
               <li data-reveal><span className="step-n">02</span><h3>Follow your plan</h3><p>Know what each session asks of you, and record the work.</p></li>
@@ -78,7 +78,7 @@ export default function Coaching() {
           <div className="wrap split">
             <div>
               <Label index="03">Enquire</Label>
-              <h2 id="enq-title" className="h2">Tell {site.founder} what<br />you&rsquo;re working towards.</h2>
+              <h2 id="enq-title" className="display">Tell {site.founder} what<br />you&rsquo;re working towards.</h2>
               <p className="section-intro">{site.founder} reads every enquiry and replies by email, or by text if you leave your number. Enquiring doesn&rsquo;t commit you to anything.</p>
               <div className="contact-direct">
                 <a href={`sms:${contact.phone}`}>Text {contact.phoneDisplay}</a>
@@ -109,7 +109,7 @@ export default function Coaching() {
 
         <section className="section" aria-labelledby="cq-title" style={{ paddingTop: 0 }}>
           <div className="wrap faq-grid">
-            <div className="section-head"><Label>Questions</Label><h2 id="cq-title" className="h2">Good to<br />know.</h2></div>
+            <div className="section-head"><Label>Questions</Label><h2 id="cq-title" className="display">Good to<br />know.</h2></div>
             <Faqs items={coachingFaq} />
           </div>
         </section>

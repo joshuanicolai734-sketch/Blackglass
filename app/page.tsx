@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import Intro from "@/components/site/intro";
-import { Button, JsonLd, Label, Pane } from "@/components/site/ui";
+import { Button, JsonLd, Label, Pane, TextLink } from "@/components/site/ui";
 import { homeFaq } from "@/content/faq";
 import { app, coaching, contact, site, socialLinks } from "@/content/site";
 
@@ -73,10 +73,10 @@ export default function Home() {
             <div className="hero-copy">
               <Label>Training app · Built in Dunedin</Label>
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
-              <p className="lede">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
+              <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
-                <Button href="#how-it-works" variant="quiet" down>See how it works</Button>
+                <TextLink href="#how-it-works" down>See how it works</TextLink>
                 <a className="teaser-btn" href="/media/teaser-landscape.mp4" data-teaser data-track="teaser_open">
                   <span className="teaser-thumb" aria-hidden="true">
                     {/* eslint-disable-next-line @next/next/no-img-element -- tiny static poster */}
@@ -115,7 +115,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head">
               <Label index="01">How it works</Label>
-              <h2 id="how-title" className="h2" data-wipe>From the plan<br />to the last set.</h2>
+              <h2 id="how-title" className="display" data-wipe>From the plan<br />to the last set.</h2>
               <p className="section-intro">Three screens from the current Android build. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
@@ -132,7 +132,7 @@ export default function Home() {
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined}>
                   <Pane src={d.src} alt={d.alt} className="demo-pane" />
                   <div className="demo-copy">
-                    <h3 className="h3">{d.title}</h3>
+                    <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
                     <ul className="ticks">{d.points.map((p) => <li key={p}>{p}</li>)}</ul>
                   </div>
@@ -147,7 +147,7 @@ export default function Home() {
           <div className="wrap why-grid">
             <div className="section-head">
               <Label index="02">Why it helps</Label>
-              <h2 id="why-title" className="h2" data-wipe>Less guessing.<br />More training.</h2>
+              <h2 id="why-title" className="display" data-wipe>Less guessing.<br />More training.</h2>
             </div>
             <ol className="benefits">
               {benefits.map((b) => (
@@ -161,7 +161,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head">
               <Label index="03">How to start</Label>
-              <h2 id="begin-title" className="h2" data-wipe>Three steps in.</h2>
+              <h2 id="begin-title" className="display" data-wipe>Three steps in.</h2>
             </div>
             <ol className="steps">
               {hasDownload ? (
@@ -187,7 +187,7 @@ export default function Home() {
             <div className="wrap coach-grid" id="apply">
               <div>
                 <Label index="04">Coaching</Label>
-                <h2 id="coach-title" className="h2" data-wipe>Want someone<br />in your corner?</h2>
+                <h2 id="coach-title" className="display" data-wipe>Want someone<br />in your corner?</h2>
               </div>
               <div className="coach-copy">
                 <p>Work directly with {site.founder} for {coaching.weeks} weeks: a plan built around your week, a check-in every week, and adjustments as you progress.</p>
@@ -202,7 +202,7 @@ export default function Home() {
           <div className="wrap faq-grid">
             <div className="section-head">
               <Label index="05">Questions</Label>
-              <h2 id="faq-title" className="h2" data-wipe>Straight<br />answers.</h2>
+              <h2 id="faq-title" className="display" data-wipe>Straight<br />answers.</h2>
             </div>
             <Faqs items={homeFaq} />
           </div>
@@ -226,7 +226,7 @@ export default function Home() {
               <path className="m-rim" mask="url(#cm-rim)" fillRule="evenodd" d="M0 18 18 0h52l18 18v52L70 88H18L0 70ZM7 22.101 22.101 7h43.798L81 22.101v43.798L65.899 81H22.101L7 65.899Z" />
             </svg>
             <h2 id="closer-title" className="display closer-title">{site.tagline}</h2>
-            <p className="lede">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
+            <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
             <Button href="/get" track="cta_get_closer">Get Blackglass</Button>
           </div>
         </section>

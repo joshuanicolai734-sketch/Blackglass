@@ -34,7 +34,7 @@ export default function Get() {
           <div className="wrap">
             <nav className="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / Get Blackglass</nav>
             <h1 id="get-title" className="display">{hasDownload ? "Blackglass for Android." : "Be first on the Android build."}</h1>
-            <p className="lede">
+            <p className="body-2">
               {hasDownload
                 ? "Your programme, today's session, movement guides and food targets, on your phone."
                 : "Blackglass is an Android app in development. It isn’t publicly available yet. Join the preview list and you’ll hear first when there’s a build you can install."}
@@ -48,7 +48,7 @@ export default function Get() {
               <p className="platform-note" data-platform-note hidden />
               <div className="platforms">
                 <article className="platform is-primary" id="android">
-                  <div className="platform-head"><h2 className="h3">Android</h2>
+                  <div className="platform-head"><h2 className="title">Android</h2>
                     <span className={hasDownload ? "badge live" : "badge"}>{hasDownload ? "Available" : "In development"}</span></div>
                   {hasPlay && <>
                     <p>Install from Google Play. Updates come through the Play Store.</p>
@@ -77,11 +77,11 @@ export default function Get() {
                   </>}
                 </article>
                 <article className="platform" id="iphone">
-                  <div className="platform-head"><h2 className="h3">iPhone</h2><span className="badge">Not available</span></div>
+                  <div className="platform-head"><h2 className="title">iPhone</h2><span className="badge">Not available</span></div>
                   <p>There is no iPhone app.{coaching.available && <> If you want structured training now, <a href="/coaching">coaching with {site.founder}</a> works with any phone.</>}</p>
                 </article>
                 <article className="platform" id="web">
-                  <div className="platform-head"><h2 className="h3">Web</h2><span className="badge">Not available</span></div>
+                  <div className="platform-head"><h2 className="title">Web</h2><span className="badge">Not available</span></div>
                   <p>There is no web version of the app. This website is for finding out about Blackglass and getting in touch.</p>
                 </article>
               </div>
@@ -120,7 +120,7 @@ export default function Get() {
 
         <section className="section" aria-labelledby="get-faq" style={{ paddingTop: 0 }}>
           <div className="wrap faq-grid">
-            <div className="section-head"><Label>Questions</Label><h2 id="get-faq" className="h2">Before you<br />sign up.</h2></div>
+            <div className="section-head"><Label>Questions</Label><h2 id="get-faq" className="display">Before you<br />sign up.</h2></div>
             <Faqs items={hasDownload ? getFaqLive : getFaq} />
           </div>
         </section>
