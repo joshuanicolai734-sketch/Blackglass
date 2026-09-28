@@ -204,33 +204,39 @@ Pin **P01** on Instagram (with P02 as the second pin once posted) and **V1** on 
 
 ---
 
-## Launch teaser (24 s, with sound design)
+## Launch teaser (22 s, 150 BPM, with its own track)
 
 - **Files:**
   - `exports/video/blackglass-teaser-1080x1920.mp4` (vertical: Reels, TikTok, Shorts)
   - `exports/video/blackglass-teaser-1920x1080.mp4` (landscape: YouTube, website, presentations)
-  - `-silent.mp4` versions of both, for adding platform music instead
-- **Source:** `teaser.mjs` (visuals: WebGL light field, 3D glass slab, a camera through a field of real app screens) and `teaser-sound.py` (the soundtrack, synthesised from scratch, so it has no licensing restrictions).
-- **Sequence:**
+  - `-silent.mp4` versions of both, for adding platform music instead. Every cut lands on a 150 BPM beat grid, so any 150 BPM track fits.
+  - Both are 60 fps.
+- **Source:**
+  - Visuals: `teaser-hype.mjs` (the page) and `teaser-hype.client.js` (the motion). It uses a WebGL octagon tunnel in the mark's proportions, HUD overlays, a slice glitch, chromatic split and camera shake, all driven by the beat.
+  - Soundtrack: `teaser-hype-sound.py`. It's synthesised from scratch, so it has no licensing restrictions.
+- **Sequence** (a beat is 0.4 s):
 
 | Time | What happens |
 |---|---|
-| 0–2 s | A line of light cuts the frame on the 45° axis and folds into the rim |
-| 2–5 s | The glass sets, light passes through, the glint catches, and the slab turns to show its depth |
-| 5–7 s | The camera dives through the pane into a field of real app screens |
-| 7–12.6 s | **PLAN. / TRAIN. / LEARN. / FUEL.**, each cut on the facet with its real screen and a one-line caption |
-| 12.6–16.6 s | "Know what today asks of you." |
-| 16.6–19 s | Everything collapses back into the mark |
-| 19–24 s | The lockup and "Train with intent. blackglass.co.nz". "Android app in development · Join the preview list" stays on screen |
+| 0–3.2 s | Boot. A HUD comes online over a perspective grid, and the octagon draws itself one side per 8th note. A snare roll spins it up. |
+| 3.2 s | **Drop.** A white flash, then the mark slams in on a shockwave and an octagon tunnel opens. |
+| 4–6.4 s | "KNOW / WHAT / TODAY / ASKS / OF / YOU.", one word slammed per beat |
+| 6.4–12.8 s | **PLAN. / TRAIN. / LEARN. / FUEL.**, one bar each. The real screen whips in, target brackets lock on, a scan passes and the caption decodes. Each ends with a glitch-out. |
+| 12.8–14.4 s | A strobe montage on 8th notes, with alternate frames inverted |
+| 14.4–15.8 s | Build. Three screens fly up from depth, "TRAIN WITH INTENT" decodes and a sync bar fills. Everything is pulled into a point, then 0.2 s of silence. |
+| 16 s | **Final drop.** The lockup slams in, then "Train with intent." lands one word per beat. |
+| 17.6–21.6 s | blackglass.co.nz types on, then "Android app in development · Join the preview list". A last hit comes at 19.2 s, then the fade. |
 
-- **Hook (first 2 s):** a single line of light, a sound riser, then the logo drawing itself.
+The calmer first cut (24 s, a slow glass-and-light piece) is kept as `teaser.mjs` / `teaser-sound.py`. Its exports are `blackglass-teaser-cinematic-*.mp4`.
+
+- **Hook (first 3 s):** a HUD boots, the logo draws itself on the beat, and a snare roll builds into a hard drop at 3.2 s.
 - **Instagram Reels caption:** `Train with intent. Blackglass: your programme, today's session, every lift phase by phase, and your food targets in one Android app. In development, preview list open: link in bio.`
 - **TikTok caption:** `Plan. Train. Learn. Fuel. One Android app, built in Dunedin 🇳🇿 In development. Preview list in bio. #strengthtraining #gymtok #fitnessapp`
 - **YouTube (landscape) title:** `Blackglass: Train with intent (teaser)`
 - **YouTube description:** `Blackglass keeps your programme, today's session, movement guides and food targets in one Android app. It's in development: join the preview list at https://blackglass.co.nz/get?utm_source=youtube&utm_medium=social&utm_campaign=launch_2026&utm_content=teaser`
 - **CTA:** Join the preview list · **Destination:** bio → `/links`, or the tracked /get link above.
-- **Alt text / description:** A line of light folds into the Blackglass logo, a chamfered octagon of black glass with a green highlight, which turns in 3D before the camera flies through it into a field of real app screens. The words Plan, Train, Learn and Fuel each appear beside the matching screen, followed by "Know what today asks of you." Everything collapses back into the logo, ending on "Train with intent. blackglass.co.nz. Android app in development."
-- **Where it fits:** post it on day 1 in place of V1, or as a day-15 "launch week wrap". Pin it on TikTok and YouTube. The landscape cut can also sit on the website later (muted, with a poster frame and a pause control).
+- **Alt text / description:** A fast, beat-cut teaser. The Blackglass logo, a chamfered octagon with a green highlight, draws itself on a futuristic display and slams in as an octagonal tunnel opens. "Know what today asks of you." flashes one word per beat. The words Plan, Train, Learn and Fuel each appear with the matching real app screen, then comes a strobing montage. It ends on "Train with intent. blackglass.co.nz. Android app in development."
+- **Where it fits:** post it on day 1 in place of V1, or as a day-15 "launch week wrap". Pin it on TikTok and YouTube. The website plays it from the "Watch the teaser" button on the homepage.
 
 ---
 

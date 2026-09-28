@@ -12,7 +12,6 @@ import { ROOT } from "./lib.mjs";
 
 const pick = process.argv.slice(2);
 const jobs = pick.length ? all.filter((a) => pick.includes(a.id)) : all;
-const FPS = 30;
 const build = resolve(ROOT, "social/.build");
 mkdirSync(build, { recursive: true });
 
@@ -32,6 +31,7 @@ for (const job of jobs) {
     await page.screenshot({ path: out });
     console.log("image", job.id, "→", job.out);
   } else {
+    const FPS = job.fps || 30;
     const ff = spawn(process.env.FFMPEG || "ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(FPS), "-i", "-",
       "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p", "-r", String(FPS), "-movflags", "+faststart", out], { stdio: ["pipe", "inherit", "inherit"] });
     const done = new Promise((r, j) => ff.on("close", (code) => (code === 0 ? r() : j(new Error(`ffmpeg exited ${code}`)))));

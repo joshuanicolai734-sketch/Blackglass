@@ -63,7 +63,7 @@ Paste the full profile URL into `content/site.ts → social` (for example `insta
   - **Closing mark:** the mark above "Train with intent." draws its rim and sweeps its glint once.
   - **Page transitions:** a cross-fade between pages in supporting browsers.
   - **Scroll hairline:** a progress line under the header.
-  - **Teaser:** "Watch the teaser" opens `public/media/teaser-*.mp4` in a dialog, choosing the vertical cut on portrait screens. It's counted as `teaser_open`. Without JavaScript the link opens the MP4 directly. To update it, re-render in `social/` (`node render.mjs teaser-vertical teaser-landscape`) and copy the exports and posters into `public/media/`.
+  - **Teaser:** "Watch the teaser" opens `public/media/teaser-*.mp4` in a dialog, choosing the vertical cut on portrait screens. It's counted as `teaser_open`. Without JavaScript the link opens the MP4 directly. The teaser is a 22 s, 150 BPM cut at 60 fps. To update it, follow the teaser steps in `social/README.md`, then replace the posters (frames at 3.7 s) and `teaser-thumb.webp`.
 
 ## Measurement
 

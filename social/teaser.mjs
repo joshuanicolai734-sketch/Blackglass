@@ -1,4 +1,4 @@
-// Blackglass teaser: a ~24 s motion piece for blackglass.co.nz, rendered vertical (1080×1920) and
+// Blackglass cinematic teaser (the calmer first cut; the main teaser is teaser-hype.mjs): a ~24 s motion piece for blackglass.co.nz, rendered vertical (1080×1920) and
 // landscape (1920×1080). Every frame is a pure function of time: seek(t) positions the DOM layers and draws
 // the WebGL light field, so renders are exact and repeatable. Sound design: teaser-sound.py (synced to BEATS).
 import { C, P, base, bezierSrc, screens } from "./lib.mjs";
@@ -155,6 +155,6 @@ function teaserHtml(W, H) {
 }
 
 export const teasers = [
-  { id: "teaser-vertical", out: "social/exports/video/blackglass-teaser-1080x1920.mp4", w: 1080, h: 1920, duration: DURATION, audio: "social/.build/teaser-sound.wav", html: teaserHtml(1080, 1920) },
-  { id: "teaser-landscape", out: "social/exports/video/blackglass-teaser-1920x1080.mp4", w: 1920, h: 1080, duration: DURATION, audio: "social/.build/teaser-sound.wav", html: teaserHtml(1920, 1080) },
+  { id: "teaser-cinematic-vertical", out: "social/exports/video/blackglass-teaser-cinematic-1080x1920.mp4", w: 1080, h: 1920, duration: DURATION, audio: "social/.build/teaser-sound.wav", html: teaserHtml(1080, 1920) },
+  { id: "teaser-cinematic-landscape", out: "social/exports/video/blackglass-teaser-cinematic-1920x1080.mp4", w: 1920, h: 1080, duration: DURATION, audio: "social/.build/teaser-sound.wav", html: teaserHtml(1920, 1080) },
 ];

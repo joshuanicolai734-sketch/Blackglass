@@ -12,9 +12,14 @@ node render.mjs p01-intro    # one asset, by id (see assets.mjs)
 
 Video needs `ffmpeg` with libx264 on your PATH, or `FFMPEG=/path/to/ffmpeg node render.mjs`.
 
-**Teaser:** the composition is `teaser.mjs` and the soundtrack is `teaser-sound.py` (numpy). Run `python3 teaser-sound.py` before rendering, and the renderer adds the sound, keeping a `-silent.mp4` copy too.
+**Teaser:** the composition is `teaser-hype.mjs` plus `teaser-hype.client.js` (60 fps, 150 BPM), and the soundtrack is `teaser-hype-sound.py` (numpy). Run the sound script before rendering, and the renderer adds the sound, keeping a `-silent.mp4` copy too. The earlier cinematic cut is still available as `teaser-cinematic-*` (`teaser.mjs`, `teaser-sound.py`).
 ```sh
-python3 teaser-sound.py && node render.mjs teaser-vertical teaser-landscape
+python3 teaser-hype-sound.py && node render.mjs teaser-vertical teaser-landscape
+```
+To update the website's copy, run:
+```sh
+cp exports/video/blackglass-teaser-1920x1080.mp4 ../public/media/teaser-landscape.mp4
+cp exports/video/blackglass-teaser-1080x1920.mp4 ../public/media/teaser-vertical.mp4
 ```
 
 - **Copy and layout:** `assets.mjs`. Each asset is HTML built from the real logo paths (`../content/brand.ts`), site fonts and app screens.
