@@ -87,9 +87,11 @@ export default function Home() {
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
-                <TextLink href="#how-it-works" down>See how it works</TextLink>
+                {coaching.available
+                  ? <TextLink href="/coaching" track="cta_coaching_hero">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</TextLink>
+                  : <TextLink href="#how-it-works" down>See how it works</TextLink>}
               </div>
-              <p className="status label"><Signal />Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}</p>
+              <p className="status label"><Signal />Status — {hasDownload ? "Available for Android" : "Android app in development · Preview list open"}{coaching.available && " · Coaching available now"}</p>
             </div>
           </div>
         </section>
@@ -144,42 +146,56 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section begin" aria-labelledby="begin-title" data-sec>
+        {/* The fork: the free app preview and paid coaching, side by side, once the product has been shown. */}
+        <section className="section offers" id="start" aria-labelledby="start-title" data-sec>
           <div className="wrap">
             <div className="section-head">
-              <SectionHead index="03" title="How to start" meta="03 steps" />
-              <h2 id="begin-title" className="display" data-enter><Words>Three steps in.</Words></h2>
+              <SectionHead index="03" title="Get started" meta={coaching.available ? "02 options" : "01 option"} />
+              <h2 id="start-title" className="display" data-enter><Words>Choose your start.</Words></h2>
             </div>
-            <ol className="steps">
-              {steps.map(([t, x], i) => <SpecCard key={t} as="li" index={`0${i + 1}`} title={t}><p>{x}</p></SpecCard>)}
-            </ol>
-            <div className="actions"><Button href="/get" track="cta_get_steps">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button></div>
+            <div className={coaching.available ? "offer-grid" : "offer-grid single"}>
+              <article className="offer-card offer-app" aria-labelledby="offer-app-title">
+                <p className="spec-k label"><span className="i">01</span><span>The app</span></p>
+                <h3 id="offer-app-title" className="title">Blackglass for Android</h3>
+                <p className="body-2">{hasDownload ? "Your programme, today’s session, movement guides and food targets on your phone." : "In development and not yet publicly available. Join the free preview list and hear first when there’s a build you can try."}</p>
+                <dl className="colophon label">
+                  <dt>Status</dt><dd>{hasDownload ? "Available for Android" : "In development"}</dd>
+                  {!hasDownload && <><dt>Cost</dt><dd>Free to join</dd></>}
+                  <dt>Phones</dt><dd>Android · no iPhone app</dd>
+                </dl>
+                <ol className="install">{steps.map(([t, x]) => <li key={t}><strong>{t}.</strong> {x}</li>)}</ol>
+                <div className="actions"><Button href="/get" track="cta_offer_app">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button></div>
+              </article>
+              {coaching.available && (
+                <article className="offer-card offer-coach paper" id="coaching" aria-labelledby="offer-coach-title" data-enter>
+                  <span id="apply" aria-hidden="true" />
+                  <p className="spec-k label"><span className="i">02</span><span>Coaching with {site.founder}</span></p>
+                  <h3 id="offer-coach-title" className="title">Work directly with {site.founder}.</h3>
+                  <p className="body-2">A plan built around your week, a check-in every week, and adjustments as you progress. Available now, with any phone.</p>
+                  <div className="price">
+                    <p className="monument" data-enter data-count={coaching.weekly}>{coaching.weekly}</p>
+                    <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span><span>{coaching.offerName}</span></p>
+                  </div>
+                  <ul className="includes">
+                    <li>A training plan built around your goal, available days and equipment</li>
+                    <li>One check-in with {site.founder} each week</li>
+                    <li>Adjustments as you progress, instead of starting over</li>
+                  </ul>
+                  <div className="actions">
+                    <Button href="/coaching#enquire" track="cta_offer_coaching">Enquire about coaching</Button>
+                    <TextLink href="/coaching">How coaching works</TextLink>
+                  </div>
+                  <p className="form-note">No payment is taken on this site. You&rsquo;ll see the written scope and payment terms before you commit.</p>
+                </article>
+              )}
+            </div>
           </div>
         </section>
-
-        {coaching.available && (
-          <section className="section coach-band paper" id="coaching" aria-labelledby="coach-title" data-sec data-enter>
-            <div className="wrap coach-grid" id="apply">
-              <div>
-                <SectionHead index="04" title="Coaching" meta={`${coaching.weeks} weeks`} />
-                <h2 id="coach-title" className="display" data-enter><Words>Want someone in your corner?</Words></h2>
-              </div>
-              <div className="coach-copy">
-                <p>Work directly with {site.founder} for {coaching.weeks} weeks: a plan built around your week, a check-in every week, and adjustments as you progress.</p>
-                <div className="price">
-                  <p className="monument" data-enter data-count={coaching.weekly}>{coaching.weekly}</p>
-                  <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span><span>Founding price</span></p>
-                </div>
-                <Button href="/coaching" track="cta_coaching_home">Explore coaching</Button>
-              </div>
-            </div>
-          </section>
-        )}
 
         <section className="section questions" id="questions" aria-labelledby="faq-title" data-sec>
           <div className="wrap faq-grid">
             <div className="section-head">
-              <SectionHead index={coaching.available ? "05" : "04"} title="Questions" meta={`${String(homeFaq.length).padStart(2, "0")} answers`} />
+              <SectionHead index="04" title="Questions" meta={`${String(homeFaq.length).padStart(2, "0")} answers`} />
               <h2 id="faq-title" className="display" data-enter><Words>Straight answers.</Words></h2>
             </div>
             <Faqs items={homeFaq} />
@@ -194,7 +210,10 @@ export default function Home() {
             </svg>
             <h2 id="closer-title" className="display" data-enter><Words>{site.tagline}</Words></h2>
             <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
-            <Button href="/get" track="cta_get_closer">Get Blackglass</Button>
+            <div className="actions closer-actions">
+              <Button href="/get" track="cta_get_closer">{hasDownload ? "Get Blackglass" : "Join the preview list"}</Button>
+              {coaching.available && <TextLink href="/coaching" track="cta_coaching_closer">{`Or work directly with ${site.founder}`}</TextLink>}
+            </div>
           </div>
         </section>
       </main>

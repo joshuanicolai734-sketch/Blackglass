@@ -37,6 +37,10 @@ Then email the preview list (the owner inbox at `/admin`, route "ANDROID PREVIEW
 
 Paste the full profile URL into `content/site.ts → social` (for example `instagram: "https://www.instagram.com/blackglass.nz/"`). It then appears in the footer, on /links and in the homepage's structured data (`sameAs`). Never add an account you haven't checked.
 
+## Funnel
+
+How the home page moves visitors towards coaching (revenue now) and the preview list, and how `/admin` measures each path: `docs/FUNNEL.md`.
+
 ## Design system
 
 The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE.md`. In short:

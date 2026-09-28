@@ -90,7 +90,7 @@
         el.classList.add('pre');
         if (el.hasAttribute('data-reveal')) el.style.transitionDelay = `${(i % 3) * 60}ms`;
         pending.add(el);
-        if (el.matches('section.paper')) ioPaper.observe(el); else io.observe(el);
+        if (el.matches('section.paper, .offer-coach')) ioPaper.observe(el); else io.observe(el);
       }
     });
     // A jump (an anchor link, a fast fling) can carry content past the viewport without it ever intersecting:
@@ -99,7 +99,7 @@
     w.addEventListener('scroll', () => {
       if (tick || !pending.size) return;
       tick = requestAnimationFrame(() => { tick = 0; pending.forEach((el) => {
-        const paper = el.matches('section.paper');
+        const paper = el.matches('section.paper, .offer-coach');
         if (el.getBoundingClientRect().top < innerHeight * (paper ? 0.65 : 1)) { if (paper) { el.classList.add('in'); pending.delete(el); ioPaper.unobserve(el); } else show(el); }
       }); });
     }, { passive: true });

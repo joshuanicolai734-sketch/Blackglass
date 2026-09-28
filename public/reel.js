@@ -5,7 +5,7 @@
 
     0.0  Axis      a hairline draws, a tick scale counts the octagon's 8 sides, a bracket locks at centre
     3.0  Pane      the outline draws, a 45° wipe fills it with black glass, one specular sweep, volt on a vertex
-    7.0  Specimen  contour athlete, Brace → Reach on the phase scale, volt traces the core, two callouts
+    7.0  Specimen  contour athlete in the back squat: Brace → Descend → Drive, volt traces the quads, two callouts
    12.0  Modules   Today · Train · Learn · Fuel as spec cards; a monumental index rolls 01 → 04
    16.0  Scale     one monumental 45°: the facet angle and Dunedin's latitude
    19.0  Lockup    the reel's only ember rises behind the mark, the wordmark and the tagline, and sinks away at
@@ -27,18 +27,24 @@
   const quart = (x) => 1 - Math.pow(1 - x, 4);
   const win = (t, a, b) => t >= a && t < b;
 
-  /* ---- The athlete: capsules on a skeleton, [x1, y1, x2, y2, radius], in figure units (floor at y 476). ---- */
-  const POSES = {
-    brace: { bones: [[136, 455, 176, 452, 13], [176, 452, 292, 454, 22], [292, 450, 322, 350, 36], [330, 336, 330, 336, 42], [342, 330, 440, 320, 34], [440, 320, 530, 332, 44],
-      [542, 338, 542, 338, 30], [548, 346, 552, 392, 20], [552, 392, 556, 430, 16], [548, 350, 578, 364, 13], [584, 372, 584, 372, 24]], wheel: [556, 446], spec: 'M290 250L560 250L560 316L290 326Z' },
-    reach: { bones: [[136, 455, 176, 452, 13], [176, 452, 292, 454, 22], [292, 450, 360, 336, 36], [372, 322, 372, 322, 42], [384, 318, 500, 312, 34], [500, 312, 600, 322, 44],
-      [612, 326, 612, 326, 30], [618, 330, 670, 382, 20], [670, 382, 712, 430, 16], [626, 338, 664, 356, 13], [684, 366, 684, 366, 25]], wheel: [722, 446], spec: 'M330 240L640 240L640 316L330 330Z' },
-  };
+  /* ---- The athlete: a back squat, side view, facing right. Capsules on a skeleton, [x1, y1, x2, y2, radius], in
+     figure units (floor at y 476); the plate is the bar seen end-on. TOP and BOTTOM share bone order, and the
+     frames between them are interpolated once at build time, then switched by opacity (a stop-motion of 8 poses). */
+  const TOP = { bones: [[395, 468, 452, 470, 9], [420, 458, 428, 372, 20], [428, 372, 424, 282, 32], [416, 286, 416, 286, 36], [424, 272, 426, 214, 33], [426, 214, 430, 166, 40],
+    [432, 154, 432, 154, 26], [430, 160, 404, 188, 16], [404, 188, 414, 146, 13], [440, 140, 444, 122, 12], [450, 104, 450, 104, 24]], plate: [420, 146] };
+  const BOTTOM = { bones: [[395, 468, 452, 470, 9], [420, 458, 478, 392, 20], [478, 392, 384, 402, 32], [372, 400, 372, 400, 36], [384, 392, 410, 338, 33], [410, 338, 432, 294, 40],
+    [436, 282, 436, 282, 26], [434, 288, 408, 318, 16], [408, 318, 420, 274, 13], [444, 268, 452, 252, 12], [460, 236, 460, 236, 24]], plate: [426, 276] };
+  const FRAMES = 8;
+  const lerp = (a, b, u) => a + (b - a) * u;
+  const POSES = Array.from({ length: FRAMES }, (_, f) => {
+    const u = f / (FRAMES - 1);
+    return { bones: TOP.bones.map((bn, i) => bn.map((v, j) => lerp(v, BOTTOM.bones[i][j], u))), plate: [lerp(TOP.plate[0], BOTTOM.plate[0], u), lerp(TOP.plate[1], BOTTOM.plate[1], u)] };
+  });
   const LEVELS = 7, STEP = 9;
   const MODULES = [
     ['01', 'Today', 'Pick up where you left off.', 'Shows', 'Session in progress'],
     ['02', 'Train', 'See the whole week.', 'Programme', '6 days per week'],
-    ['03', 'Learn', 'Know how the lift should look.', 'Phases', 'Brace · Reach · Return'],
+    ['03', 'Learn', 'Know how the lift should look.', 'Guides', 'Phase by phase'],
     ['04', 'Fuel', 'Keep food in the picture.', 'Targets', 'kcal · protein'],
   ];
   const BEATS = [[0, '01', 'Axis'], [3, '02', 'Pane'], [7, '03', 'Specimen'], [12, '04', 'Modules'], [16, '05', 'Scale'], [19, '06', 'Lockup']];
@@ -63,9 +69,9 @@
   function layout(w, h) {
     const tall = h > w, m = Math.min(w, h), pad = Math.max(20, m * 0.055);
     const S = tall ? 0.64 * w : 0.52 * h;                       // octagon (beats 1-2)
-    const fs = tall ? (0.9 * w) / 760 : (0.58 * w) / 760;        // figure scale
-    const floorY = tall ? 0.5 * h : 0.64 * h;
-    const fig = { fs, ox: (tall ? 0.05 * w : 0.08 * w) - 100 * fs, oy: floorY - 476 * fs, floorY };
+    const fs = (tall ? 0.42 * h : 0.62 * h) / 406;              // figure scale: the squat is 406 units tall
+    const floorY = tall ? 0.62 * h : 0.82 * h;
+    const fig = { fs, ox: (tall ? 0.42 * w : 0.3 * w) - 445 * fs, oy: floorY - 476 * fs, floorY };
     const E = tall ? 0.86 * w : 0.62 * h;                       // ember field (beat 6), mirrored by the poster CSS
     const fcy = 0.4 * h;
     const wordW = tall ? 0.72 * w : 0.34 * w;
@@ -123,47 +129,59 @@
     r.paneLabel.style.top = `${L.cy + L.S / 2 + 28}px`;
 
     // Beat 3: the specimen.
-    r.floor = hair(svg, L.fig.ox + 100 * L.fig.fs, L.fig.floorY, 760 * L.fig.fs, 0, C.rule);
-    r.poses = {};
-    for (const [name, pose] of Object.entries(POSES)) {
+    r.floor = hair(svg, Math.max(L.pad, L.fig.ox + 280 * L.fig.fs), L.fig.floorY, Math.min(W - 2 * L.pad, 480 * L.fig.fs), 0, C.rule);
+    r.frames = POSES.map((pose, f) => {
       const g = el('g', { transform: `translate(${L.fig.ox} ${L.fig.oy}) scale(${L.fig.fs})` }, svg);
-      const clip = el('clipPath', { id: `rl-spec-${name}` }, defs);
-      el('path', { d: pose.spec }, clip);
+      // One specular edge: the level-0 contour on the lit (back, upper-left) side of the torso.
+      const [sx, sy] = pose.bones[6], [gx, gy] = pose.bones[3];
+      const clip = el('clipPath', { id: `rl-spec-${f}` }, defs);
+      el('path', { d: `M250 40L${sx - 4} 40L${sx - 4} ${sy}L${gx - 4} ${gy}L250 ${gy}Z` }, clip);
       const ring = 1.2 / L.fig.fs;
       const lines = (dr, col, inner) => pose.bones.map(([x1, y1, x2, y2, rad]) => rad - dr > 0 ? `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${2 * (rad - dr) - (inner ? 2 * ring : 0)}" stroke-linecap="round"/>` : '').join('');
       const levels = [];
       for (let lv = 0; lv < LEVELS; lv++) {
         const lg = el('g', {}, g);
-        lg.innerHTML = `<g>${lines(lv * STEP, lv ? C.ring : C.ring0)}</g>${lv === 0 ? `<g clip-path="url(#rl-spec-${name})">${lines(0, C.bone)}</g>` : ''}<g>${lines(lv * STEP, C.pane, true)}</g>`;
+        lg.innerHTML = `<g>${lines(lv * STEP, lv ? C.ring : C.ring0)}</g>${lv === 0 ? `<g clip-path="url(#rl-spec-${f})">${lines(0, C.bone)}</g>` : ''}<g>${lines(lv * STEP, C.pane, true)}</g>`;
         levels.push(lg);
       }
-      el('circle', { cx: pose.wheel[0], cy: pose.wheel[1], r: 29, fill: 'none', stroke: C.ruleStrong, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g);
-      el('circle', { cx: pose.wheel[0], cy: pose.wheel[1], r: 3, fill: C.bone }, g);
-      r.poses[name] = { g, levels };
-    }
-    const c0 = pt(410, 350), c1 = pt(580, 362);
-    r.core = hair(svg, c0[0], c0[1], Math.hypot(c1[0] - c0[0], c1[1] - c0[1]), (Math.atan2(c1[1] - c0[1], c1[0] - c0[0]) * 180) / Math.PI, C.volt);
+      // The bar, end-on: a plate in black glass with its rim and hub.
+      const [px, py] = pose.plate;
+      el('circle', { cx: px, cy: py, r: 50, fill: C.pane, stroke: C.ruleStrong, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g);
+      el('circle', { cx: px, cy: py, r: 36, fill: 'none', stroke: C.rule, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g);
+      el('circle', { cx: px, cy: py, r: 7, fill: C.bone }, g);
+      return { g, levels };
+    });
+    // The working area: volt along the front of the quads, at the bottom of the squat.
+    const q0 = pt(466, 362), q1 = pt(398, 372);
+    r.core = hair(svg, q0[0], q0[1], Math.hypot(q1[0] - q0[0], q1[1] - q0[1]), (Math.atan2(q1[1] - q0[1], q1[0] - q0[0]) * 180) / Math.PI, C.volt);
     r.core.l.setAttribute('stroke-width', 2.2);
-    // Phase scale under the floor: Brace, Reach, Return.
-    const s0 = pt(560, 476), s1 = pt(860, 476);
+    // Phase scale on the floor, right of the lifter: Brace, Descend, Drive.
+    const s0 = pt(510, 476), s1 = pt(730, 476);
     r.scale = el('g', {}, svg);
     for (let i = 0; i <= 20; i++) { const x = s0[0] + ((s1[0] - s0[0]) * i) / 20; el('line', { x1: x, x2: x, y1: s0[1] + 10, y2: s0[1] + (i % 10 === 0 ? 24 : 16), stroke: i % 10 === 0 ? C.bone : C.ruleStrong, 'stroke-width': 1 }, r.scale); }
-    r.scaleLab = div('rl-label rl-phases', '<span>Brace</span><span>Reach</span><span>Return</span>', dom);
+    r.scaleLab = div('rl-label rl-phases', '<span>Brace</span><span>Descend</span><span>Drive</span>', dom);
     Object.assign(r.scaleLab.style, { left: `${s0[0]}px`, top: `${s0[1] + 30}px`, width: `${s1[0] - s0[0]}px` });
     r.marker = el('rect', { x: -3, y: s0[1] + 4, width: 6, height: 6, fill: C.bone }, svg);
-    r.markerX = [s0[0], (s0[0] + s1[0]) / 2];
-    // Callouts: leaders run through empty space only.
-    const core = pt(495, 356), wheel = pt(722, 446);
-    const lab1 = L.tall ? [core[0] - 8, L.fig.floorY + 96] : [core[0] - 8, L.fig.floorY + 70];
-    const lab2 = L.tall ? [wheel[0] + 14, L.fig.oy + 220 * L.fig.fs - 70] : [W * 0.74, wheel[1] - 130];
+    r.markerX = [s0[0], (s0[0] + s1[0]) / 2, s1[0]];
+    // Callouts, with leaders through empty space only: the working area off the quads, the lift off the feet.
+    const quad = pt(432, 367), heel = pt(398, 470), toe = pt(452, 470);
     const leader = (from, to) => hair(svg, from[0], from[1], Math.hypot(to[0] - from[0], to[1] - from[1]), (Math.atan2(to[1] - from[1], to[0] - from[0]) * 180) / Math.PI, C.ruleStrong);
-    r.lead1 = leader(core, [lab1[0], lab1[1] - 6]);
-    r.lead2 = leader(wheel, [lab2[0], lab2[1] + (L.tall ? 44 : -6)]);
-    r.call1 = div('rl-label rl-call', '<b>Phase 02 / 03 — Reach</b><br>Working area — core', dom);
-    Object.assign(r.call1.style, { left: `${lab1[0]}px`, top: `${lab1[1]}px` });
-    r.call2 = div('rl-label rl-call', '<b>Kneeling wheel rollout</b><br>Core / Bodyweight', dom);
-    if (L.tall) Object.assign(r.call2.style, { right: `${L.pad}px`, top: `${lab2[1]}px`, textAlign: 'right' });
-    else Object.assign(r.call2.style, { left: `${lab2[0]}px`, top: `${lab2[1]}px` });
+    r.call1 = div('rl-label rl-call', '<b>Phase 02 / 03 — Descend</b><br>Working area — quads · glutes', dom);
+    r.call2 = div('rl-label rl-call', '<b>Back squat</b><br>Legs · Barbell', dom);
+    if (L.tall) {
+      const top1 = L.fig.oy + 40 * L.fig.fs;
+      Object.assign(r.call1.style, { right: `${L.pad}px`, top: `${top1}px`, textAlign: 'right' });
+      r.lead1 = leader(quad, [W - L.pad - 8, top1 + 40]);
+      const top2 = L.fig.floorY + 84;
+      Object.assign(r.call2.style, { left: `${L.pad}px`, top: `${top2}px` });
+      r.lead2 = leader(heel, [L.pad + 30, top2 - 6]);
+    } else {
+      const x = W * 0.56, top1 = H * 0.34, top2 = L.fig.floorY - 70;
+      Object.assign(r.call1.style, { left: `${x}px`, top: `${top1}px` });
+      r.lead1 = leader(quad, [x - 8, top1 + 8]);
+      Object.assign(r.call2.style, { left: `${x}px`, top: `${top2}px` });
+      r.lead2 = leader(toe, [x - 8, top2 + 8]);
+    }
 
     // Beat 4: monumental index and one spec card per second.
     r.mon = div('rl-mon', `<div class="rl-strip">${MODULES.map((m) => `<span>${m[0]}</span>`).join('')}</div>`, dom);
@@ -250,26 +268,31 @@
     op(r.sq, b2 && t >= 6.5 ? land : 0);
     op(r.paneLabel, b2 ? quart(k(t, 5.5, 5.85)) : 0);
 
-    // Specimen: 7.0–12.0.
+    // Specimen: 7.0–12.0. Draw in standing, brace, a controlled descent, hold at the bottom, then drive up.
     const b3 = win(t, 7.0, 12.0);
-    const reach = t >= 9.0;
-    for (const [name, pz] of Object.entries(r.poses)) {
-      const show = b3 && (name === 'reach' ? reach : !reach);
-      op(pz.g, show ? (name === 'reach' ? quart(k(t, 9.0, 9.15)) : 1) : 0);
-      pz.levels.forEach((lg, lv) => op(lg, name === 'brace' ? quart(k(t, 7.0 + lv * 0.12, 7.2 + lv * 0.12)) : 1));
-    }
+    let fi = 0;
+    if (t >= 8.8 && t < 9.6) fi = Math.round(quart(k(t, 8.8, 9.6)) * (FRAMES - 1));
+    else if (t >= 9.6 && t < 11.0) fi = FRAMES - 1;
+    else if (t >= 11.0 && t < 11.6) fi = Math.round((1 - expo(k(t, 11.0, 11.5))) * (FRAMES - 1));
+    r.frames.forEach((fr, f) => {
+      op(fr.g, b3 && f === fi ? 1 : 0);
+      if (f === 0) fr.levels.forEach((lg, lv) => op(lg, quart(k(t, 7.0 + lv * 0.12, 7.2 + lv * 0.12))));
+    });
     drawHair(r.floor, b3 ? expo(k(t, 8.0, 8.5)) : 0);
     op(r.scale, b3 ? quart(k(t, 8.0, 8.5)) : 0);
     op(r.scaleLab, b3 ? quart(k(t, 8.2, 8.5)) : 0);
-    r.scaleLab.dataset.phase = reach ? '1' : '0';
-    const mx = r.markerX[0] + (r.markerX[1] - r.markerX[0]) * quart(k(t, 9.0, 9.25));
+    const phase = t >= 11.0 ? 2 : t >= 8.8 ? 1 : 0;
+    r.scaleLab.dataset.phase = String(phase);
+    const mx = phase === 0 ? r.markerX[0] : phase === 1 ? r.markerX[0] + (r.markerX[1] - r.markerX[0]) * quart(k(t, 8.8, 9.05)) : r.markerX[1] + (r.markerX[2] - r.markerX[1]) * quart(k(t, 11.0, 11.25));
     tf(r.marker, `translate(${mx} 0)`);
     op(r.marker, b3 && t >= 8.5 ? 1 : 0);
-    drawHair(r.lead1, b3 ? expo(k(t, 9.0, 9.35)) : 0);
-    op(r.call1, b3 ? quart(k(t, 9.2, 9.45)) : 0);
-    drawHair(r.core, b3 ? expo(k(t, 9.5, 10.1)) : 0);
-    drawHair(r.lead2, b3 ? expo(k(t, 10.5, 10.85)) : 0);
-    op(r.call2, b3 ? quart(k(t, 10.7, 10.95)) : 0);
+    // The lift is named from the floor for the whole beat; the working area only while the lifter is at the bottom.
+    drawHair(r.lead2, b3 ? expo(k(t, 8.2, 8.55)) : 0);
+    op(r.call2, b3 ? quart(k(t, 8.4, 8.65)) : 0);
+    const bottom = b3 && t >= 9.6 && t < 11.0, fadeOut = 1 - quart(k(t, 10.85, 11.0));
+    drawHair(r.lead1, bottom ? expo(k(t, 9.6, 9.95)) * fadeOut : 0);
+    op(r.call1, bottom ? quart(k(t, 9.8, 10.05)) * fadeOut : 0);
+    drawHair(r.core, bottom ? expo(k(t, 10.0, 10.5)) * fadeOut : 0);
 
     // Modules: 12.0–16.0, a card a second; the index rolls with it.
     const b4 = win(t, 12.0, 16.0);

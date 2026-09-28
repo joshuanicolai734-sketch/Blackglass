@@ -17,7 +17,7 @@ export function Reel() {
   return (
     <section className="reel" aria-labelledby="reel-title" data-reel data-geometry={JSON.stringify(geometry)}>
       <h2 id="reel-title" className="sr-only">Showreel</h2>
-      <p className="sr-only">A 24-second looping animation without sound: the Blackglass mark drawn on its axis, an athlete in the ab wheel rollout from the exercise guide, the app&rsquo;s four areas (Today, Train, Learn and Fuel), and the line &ldquo;{site.tagline}&rdquo;</p>
+      <p className="sr-only">A 24-second looping animation without sound: the Blackglass mark drawn on its axis, an athlete in the back squat, phase by phase, the app&rsquo;s four areas (Today, Train, Learn and Fuel), and the line &ldquo;{site.tagline}&rdquo;</p>
       <div className="reel-stage">
         <div className="reel-poster" aria-hidden="true">
           <svg className="rp-mark" viewBox="0 0 88 88">

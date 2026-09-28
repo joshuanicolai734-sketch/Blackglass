@@ -12,6 +12,9 @@ const eventLabels: Record<string, string> = {
   preview_signup: "Preview list sign-ups", enquiry_sent: "Coaching enquiries", demo_engaged: "Used the app demo", teaser_open: "Opened the teaser",
   outbound_play: "Play Store taps", outbound_apk: "APK download taps",
 };
+// The two money paths: taps that head for coaching (revenue now) and for the app (the preview list).
+const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "links_coaching"];
+const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "links_get"];
 type Activity = { name: string; source: string; total: number };
 
 /** Last 30 days of site action counts, or none if the events table isn't there yet. */
@@ -52,6 +55,7 @@ export default async function Admin() {
   const activity = await loadActivity();
   const totals = new Map<string, number>();
   activity.forEach((a) => totals.set(a.name, (totals.get(a.name) || 0) + a.total));
+  const sum = (names: string[]) => names.reduce((n, k) => n + (totals.get(k) || 0), 0);
   const ctaTaps = [...totals].filter(([k]) => k.startsWith("cta_") || k.startsWith("links_")).reduce((s, [, v]) => s + v, 0);
   const sources = new Map<string, number>();
   activity.filter((a) => a.name.endsWith("_view")).forEach((a) => sources.set(a.source, (sources.get(a.source) || 0) + a.total));
@@ -71,6 +75,7 @@ export default async function Admin() {
             {Object.entries(eventLabels).filter(([k]) => totals.has(k)).map(([k, label]) => <span key={k}>{totals.get(k)} · {label.toUpperCase()}</span>)}
             <span>{ctaTaps} · BUTTON TAPS</span>
           </div>
+          <p className="lead-meta">Funnel: {sum(COACH_TAPS)} taps towards coaching → {totals.get("enquiry_sent") || 0} enquiries · {sum(APP_TAPS)} taps towards the app → {totals.get("preview_signup") || 0} preview sign-ups.</p>
           {sources.size > 0 && <p className="lead-meta">Visits by campaign source: {[...sources].map(([s, n]) => `${s === "none" ? "direct/other" : s} ${n}`).join(" · ")}</p>}
         </section>
         <div className="admin-counts"><span>{leads.length} ENQUIRIES SHOWN</span><span>{newCount} NEW</span><span>{clients} CLIENTS</span></div>
