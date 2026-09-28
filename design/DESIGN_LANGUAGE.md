@@ -143,7 +143,7 @@ The reel is 24.0 s, a seamless loop with no audio, and every cut lands on the 0.
 | 7.0–12.0 | **3 Specimen** | The contour-line athlete draws in, level by level (7.0–8.0). Floor rule and phase scale (8.0–8.5). The figure moves Brace → Reach as the scale marker steps (8.5–10.0). The phase callout (9.0). A volt line traces the core, the app's own working area (9.5–10.1). The pattern callout (10.5). |
 | 12.0–16.0 | **4 Modules** | Four spec cards on the second: Today, Train, Learn, Fuel (pending decision 4). Each card carries one real key:value. A giant index rolls 01 → 04 in the monument size. |
 | 16.0–19.0 | **5 Scale jump** | A hard cut to one monumental **45°**, with tiny labels only: "Facet 45°" and "The Octagon · 45°52′S 170°30′E". It's the mark's angle and Dunedin's latitude. |
-| 19.0–24.0 | **6 Ember** | The reel's only red: a flat ember octagon field rises behind (19.0–19.6). The mark lands, then the wordmark (19.5, 20.0), then "Train with intent." (20.5). Holds until 22.5. From 22.5 to 24.0 the hairlines retract to the axis and the axis closes to nothing, so the last frame is the first frame. |
+| 19.0–24.0 | **6 Ember** | The reel's only red: a flat ember octagon field rises behind (19.0–19.6). The mark lands, then the wordmark (19.5, 20.0), then "Train with intent." (20.5). The ember sinks away at 21.8–22.2, leaving the lockup on Glass, which is the poster frame. From 22.5 to 24.0 the hairlines retract to the axis and the axis closes to nothing, so the last frame is the first frame. |
 
 Rules for the reel:
 - **Volt is off in beat 6.** The only volt there is the mark's own glint.

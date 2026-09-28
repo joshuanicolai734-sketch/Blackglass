@@ -5,7 +5,7 @@ import { site } from "@/content/site";
 export const outline = paths.rim.split(" M")[0];
 
 /**
- * The showreel band. First paint is a static poster: the lockup at the reel's resting frame, laid out with
+ * The showreel band. First paint is a static poster: the lockup on Glass, the reel's resting frame, laid out with
  * container units so it matches public/reel.js exactly. That script (loaded after the page's load event, never
  * with reduced motion) builds the animated layers over it and runs a 24 s loop from a pure seek(t).
  */
@@ -17,7 +17,6 @@ export function Reel() {
       <p className="sr-only">A 24-second looping animation without sound: the Blackglass mark drawn on its axis, an athlete in the ab wheel rollout from the exercise guide, the app&rsquo;s four areas (Today, Train, Learn and Fuel), and the line &ldquo;{site.tagline}&rdquo;</p>
       <div className="reel-stage">
         <div className="reel-poster" aria-hidden="true">
-          <svg className="rp-field" viewBox="0 0 88 88"><path d={outline} /></svg>
           <svg className="rp-mark" viewBox="0 0 88 88">
             <path fill="var(--c-pane)" d={paths.pane} /><path fill="var(--c-facet)" d={paths.facet} />
             <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />

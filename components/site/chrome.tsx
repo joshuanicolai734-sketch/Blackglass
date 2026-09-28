@@ -16,7 +16,7 @@ export function Header({ current }: { current?: string }) {
           <a key={item.href} className="link" href={item.href} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
         ))}
       </nav>
-      <a className="btn btn-primary btn-sm hdr-cta" href="/get" data-track="cta_get_header"
+      <a className="btn btn-ghost btn-sm hdr-cta" href="/get" data-track="cta_get_header"
         aria-current={current === "/get" ? "page" : undefined}>
         <span>Get Blackglass</span><Arrow />
       </a>

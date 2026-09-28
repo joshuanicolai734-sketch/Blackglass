@@ -165,12 +165,10 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 /* Poster: the resting lockup, first paint and the reduced-motion version. Mirrors layout() in reel.js. */
 .reel-poster { position: absolute; inset: 0; }
 .reel-poster > * { position: absolute; margin: 0; }
-.rp-field { left: 7cqw; top: calc(40cqh - 43cqw); width: 86cqw; height: 86cqw; fill: var(--c-ember); }
 .rp-mark { width: calc(86cqw * .46); height: calc(86cqw * .46); left: calc(50cqw - 86cqw * .23); top: calc(40cqh - 86cqw * .23); }
 .rp-word { left: 14cqw; width: 72cqw; top: calc(40cqh + 43cqw + 5cqh); }
 .rp-tag { left: 0; right: 0; top: calc(40cqh + 43cqw + 5cqh + 72cqw * .09766 + 3.5cqh); }
 @container reel (min-aspect-ratio: 1 / 1) {
-  .rp-field { left: calc(50cqw - 31cqh); top: 9cqh; width: 62cqh; height: 62cqh; }
   .rp-mark { width: calc(62cqh * .46); height: calc(62cqh * .46); left: calc(50cqw - 62cqh * .23); top: calc(40cqh - 62cqh * .23); }
   .rp-word { left: 33cqw; width: 34cqw; top: 76cqh; }
   .rp-tag { top: calc(76cqh + 34cqw * .09766 + 3.5cqh); }

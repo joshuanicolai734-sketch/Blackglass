@@ -8,7 +8,9 @@
     7.0  Specimen  contour athlete, Brace → Reach on the phase scale, volt traces the core, two callouts
    12.0  Modules   Today · Train · Learn · Fuel as spec cards; a monumental index rolls 01 → 04
    16.0  Scale     one monumental 45°: the facet angle and Dunedin's latitude
-   19.0  Lockup    the reel's only ember, the mark, the wordmark, the tagline; hairlines retract to nothing */
+   19.0  Lockup    the reel's only ember rises behind the mark, the wordmark and the tagline, and sinks away at
+                   22.0; the lockup rests on Glass (the poster frame); hairlines retract to nothing by 24.0
+   Plays only while at least half the reel is on screen, so the ember never shares a viewport with the page's volt. */
 (() => {
   const host = document.querySelector('[data-reel]');
   if (!host || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -297,9 +299,9 @@
     // Lockup: 19.0–24.0. Ember rises, the mark lands, wordmark and tagline follow; everything retracts by 24.0.
     const b6 = t >= 19.0;
     const out = quart(k(t, 22.5, 23.2));
-    const rise6 = expo(k(t, 19.0, 19.6)), sink = quart(k(t, 22.75, 23.4));
-    tf(r.ember, `translate(0 ${H * 0.62 * (1 - rise6) + H * 0.62 * sink})`);
-    op(r.ember, b6 ? 1 - quart(k(t, 22.8, 23.35)) : 0);
+    const rise6 = expo(k(t, 19.0, 19.6)), sink = quart(k(t, 21.8, 22.2));
+    tf(r.ember, `translate(0 ${H * 0.62 * (1 - rise6) + H * 0.3 * sink})`);
+    op(r.ember, b6 ? 1 - sink : 0);
     const mland = expo(k(t, 19.5, 19.85));
     tf(r.mark, `translate(${L.cx} ${L.fcy}) scale(${1.08 - 0.08 * mland}) translate(${-L.cx} ${-L.fcy})`);
     op(r.mark, b6 ? mland * (1 - quart(k(t, 22.75, 23.1))) : 0);
@@ -313,7 +315,7 @@
   /* ---- Playback: autoplay, pause offscreen, when the tab is hidden, or on request. Starts on the resting lockup. ---- */
   const toggle = stage.querySelector('[data-reel-toggle]');
   const toggleText = toggle.querySelector('[data-reel-toggle-text]');
-  let base = 21.0, t0 = 0, userPaused = false, inView = false, running = false, raf = 0, current = base;
+  let base = 22.25, t0 = 0, userPaused = false, inView = false, running = false, raf = 0, current = base;
   const now = () => (running ? (base + (performance.now() - t0) / 1000) % DUR : current);
   const frame = () => { current = now(); seek(current); raf = requestAnimationFrame(frame); };
   const sync = () => {
@@ -330,7 +332,7 @@
     sync();
   });
   document.addEventListener('visibilitychange', sync);
-  new IntersectionObserver((e) => { inView = e[0].isIntersecting; sync(); }, { threshold: 0.15 }).observe(stage);
+  new IntersectionObserver((e) => { inView = e[0].intersectionRatio >= 0.5; sync(); }, { threshold: [0, 0.5, 1] }).observe(stage);
   let size = '';
   new ResizeObserver(() => {
     const rect = stage.getBoundingClientRect(), s = `${Math.round(rect.width)}x${Math.round(rect.height)}`;
