@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { Button, JsonLd, SectionHead, SpecCard, TextLink } from "@/components/site/ui";
+import { Button, JsonLd, SectionHead, SpecCard, TextLink, Words } from "@/components/site/ui";
 import { coachingFaq } from "@/content/faq";
 import { coaching, contact, site } from "@/content/site";
 
@@ -31,14 +31,14 @@ export default function Coaching() {
           <div className="wrap split">
             <div>
               <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / Coaching</nav>
-              <h1 id="coach-title" className="display">Coaching with {site.founder}.</h1>
+              <h1 id="coach-title" className="display"><Words>{`Coaching with ${site.founder}.`}</Words></h1>
               <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress.</p>
               <div className="actions"><Button href="#enquire" track="cta_enquire_hero" down>Enquire about coaching</Button></div>
             </div>
             <div className="offer paper">
               <SectionHead title={coaching.offerName} meta="Dunedin" />
               <div className="price">
-                <p className="monument">{coaching.weekly}</p>
+                <p className="monument" data-enter data-count={coaching.weekly}>{coaching.weekly}</p>
                 <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span></p>
               </div>
               <ul className="includes">
@@ -55,7 +55,7 @@ export default function Coaching() {
           <div className="wrap split">
             <div>
               <SectionHead index="01" title="Who it’s for" />
-              <h2 id="fit-title" className="display">Built for real weeks.</h2>
+              <h2 id="fit-title" className="display" data-enter><Words>Built for real weeks.</Words></h2>
             </div>
             <div>
               <p style={{ maxWidth: "36em" }}>For people who want to get stronger, build a physique they&rsquo;re proud of, and stop guessing what comes next, while fitting training around work and everything else.</p>
@@ -66,7 +66,7 @@ export default function Coaching() {
 
         <section className="section begin" aria-labelledby="weeks-title" data-sec>
           <div className="wrap">
-            <div className="section-head"><SectionHead index="02" title={`How the ${coaching.weeks} weeks run`} meta="03 steps" /><h2 id="weeks-title" className="display">A clear start. A reason to stay.</h2></div>
+            <div className="section-head"><SectionHead index="02" title={`How the ${coaching.weeks} weeks run`} meta="03 steps" /><h2 id="weeks-title" className="display" data-enter><Words>A clear start. A reason to stay.</Words></h2></div>
             <ol className="steps">
               <SpecCard as="li" index="01" title="Start where you are"><p>Tell {site.founder} your goal, schedule and training setup. Your plan starts from there.</p></SpecCard>
               <SpecCard as="li" index="02" title="Follow your plan"><p>Know what each session asks of you, and record the work.</p></SpecCard>
@@ -79,7 +79,7 @@ export default function Coaching() {
           <div className="wrap split">
             <div>
               <SectionHead index="03" title="Enquire" />
-              <h2 id="enq-title" className="display">Tell {site.founder} what you&rsquo;re working towards.</h2>
+              <h2 id="enq-title" className="display" data-enter><Words>{`Tell ${site.founder} what you’re working towards.`}</Words></h2>
               <p className="body-2" style={{ marginTop: 20 }}>{site.founder} reads every enquiry and replies by email, or by text if you leave your number. Enquiring doesn&rsquo;t commit you to anything.</p>
               <div className="contact-direct">
                 <TextLink href={`sms:${contact.phone}`} arrow={false}>Text {contact.phoneDisplay}</TextLink>
@@ -110,7 +110,7 @@ export default function Coaching() {
 
         <section className="section" aria-labelledby="cq-title" data-sec>
           <div className="wrap faq-grid">
-            <div className="section-head"><SectionHead title="Questions" meta={`${String(coachingFaq.length).padStart(2, "0")} answers`} /><h2 id="cq-title" className="display">Good to know.</h2></div>
+            <div className="section-head"><SectionHead title="Questions" meta={`${String(coachingFaq.length).padStart(2, "0")} answers`} /><h2 id="cq-title" className="display" data-enter><Words>Good to know.</Words></h2></div>
             <Faqs items={coachingFaq} />
           </div>
         </section>

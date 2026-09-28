@@ -1,8 +1,9 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { Reel } from "@/components/site/reel";
-import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink } from "@/components/site/ui";
+import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink, Words } from "@/components/site/ui";
 import { paths } from "@/content/brand";
 import { homeFaq } from "@/content/faq";
 import { app, coaching, contact, site, socialLinks } from "@/content/site";
@@ -70,10 +71,19 @@ export default function Home() {
       <Header />
       <main id="main">
         <section className="hero" aria-labelledby="hero-title" data-sec>
+          {/* The hero's one dominant shape: the Glass Pane's outline, drawn side by side (desktop). */}
+          <svg className="hero-oct" viewBox="-1 -1 90 90" aria-hidden="true" focusable="false">
+            {[[0, 18, 18, 0], [18, 0, 70, 0], [70, 0, 88, 18], [88, 18, 88, 70], [88, 70, 70, 88], [70, 88, 18, 88], [18, 88, 0, 70], [0, 70, 0, 18]].map(([x1, y1, x2, y2], i) => (
+              <g key={i} transform={`translate(${x1} ${y1}) rotate(${(Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI})`}>
+                <line className="ho-seg" style={{ "--i": i } as CSSProperties} x1="0" y1="0" x2={Math.hypot(x2 - x1, y2 - y1)} y2="0" />
+              </g>
+            ))}
+            <g transform="translate(73.45 14.55) rotate(135)"><line className="ho-seg ho-seam" style={{ "--i": 8 } as CSSProperties} x1="0" y1="0" x2="83.3" y2="0" /></g>
+          </svg>
           <div className="wrap">
             <div className="hero-copy">
               <SectionHead index="00" title="Training app" meta="Built in Dunedin" />
-              <h1 id="hero-title" className="display">Know what today asks of you.</h1>
+              <h1 id="hero-title" className="display"><Words>Know what today asks of you.</Words></h1>
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">Get Blackglass</Button>
@@ -91,7 +101,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head">
               <SectionHead index="01" title="How it works" meta={`${String(demo.length).padStart(2, "0")} screens`} />
-              <h2 id="how-title" className="display">From the plan to the last set.</h2>
+              <h2 id="how-title" className="display" data-enter><Words>From the plan to the last set.</Words></h2>
               <p className="body-2">Three screens from the current Android build. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
@@ -119,11 +129,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section why paper" id="method" aria-labelledby="why-title" data-sec>
+        <section className="section why paper" id="method" aria-labelledby="why-title" data-sec data-enter>
           <div className="wrap why-grid">
             <div className="section-head">
               <SectionHead index="02" title="Why it helps" meta={`${String(benefits.length).padStart(2, "0")} principles`} />
-              <h2 id="why-title" className="display">Less guessing. More training.</h2>
+              <h2 id="why-title" className="display" data-enter><Words>Less guessing. More training.</Words></h2>
             </div>
             <Pane src="/assets/program.webp" alt="The Train screen: this week’s plan, five exercises a day" sizes="(min-width: 900px) 300px, 70vw" />
             <ol className="cards">
@@ -138,7 +148,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head">
               <SectionHead index="03" title="How to start" meta="03 steps" />
-              <h2 id="begin-title" className="display">Three steps in.</h2>
+              <h2 id="begin-title" className="display" data-enter><Words>Three steps in.</Words></h2>
             </div>
             <ol className="steps">
               {steps.map(([t, x], i) => <SpecCard key={t} as="li" index={`0${i + 1}`} title={t}><p>{x}</p></SpecCard>)}
@@ -148,16 +158,16 @@ export default function Home() {
         </section>
 
         {coaching.available && (
-          <section className="section coach-band paper" id="coaching" aria-labelledby="coach-title" data-sec>
+          <section className="section coach-band paper" id="coaching" aria-labelledby="coach-title" data-sec data-enter>
             <div className="wrap coach-grid" id="apply">
               <div>
                 <SectionHead index="04" title="Coaching" meta={`${coaching.weeks} weeks`} />
-                <h2 id="coach-title" className="display">Want someone in your corner?</h2>
+                <h2 id="coach-title" className="display" data-enter><Words>Want someone in your corner?</Words></h2>
               </div>
               <div className="coach-copy">
                 <p>Work directly with {site.founder} for {coaching.weeks} weeks: a plan built around your week, a check-in every week, and adjustments as you progress.</p>
                 <div className="price">
-                  <p className="monument">{coaching.weekly}</p>
+                  <p className="monument" data-enter data-count={coaching.weekly}>{coaching.weekly}</p>
                   <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span><span>Founding price</span></p>
                 </div>
                 <Button href="/coaching" track="cta_coaching_home">Explore coaching</Button>
@@ -170,7 +180,7 @@ export default function Home() {
           <div className="wrap faq-grid">
             <div className="section-head">
               <SectionHead index={coaching.available ? "05" : "04"} title="Questions" meta={`${String(homeFaq.length).padStart(2, "0")} answers`} />
-              <h2 id="faq-title" className="display">Straight answers.</h2>
+              <h2 id="faq-title" className="display" data-enter><Words>Straight answers.</Words></h2>
             </div>
             <Faqs items={homeFaq} />
           </div>
@@ -182,7 +192,7 @@ export default function Home() {
               <path fill="var(--c-pane)" d={paths.pane} /><path fill="var(--c-facet)" d={paths.facet} />
               <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
             </svg>
-            <h2 id="closer-title" className="display">{site.tagline}</h2>
+            <h2 id="closer-title" className="display" data-enter><Words>{site.tagline}</Words></h2>
             <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today's session." : "Join the preview list and be among the first to try Blackglass for Android."}</p>
             <Button href="/get" track="cta_get_closer">Get Blackglass</Button>
           </div>

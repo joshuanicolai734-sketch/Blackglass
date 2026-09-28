@@ -383,6 +383,87 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--t-2); animation-timing-function: var(--ease-expo); }
 .hdr { view-transition-name: header; }
 
+/* ---- Motion: hairlines draw, words rise out of hairline masks, numbers tick, panels wipe along a hairline.
+   Transform and opacity only. Load choreography runs from CSS alone (so it never waits on scripts); scroll
+   states are set by site.js; the hero octagon's exit uses a scroll timeline where supported. ---- */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .02em .12em; margin: 0 -.02em -.12em; }
+.wi { display: inline-block; }
+.sh-dash, .sh-rule { transform-origin: left; }
+
+/* Hero octagon: the Glass Pane's outline, the hero's one dominant shape (1100px and up). */
+.hero { position: relative; overflow: hidden; }
+.hero-oct { display: none; }
+@media (min-width: 1100px) {
+  .hero-copy { max-width: min(44rem, 52vw); }
+  .hero-oct { position: absolute; display: block; right: var(--gutter); top: 50%; width: min(38vw, 540px); height: auto; max-width: none; overflow: visible; transform: translateY(-50%); pointer-events: none; }
+  .ho-seg { stroke: var(--rule-strong); stroke-width: 1; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: 0 50%; }
+  .ho-seam { stroke: var(--rule); }
+}
+
+/* Demo screen swap: the new screen is uncovered by a mask travelling down with a scan hairline on its edge. */
+.pg-mask { position: relative; display: block; overflow: hidden; clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+.pg-in { display: block; }
+.pg-mask img { clip-path: none; }
+.pg-scan { position: absolute; left: 0; right: 0; bottom: 0; height: var(--hair); background: var(--c-bone); opacity: 0; }
+
+/* The snapping reticle (desktop, fine pointer): one set of brackets that glides between hovered targets. */
+.reticle { position: fixed; inset: 0 auto auto 0; z-index: 70; pointer-events: none; mix-blend-mode: difference; opacity: 0; transition: opacity var(--t-2) var(--ease-expo); }
+.reticle.on { opacity: 1; }
+.reticle i { position: fixed; left: 0; top: 0; width: 12px; height: 12px; border: 0 solid #fff; transition: transform var(--t-2) var(--ease-quart); }
+.reticle.jump i { transition: none; }
+.reticle i:nth-child(1) { border-top-width: 1px; border-left-width: 1px; }
+.reticle i:nth-child(2) { border-top-width: 1px; border-right-width: 1px; }
+.reticle i:nth-child(3) { border-bottom-width: 1px; border-right-width: 1px; }
+.reticle i:nth-child(4) { border-bottom-width: 1px; border-left-width: 1px; }
+.has-reticle .snap:hover .brk { opacity: 0; }
+
+/* Scroll gauge: the index of the section in view, beside the signal square. */
+.gauge-n { display: none; }
+@media (min-width: 1100px) {
+  .gauge-n { position: fixed; z-index: 46; right: 54px; top: 50%; display: block; translate: 0 -8px; font: 500 var(--fs-label)/1 var(--font-mono); letter-spacing: var(--tr-label); color: #fff; mix-blend-mode: difference; pointer-events: none; transition: transform var(--t-3) var(--ease-quart); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Load: the hero draws and rises. The paragraph is left still, so first paint is never held back. */
+  .js .hero .wi, .js .page-hero h1 .wi { animation: rise var(--t-4) var(--ease-expo) both; animation-delay: calc(120ms + var(--i) * 45ms); }
+  .js .hero .sh-dash, .js .hero .sh-rule, .js .page-hero .sh-dash, .js .page-hero .sh-rule { animation: draw var(--t-4) var(--ease-expo) 80ms both; }
+  .js .hero .actions, .js .hero .status { animation: fade-in var(--t-4) var(--ease-expo) 520ms both; }
+  .js .ho-seg { animation: draw var(--t-4) var(--ease-expo) both; animation-delay: calc(360ms + var(--i) * 90ms); }
+  @keyframes rise { from { transform: translateY(105%); } }
+  @keyframes draw { from { transform: scaleX(0); } }
+
+  /* Enter on scroll (site.js marks below-the-fold elements .pre, then .in). */
+  .sh.pre .sh-dash, .sh.pre .sh-rule { transform: scaleX(0); }
+  .sh.pre > :not(.sh-dash):not(.sh-rule) { opacity: 0; }
+  .sh.pre.in .sh-dash, .sh.pre.in .sh-rule { transform: none; transition: transform var(--t-4) var(--ease-expo); }
+  .sh.pre.in > :not(.sh-dash):not(.sh-rule) { opacity: 1; transition: opacity var(--t-3) var(--ease-expo) var(--t-1); }
+  h2.pre .wi { transform: translateY(105%); }
+  h2.pre.in .wi { transform: none; transition: transform var(--t-4) var(--ease-expo); transition-delay: calc(var(--i) * 45ms); }
+
+  /* Demo swap */
+  .demo-panel.enter .pg-mask { animation: mask-down var(--t-4) var(--ease-quart) both; }
+  .demo-panel.enter .pg-in { animation: mask-up var(--t-4) var(--ease-quart) both; }
+  .demo-panel.enter .pg-scan { animation: scan var(--t-4) var(--ease-quart) both; }
+  @keyframes mask-down { from { transform: translateY(-100%); } }
+  @keyframes mask-up { from { transform: translateY(100%); } }
+  @keyframes scan { 0%, 90% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* FAQ answers ease in. */
+  .faq[open] p { animation: answer var(--t-3) var(--ease-expo); }
+  @keyframes answer { from { opacity: 0; transform: translateY(-6px); } }
+
+  /* Paper shutter: when a Paper section enters, Glass wipes down off it along a hairline. */
+  section.paper[data-enter] { overflow: hidden; }
+  section.paper.pre::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: var(--c-glass); border-top: var(--hair) solid rgba(244, 245, 239, .55); }
+  section.paper.pre.in::after { transform: translateY(101%); transition: transform 900ms var(--ease-quart); }
+
+  @supports (animation-timeline: view()) {
+    /* The hero octagon scales away as the hero leaves. */
+    .hero-oct { animation: oct-away linear both; animation-timeline: view(); animation-range: exit 0% exit 90%; }
+    @keyframes oct-away { from { transform: translateY(-50%); opacity: 1; } to { transform: translateY(-50%) scale(1.3); opacity: 0; } }
+  }
+}
+
 /* Reduced motion: everything collapses to fades. Nothing moves, draws or scales. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-property: opacity, color, background-color, border-color !important; }

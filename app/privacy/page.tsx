@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
-import { SectionHead } from "@/components/site/ui";
+import { SectionHead, Words } from "@/components/site/ui";
 import { contact, site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function Privacy() {
         <section className="page-hero" data-sec>
           <div className="wrap">
             <SectionHead title="Privacy" meta="This website" />
-            <h1 className="display">Your details. Your choice.</h1>
+            <h1 className="display"><Words>Your details. Your choice.</Words></h1>
             <p className="body-2">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list and the site&rsquo;s visit counts.</p>
           </div>
         </section>
