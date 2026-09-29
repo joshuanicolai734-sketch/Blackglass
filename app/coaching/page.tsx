@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Footer, Header, StickyCta } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { FormError, formStatus } from "@/components/site/forms";
+import { EnquiryForm, NextSteps } from "@/components/site/forms";
 import { Button, JsonLd, SectionHead, SpecCard, TextLink } from "@/components/site/ui";
 import { coachingFaq } from "@/content/faq";
 import { coaching, contact, site } from "@/content/site";
@@ -19,9 +19,8 @@ export const metadata: Metadata = {
   openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
 };
 
-export default async function Coaching({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default function Coaching() {
   if (!coaching.available) notFound();
-  const status = formStatus(await searchParams, "sent");
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
     { "@type": "ListItem", position: 2, name: "Coaching", item: `${site.url}/coaching` },
@@ -39,6 +38,8 @@ export default async function Coaching({ searchParams }: { searchParams: Promise
               <h1 id="coach-title" className="display">{`Coaching with ${site.founder}.`}</h1>
               <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress.</p>
               <div className="actions"><Button href="#enquire" track="cta_enquire_hero" down>Enquire about coaching</Button></div>
+              <p className="label next-steps-label">What happens after you enquire</p>
+              <NextSteps />
             </div>
             <div className="offer paper">
               <SectionHead title={coaching.offerName} meta="Dunedin" />
@@ -92,33 +93,7 @@ export default async function Coaching({ searchParams }: { searchParams: Promise
                 <TextLink href={`mailto:${contact.email}?subject=${encodeURIComponent("Blackglass coaching")}`} arrow={false}>{contact.email}</TextLink>
               </div>
             </div>
-{status.done ? (
-              /* Landed here from a no-JavaScript post that the server saved. */
-              <div className="form-card is-done" id="enquire" tabIndex={-1}>
-                <h2 className="title">Enquiry sent.</h2>
-                <div className="msg is-ok" role="status"><p>{site.founder} will reply by email, or by text if you left your number. Thanks for reaching out.</p></div>
-              </div>
-            ) : (
-            <form className="form-card" id="enquire" method="post" action="/api/enquiries" data-form="enquiry" data-email={contact.email} data-founder={site.founder} noValidate>
-              <h2 className="title">Coaching enquiry</h2>
-              <FormError error={status.error} subject="Blackglass coaching" />
-              <div className="row2">
-                <div className="field"><label htmlFor="e-name">Your name</label><input id="e-name" name="name" type="text" autoComplete="name" maxLength={80} required /></div>
-                <div className="field"><label htmlFor="e-email">Email address</label><input id="e-email" name="email" type="email" autoComplete="email" inputMode="email" maxLength={120} required /></div>
-              </div>
-              <div className="field"><label htmlFor="e-phone">Mobile for a text reply<span className="opt">OPTIONAL</span></label>
-                <input id="e-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" maxLength={30} aria-describedby="e-phone-hint" /><span className="hint" id="e-phone-hint">Only used to reply to this enquiry.</span></div>
-              <div className="field"><label htmlFor="e-route">What are you looking for?</label>
-                <select id="e-route" name="route" defaultValue="coaching"><option value="coaching">{coaching.weeks}-week coaching ({price}/week)</option><option value="programme">A personal training programme</option></select></div>
-              <div className="field"><label htmlFor="e-goal">What do you want to change?</label>
-                <textarea id="e-goal" name="goal" rows={4} maxLength={600} required aria-describedby="e-goal-hint" placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
-              <div className="trap" aria-hidden="true"><label htmlFor="e-website">Leave blank</label><input id="e-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
-              <button className="btn btn-primary" type="submit"><span>Send my enquiry</span>
-                <svg className="arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" /></svg></button>
-              <p className="form-note">No payment is taken here. {site.founder} uses these details only to reply. <a href="/privacy">Privacy</a></p>
-              <div className="msg" data-form-msg role="status" aria-live="polite" hidden />
-            </form>
-            )}
+<EnquiryForm />
           </div>
         </section>
 

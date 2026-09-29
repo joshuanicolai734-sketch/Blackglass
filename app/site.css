@@ -185,8 +185,9 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 /* ---- Showreel (components/site/reel.tsx, public/reel.js) ---- */
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .reel { background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
-.reel-stage { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: calc(100svh - 64px); overflow: hidden; container: reel / size; }
+.reel-stage { position: relative; z-index: 61; width: 100%; aspect-ratio: 1 / 1; max-height: calc(100svh - 64px); overflow: hidden; container: reel / size; }
 @media (min-width: 700px) { .reel-stage { aspect-ratio: 16 / 9; max-height: min(72svh, 720px); } }
+/* The stage sits above the page's decorative grid (z-index 60), so no hairline runs through the athlete or the screens. */
 /* Scenes: all server-rendered. The squat's first frame is the poster (first paint, no JS, reduced motion);
    reel.js moves layers with transform and opacity only. Positions are container units, so nothing is measured. */
 .reel-scenes, .rl-scene { position: absolute; inset: 0; }
@@ -207,9 +208,9 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .rl-limb path, .rl-limb circle { vector-effect: non-scaling-stroke; }
 .rl-o path { fill: var(--c-facet); stroke: rgba(244, 245, 239, .9); stroke-width: 4px; }
 .rl-f path { fill: var(--c-facet); }
-.rl-f .rl-spec { fill: none; stroke: var(--c-bone); stroke-width: 3px; }
-.rl-plate circle { fill: var(--c-pane); stroke: rgba(244, 245, 239, .4); stroke-width: 1.5px; }
-.rl-plate .rl-plate-in { fill: none; stroke: rgba(244, 245, 239, .12); stroke-width: 1px; }
+.rl-f .rl-spec { fill: var(--c-bone); }
+.rl-plate circle { fill: var(--c-pane); stroke: rgba(244, 245, 239, .85); stroke-width: 3px; } /* the load: second-loudest shape */
+.rl-plate .rl-plate-in { fill: none; stroke: rgba(244, 245, 239, .3); stroke-width: 1.5px; }
 .rl-hub path { fill: var(--c-bone); }
 .rl-path { position: absolute; left: calc(var(--u) * 110); top: calc(var(--u) * 30); width: var(--hair); height: calc(var(--u) * 400);
   background: repeating-linear-gradient(to bottom, var(--rule-strong) 0 2px, transparent 2px 8px); }
@@ -225,8 +226,12 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .rl-mod { left: 5cqw; right: 5cqw; top: 14cqh; display: grid; gap: 5cqh; }
 .rl-cap { display: grid; gap: 1.5cqh; }
 .rl-word { font-weight: 700; font-size: 12cqw; line-height: .86; letter-spacing: -.02em; text-transform: uppercase; color: var(--fg); margin: 0; }
-.rl-shot { --cut: 12px; position: relative; aspect-ratio: 720 / 280; overflow: hidden; background: var(--c-pane); clip-path: var(--chamfer); }
+.rl-pane { --cut: 22px; position: relative; padding: 9px; clip-path: var(--chamfer); background: var(--c-facet); } /* the site's pane frame */
+.rl-pane::after { content: ""; position: absolute; left: 0; top: 0; width: 31px; height: 1.5px; background: var(--c-bone); transform-origin: 0 0; transform: translate(0, 22px) rotate(-45deg); }
+.rl-shot { position: relative; overflow: hidden; background: var(--c-pane); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .rl-shot img { display: block; width: 100%; height: auto; max-width: none; transform: translateY(var(--y)); }
+.rl-card { display: grid; align-content: space-between; gap: 24px; min-height: 12em; padding: 28px 28px 26px; }
+.rl-card-t { margin: 0; font-weight: 600; font-size: var(--fs-display); line-height: 1.1; letter-spacing: var(--tr-display); text-transform: uppercase; color: var(--fg); text-wrap: balance; }
 /* Scene 3, the lockup. */
 .rl-lock { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4.5cqh; }
 .rl-lock > * { position: static; }
@@ -265,8 +270,6 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 @media (hover: hover) { .rc-ch:hover { color: var(--fg); } }
 .reel-toggle-icon { width: 8px; height: 10px; border: 0 solid currentColor; border-left-width: 2px; border-right-width: 2px; }
 .reel-toggle.is-paused .reel-toggle-icon { border: 0; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
-.reel-foot { display: flex; justify-content: flex-end; padding-top: 18px; padding-bottom: 18px; }
-.reel-foot { display: flex; justify-content: flex-end; padding-top: 18px; padding-bottom: 18px; }
 .reel-foot { display: flex; justify-content: flex-end; padding-top: 18px; padding-bottom: 18px; }
 
 /* ---- Sections ---- */

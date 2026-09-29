@@ -43,7 +43,7 @@ function pose(u: number): Record<Frame, string> {
 /** Tapered capsules in each frame's local space: [length, radius at start, radius at end, x, y]. The foot is in world space. */
 const PARTS: Record<"foot" | Frame, number[][]> = {
   foot: [[60, 9, 6, -15, -8]],
-  shin: [[97, 8, 14.5, 0, 0], [40, 7, 13.5, 42, -3]],
+  shin: [[97, 8, 15.5, 0, 0], [40, 7, 13.5, 42, -3]], // the knee end covers the thigh's end cap: no seam
   thigh: [[97, 15, 26, 0, 0]],
   // glutes, waist, chest (lat width), trap, neck, head
   torso: [[0, 24, 24, 6, -7], [56, 20, 25, 0, 2], [50, 30, 24, 56, 6], [20, 14, 12, 92, -4], [26, 11, 11, 102, 4], [0, 20, 20, 138, 10]],
@@ -85,28 +85,30 @@ function Limb({ frame, kind, parts, at, children }: { frame?: Frame; kind: strin
 function Athlete() {
   const at = pose(0);
   const body: ("foot" | Frame)[] = ["foot", "shin", "thigh", "torso"], arm: Frame[] = ["upper", "fore"];
-  const plate = [[0, 50, 50, BX, BY]], hub = [[0, 5, 5, BX, BY]];
-  // The lit facet: a bone edge along the upper back and traps, clipped to the back of the torso.
-  const back = [PARTS.torso[2], PARTS.torso[3]];
+  const plate = [[0, 50, 50, BX, BY]], hub = [[0, 7, 7, BX, BY]];
+  // The lit facet: a bone band just inside the silhouette along the upper back. It is the torso's union in bone
+  // under the same union inset by 2.2 units, clipped to the upper back, so it never leaves the body or shows a seam.
+  const torso = PARTS.torso.map(cap).join(""), inset = PARTS.torso.map(([L, a, b, x, y]) => cap([L, a - 2.2, b - 2.2, x, y])).join("");
   return (
     <div className="rl-fig" aria-hidden="true">
       <span className="rl-path" />
       <div className="rl-rig">
         <Limb frame="torso" kind="rl-plate" parts={plate} at={at}><circle cx={BX} cy={BY} r={50} /><circle className="rl-plate-in" cx={BX} cy={BY} r={38} /></Limb>
+        {/* The arms sit behind the torso, so only the elbow shows behind the back and the body reads as one mass. */}
+        {arm.map((p) => <Limb key={`o-${p}`} frame={p} kind="rl-o" parts={PARTS[p]} at={at} />)}
+        {arm.map((p) => <Limb key={`f-${p}`} frame={p} kind="rl-f" parts={PARTS[p]} at={at} />)}
         {body.map((p) => <Limb key={`o-${p}`} frame={p === "foot" ? undefined : p} kind="rl-o" parts={PARTS[p]} at={at} />)}
         {body.map((p) => (
           <Limb key={`f-${p}`} frame={p === "foot" ? undefined : p} kind="rl-f" parts={PARTS[p]} at={at}>
             {p === "torso" ? (
               <>
-                <path d={PARTS.torso.map(cap).join("")} />
-                <clipPath id="rl-back"><rect x={40} y={-60} width={90} height={52} /></clipPath>
-                <path className="rl-spec" d={back.map(cap).join("")} clipPath="url(#rl-back)" />
+                <path d={torso} />
+                <clipPath id="rl-back"><rect x={40} y={-60} width={92} height={50} /></clipPath>
+                <g clipPath="url(#rl-back)"><path className="rl-spec" d={torso} /><path d={inset} /></g>
               </>
             ) : undefined}
           </Limb>
         ))}
-        {arm.map((p) => <Limb key={`o-${p}`} frame={p} kind="rl-o" parts={PARTS[p]} at={at} />)}
-        {arm.map((p) => <Limb key={`f-${p}`} frame={p} kind="rl-f" parts={PARTS[p]} at={at} />)}
         <Limb frame="torso" kind="rl-hub" parts={hub} at={at} />
       </div>
     </div>
@@ -114,14 +116,16 @@ function Athlete() {
 }
 
 /**
- * The app scene: three real screens, cropped to one honest fact each (public/assets, the demo's own files). The
- * Learn crop is the phase control only, never the exercise render. reel.js sets the image sources once the reel
- * starts, so the screens cost nothing before the page's load event (and are usually cached by the demo already).
+ * The app scene: two real screens, each cropped to one whole card (public/assets, the demo's own files), and Learn
+ * as a caption-only card: the only Learn screen shows an exercise the owner rejected, so it never appears here.
+ * Crops are [top, height] in the 720 x 1560 source, measured so both edges fall in an empty gap between rows (the
+ * journeys check samples those edges). reel.js sets the image sources once the reel starts, so the screens cost
+ * nothing before the page's load event (and are usually cached by the demo already).
  */
-const MODULES: { name: string; fact: string; src: string; y: number }[] = [
-  { name: "Today", fact: "Resume where you stopped", src: "/assets/dashboard", y: 285 },
-  { name: "Train", fact: "The whole week, planned", src: "/assets/program", y: 472 },
-  { name: "Learn", fact: "Phase by phase", src: "/assets/movement", y: 1165 },
+const MODULES: { name: string; fact: string; src?: string; crop?: [number, number]; card?: [string, string] }[] = [
+  { name: "Today", fact: "Resume where you stopped", src: "/assets/dashboard", crop: [286, 302] },
+  { name: "Train", fact: "The whole week, planned", src: "/assets/program", crop: [488, 360] },
+  { name: "Learn", fact: "Phase by phase", card: ["Exercise guide", "Learn the pattern. Control the movement."] },
 ];
 
 /**
@@ -139,8 +143,8 @@ export function Reel() {
       <p className="sr-only">
         A 12-second looping animation without sound. An athlete braces under the bar and performs one back squat at a 3-1-1 tempo: three
         seconds down, a one-second pause at the bottom, a drive back up, and a held lockout, with the bar kept over the middle of the foot.
-        Then three of the app&rsquo;s screens: Today, with an unfinished session ready to resume; Train, a six-day programme; and Learn, an
-        exercise guide taken phase by phase. It ends on the Blackglass mark with the line &ldquo;{site.tagline}&rdquo;
+        Then the app: Today, with an unfinished session ready to resume; Train, a six-day programme; and Learn, exercise guides taken phase
+        by phase. It ends on the Blackglass mark with the line &ldquo;{site.tagline}&rdquo;
       </p>
       <div className="reel-stage">
         <div className="reel-scenes" aria-hidden="true">
@@ -151,22 +155,28 @@ export function Reel() {
               <p className="rl-label"><b>Back squat</b> · Tempo</p>
               <div className="rl-cols">
                 {[["3", "Lower"], ["1", "Pause"], ["1", "Drive"]].map(([num, w], i) => (
-                  <div key={w} className="rl-col" data-col={i}><span className="rl-n">{num}</span><span className="rl-label">{w}</span></div>
+                  <div key={w} className="rl-col" data-col={i} style={i ? { opacity: 0.4 } : undefined}><span className="rl-n">{num}</span><span className="rl-label">{w}</span></div>
                 ))}
                 <span className="rl-mark" data-mark><i /></span>
               </div>
             </div>
           </div>
           <div className="rl-scene rl-mods" data-scene="1">
-            {MODULES.map(({ name, fact, src, y }, i) => (
+            {MODULES.map(({ name, fact, src, crop, card }, i) => (
               <div key={name} className="rl-mod" data-mod={i}>
                 <div className="rl-cap">
                   <p className="rl-label"><b>0{i + 1}</b> / 0{MODULES.length}</p>
                   <p className="rl-word">{name}</p>
                   <p className="rl-label"><b>{fact}</b></p>
                 </div>
-                <div className="rl-shot" style={{ "--y": `${((-y / 1560) * 100).toFixed(3)}%` } as CSSProperties}
-                  data-src={`${src}-480.webp 480w, ${src}.webp 720w`} />
+                {src && crop ? (
+                  <div className="rl-pane">
+                    <div className="rl-shot" style={{ aspectRatio: `720 / ${crop[1]}`, "--y": `${((-crop[0] / 1560) * 100).toFixed(3)}%` } as CSSProperties}
+                      data-src={`${src}-480.webp 480w, ${src}.webp 720w`} data-crop={crop.join(" ")} />
+                  </div>
+                ) : card ? (
+                  <div className="rl-pane rl-card"><p className="rl-label">{card[0]}</p><p className="rl-card-t">{card[1]}</p></div>
+                ) : null}
               </div>
             ))}
           </div>

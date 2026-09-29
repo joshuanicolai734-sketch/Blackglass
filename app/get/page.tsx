@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { FormError, formStatus } from "@/components/site/forms";
+import { PreviewForm } from "@/components/site/forms";
 import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, TextLink } from "@/components/site/ui";
 import { getFaq, getFaqLive } from "@/content/faq";
 import { app, coaching, contact, site } from "@/content/site";
@@ -20,8 +20,7 @@ export const metadata: Metadata = {
   openGraph: { title: "Get Blackglass for Android", description: hasDownload ? "Download Blackglass for Android." : "Blackglass for Android is in development. Join the preview list.", url: "/get", images: [{ url: "/og/get.png", width: 1200, height: 630, alt: "Get Blackglass for Android" }] },
 };
 
-export default async function Get({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const status = formStatus(await searchParams, "joined");
+export default function Get() {
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
     { "@type": "ListItem", position: 2, name: "Get Blackglass", item: `${site.url}/get` },
@@ -49,30 +48,8 @@ export default async function Get({ searchParams }: { searchParams: Promise<Reco
             </div>
 
             <div>
-              {!hasDownload ? status.done ? (
-                /* Landed here from a no-JavaScript post that the server saved. */
-                <div className="form-card is-done" id="preview" tabIndex={-1}>
-                  <h2 className="title">You’re on the list.</h2>
-                  <div className="msg is-ok" role="status"><p>{site.founder} will email you when there’s an Android build you can try.</p></div>
-                </div>
-              ) : (
-                <form className="form-card" id="preview" method="post" action="/api/enquiries" data-form="preview" data-email={contact.email} data-founder={site.founder} noValidate>
-                  <h2 className="title">Join the Android preview list</h2>
-                  <p>Free. One email when there’s a build you can try. No newsletter.</p>
-                  <FormError error={status.error} subject="Blackglass Android preview list" />
-                  <div className="field"><label htmlFor="p-name">Your name</label>
-                    <input id="p-name" name="name" type="text" autoComplete="name" maxLength={80} required /></div>
-                  <div className="field"><label htmlFor="p-email">Email address</label>
-                    <input id="p-email" name="email" type="email" autoComplete="email" inputMode="email" maxLength={120} required /></div>
-                  <div className="field"><label htmlFor="p-note">What do you want from a training app?<span className="opt">OPTIONAL</span></label>
-                    <input id="p-note" name="goal" type="text" maxLength={200} /></div>
-                  <div className="trap" aria-hidden="true"><label htmlFor="p-website">Leave blank</label><input id="p-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
-                  <input type="hidden" name="route" value="app" />
-                  <button className="btn btn-primary" type="submit" data-vt-cta><span>Join the preview list</span>
-                    <svg className="arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" /></svg></button>
-                  <p className="form-note">{site.founder} uses your name and email only to contact you about Blackglass for Android. <a href="/privacy">Privacy</a></p>
-                  <div className="msg" data-form-msg role="status" aria-live="polite" hidden />
-                </form>
+              {!hasDownload ? (
+                <PreviewForm />
               ) : (
                 <Pane src="/assets/dashboard.webp" alt="Blackglass Today screen with a session in progress and food targets" caption="Today · current Android build" />
               )}

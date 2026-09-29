@@ -17,6 +17,15 @@
     check();
   };
   const reduce = w.matchMedia('(prefers-reduced-motion: reduce)');
+  /* CSS time tokens in milliseconds, whatever unit they're written in: the minifier turns 350ms into .35s. */
+  const dur = (name, fallback) => {
+    const v = getComputedStyle(root).getPropertyValue(name).trim();
+    const n = parseFloat(v);
+    if (!Number.isFinite(n)) return fallback;
+    return /ms$/i.test(v) ? n : /s$/i.test(v) ? n * 1000 : n;
+  };
+  const curve = (name) => getComputedStyle(root).getPropertyValue(name).trim() || 'ease-out';
+  w.blackglassDur = dur; // exposed for the journey checks
   const store = {
     get: (k, s = localStorage) => { try { return s.getItem(k); } catch { return null; } },
     set: (k, v, s = localStorage) => { try { s.setItem(k, v); } catch { /* storage blocked */ } },
@@ -48,7 +57,7 @@
      inert, so Tab stays inside the menu. ---- */
   const menu = d.querySelector('.menu');
   if (menu) {
-    const behind = () => [d.querySelector('main'), d.querySelector('.ftr'), d.querySelector('[data-sticky]'), ...d.querySelectorAll('.hdr > :not(.menu)')].filter(Boolean);
+    const behind = () => [d.querySelector('.skip'), d.querySelector('main'), d.querySelector('.ftr'), d.querySelector('[data-sticky]'), ...d.querySelectorAll('.hdr > :not(.menu)')].filter(Boolean);
     const sync = () => { root.style.overflow = menu.open ? 'hidden' : ''; behind().forEach((el) => { el.inert = menu.open; }); };
     menu.addEventListener('toggle', sync);
     menu.addEventListener('click', (e) => { if (e.target.closest('a')) { menu.open = false; sync(); } });
@@ -61,15 +70,14 @@
      drives in 24px along the direction of travel from the first frame; the outgoing one crosses under it and yields
      late (opacity out at the halfway mark of --t-load, --ease-load), so the frame is never empty. The inactive
      screens ship as data-src (no bytes before the page's load event) and are warmed once the demo is near or
-     touched; a swap waits for the incoming image to decode, capped at 300ms. Reduced motion: an instant swap. ---- */
+     touched, and decoded as they warm, so a swap starts at once; if an image isn't ready yet, the swap waits for it,
+     capped at 300ms. Reduced motion: an instant swap. The listeners attach as soon as this script runs; only the
+     shared indicator's first placement waits for hydration (it writes attributes React also renders). ---- */
   const demo = d.querySelector('[data-demo]');
-  if (demo) whenHydrated(() => {
+  if (demo) {
     const tabs = [...demo.querySelectorAll('[data-demo-tab]')];
     const panels = [...demo.querySelectorAll('[data-demo-panel]')];
     const list = demo.querySelector('[role="tablist"]');
-    const css = getComputedStyle(root);
-    const ms = (v) => parseFloat(css.getPropertyValue(v)) || 0;
-    const ease = (v) => css.getPropertyValue(v).trim() || 'ease-out';
     let current = Math.max(0, tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'));
     let interacted = false, turn = 0;
     const ink = () => {
@@ -78,11 +86,13 @@
       list.style.setProperty('--bw', t.offsetWidth);
       list.style.setProperty('--sx', t.offsetLeft + (sq ? sq.offsetLeft : 0));
     };
-    ink();
-    list.setAttribute('data-ink', '');
-    requestAnimationFrame(() => requestAnimationFrame(() => list.setAttribute('data-ink-live', '')));
-    if ('ResizeObserver' in w) new ResizeObserver(ink).observe(list);
-    d.fonts?.ready.then(ink);
+    whenHydrated(() => {
+      ink();
+      list.setAttribute('data-ink', '');
+      requestAnimationFrame(() => requestAnimationFrame(() => list.setAttribute('data-ink-live', '')));
+      if ('ResizeObserver' in w) new ResizeObserver(ink).observe(list);
+      d.fonts?.ready.then(ink);
+    });
 
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.
     const shots = [...demo.querySelectorAll('img[data-src]')];
@@ -92,6 +102,7 @@
       if (img.dataset.srcset) { img.sizes = img.dataset.sizes || ''; img.srcset = img.dataset.srcset; }
       img.src = img.dataset.src;
       delete img.dataset.src;
+      img.decode?.().catch(() => {}); // decoded ahead of the tap, so the swap never waits
     };
     const warmAll = () => shots.forEach(warm);
     ['pointerenter', 'focusin', 'touchstart'].forEach((t) => list.addEventListener(t, warmAll, { once: true, passive: true }));
@@ -101,16 +112,17 @@
       const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); warmAll(); } }, { rootMargin: '600px 0px' });
       io.observe(demo);
     });
+    // true when the image can be shown now; otherwise a promise that settles when it's decoded (or after 300ms).
     const ready = (img) => {
-      if (!img) return Promise.resolve();
+      if (!img) return true;
       warm(img);
-      if (img.complete && img.naturalWidth > 1) return Promise.resolve();
+      if (img.complete && img.naturalWidth > 1) return true;
       return Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);
     };
 
     const leaving = new Map();
     const settle = () => { leaving.forEach((anims, p) => { anims.forEach((a) => a.cancel()); p.classList.remove('is-leaving'); p.inert = false; }); leaving.clear(); panels.forEach((p) => p.classList.remove('is-entering')); };
-    const select = async (i, focus) => {
+    const select = (i, focus) => {
       if (focus) tabs[i].focus();
       if (i === current) return;
       const prev = current, dir = i > prev ? 1 : -1, me = ++turn;
@@ -119,20 +131,23 @@
       ink();
       if (!interacted) { interacted = true; track('demo_engaged'); }
       const out = panels[prev], inn = panels[i], img = inn.querySelector('.pane-glass img');
-      await ready(img);
-      if (me !== turn) return;
+      const r = ready(img);
+      if (r === true) swap(out, inn, img, dir); else r.then(() => { if (me === turn) swap(out, inn, img, dir); });
+    };
+    const swap = (out, inn, img, dir) => {
+      const i = panels.indexOf(inn);
       settle();
       panels.forEach((p, j) => p.toggleAttribute('data-inactive', j !== i));
       if (reduce.matches || !inn.animate) return;
-      const load = ms('--t-load'), drive = ms('--t-drive');
+      const load = dur('--t-load', 350), drive = dur('--t-drive', 220), snap = dur('--t-snap', 120);
       out.classList.add('is-leaving'); out.inert = true;
       const outAnims = [
         out.querySelector('.pane-glass img')?.animate([
           { opacity: 1, transform: 'none' },
           { opacity: 1, transform: `translateX(${-dir * 8}px)`, offset: 0.2 },
           { opacity: 0, transform: `translateX(${-dir * 24}px)` },
-        ], { duration: load, easing: ease('--ease-load'), fill: 'forwards' }),
-        out.querySelector('.demo-copy')?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ms('--t-snap'), easing: 'linear', fill: 'forwards' }),
+        ], { duration: load, easing: curve('--ease-load'), fill: 'forwards' }),
+        out.querySelector('.demo-copy')?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: snap, easing: 'linear', fill: 'forwards' }),
       ].filter(Boolean);
       leaving.set(out, outAnims);
       Promise.all(outAnims.map((a) => a.finished)).then(() => {
@@ -141,9 +156,9 @@
       // The arriving screen sits on top with a see-through frame, so the leaving one shows beneath it until it lands.
       inn.classList.add('is-entering');
       const drop = () => inn.classList.remove('is-entering');
-      const a = img?.animate([{ opacity: 0, transform: `translateX(${dir * 24}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, easing: ease('--ease-expo') });
+      const a = img?.animate([{ opacity: 0, transform: `translateX(${dir * 24}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, easing: curve('--ease-expo') });
       if (a) a.finished.then(drop, drop); else drop();
-      inn.querySelector('.demo-copy')?.animate([{ opacity: 0, transform: `translateX(${dir * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: ms('--t-snap'), easing: ease('--ease-expo'), fill: 'backwards' });
+      inn.querySelector('.demo-copy')?.animate([{ opacity: 0, transform: `translateX(${dir * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: snap, easing: curve('--ease-expo'), fill: 'backwards' });
     };
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i));
@@ -162,12 +177,12 @@
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) select(Math.min(tabs.length - 1, Math.max(0, current + (dx < 0 ? 1 : -1))));
     }, { passive: true });
     demo.addEventListener('pointercancel', () => { sx = null; }, { passive: true });
-  });
+  }
 
   /* ---- Buttons: hold the press for at least --t-snap, so a quick phone tap still reads as a press. The
      /get buttons carry the "cta" view-transition name to the preview form's button on the next page. ---- */
   {
-    const rack = parseFloat(getComputedStyle(root).getPropertyValue('--t-snap')) || 120;
+    const rack = dur('--t-snap', 120);
     let held = null, t0 = 0;
     const release = () => {
       const el = held; held = null;
@@ -193,12 +208,12 @@
      (the fork, or the enquiry form), so it changes state twice per page. It also steps aside only while one of the
      reel's own controls is under it. If it hides while focused, focus moves to the page instead of being dropped. ---- */
   const bar = d.querySelector('[data-sticky]');
-  if (bar && 'IntersectionObserver' in w) whenHydrated(() => {
+  if (bar && 'IntersectionObserver' in w) {
     const hero = d.querySelector('main > section');
     const stop = d.querySelector('#start, #enquire');
     const controls = [...d.querySelectorAll('[data-reel-toggle], [data-reel-chapters]')];
     let heroGone = false, past = false, under = new Set();
-    bar.hidden = false;
+    // The bar keeps its `hidden` attribute (it's what hides it without JavaScript); CSS shows it under html.js.
     const sync = () => {
       const show = heroGone && !past && under.size === 0;
       if (!show && bar.contains(d.activeElement)) { const m = d.querySelector('main'); m.tabIndex = -1; m.focus({ preventScroll: true }); }
@@ -211,9 +226,10 @@
     // Only the bottom ~12% of the viewport, where the bar sits.
     const zone = new IntersectionObserver((es) => { es.forEach((e) => (e.isIntersecting ? under.add(e.target) : under.delete(e.target))); sync(); }, { rootMargin: '-88% 0px 0px 0px' });
     controls.forEach((c) => zone.observe(c));
-  });
+  }
 
-  /* ---- In-page anchors scroll smoothly (when motion is allowed); keyboard focus moves stay instant. ---- */
+  /* ---- In-page anchors (including the skip link) scroll smoothly when motion is allowed, and always move keyboard
+     focus with the eye: into a form's first field, or onto the target itself. ---- */
   d.addEventListener('click', (e) => {
     const a = e.target.closest?.('a[href*="#"]');
     if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target) return;
@@ -224,7 +240,10 @@
     e.preventDefault();
     target.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
     history.pushState(null, '', url.hash);
-    if (target.matches('form, [tabindex]')) target.focus({ preventScroll: true });
+    const field = target.matches('form') && target.querySelector('input:not([type=hidden]):not([tabindex="-1"]), textarea, select');
+    const into = field || target;
+    if (!into.matches('a[href], button, input, select, textarea, [tabindex]')) into.setAttribute('tabindex', '-1');
+    into.focus({ preventScroll: true });
   });
 
   /* ---- Showreel: loaded once the page has finished loading, so it never competes with first paint. ---- */
@@ -251,6 +270,7 @@
      (aria-disabled); on success the confirmation replaces the form and takes focus. ---- */
   const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   d.querySelectorAll('form[data-form]').forEach((form) => {
+    form.noValidate = true; // a property, not markup: without JavaScript the browser validates natively
     const kind = form.dataset.form, who = form.dataset.founder || 'Josh', to = form.dataset.email;
     const msg = form.querySelector('[data-form-msg]');
     const button = form.querySelector('[type="submit"]');
@@ -304,6 +324,7 @@
         if (title) title.textContent = kind === 'preview' ? 'You’re on the list.' : 'Enquiry sent.';
         form.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
       }
+      msg.setAttribute('tabindex', '-1');
       msg.focus?.({ preventScroll: !ok });
     };
     let busy = false;
@@ -326,9 +347,9 @@
         if (!res.ok) throw new Error(String(status));
         form.reset();
         if (kind === 'preview') {
-          show(`You’re on the list. ${who} will email ${data.email} when there’s an Android build you can try.`, true);
+          show(`${who} will email ${data.email} when there’s an Android build you can try.`, true);
         } else {
-          show(`Enquiry received. ${who} will reply by ${data.phone ? 'text or email' : 'email'}. Thanks for reaching out.`, true);
+          show(`${who} will reply by ${data.phone ? 'text or email' : 'email'}. Thanks for reaching out.`, true);
         }
       } catch {
         const subject = kind === 'preview' ? 'Blackglass Android preview list' : 'Blackglass coaching enquiry';
@@ -348,7 +369,6 @@
         label.textContent = idle;
       }
     });
-    whenHydrated(() => msg?.setAttribute('tabindex', '-1'));
   });
 
   /* ---- Colophon: the time in Dunedin, to the minute. ---- */
@@ -387,8 +407,8 @@
       let best = 0, bestV = -1;
       secs.forEach((s, i) => { const v = seen.get(s) || 0; if (v > bestV) { bestV = v; best = i; } });
       sq.style.transform = `translateY(${best * (MINOR + 1) * STEP}px)`;
-      // One volt per viewport: the square rests while the hero or the closer (each with its own volt action) leads.
-      sq.toggleAttribute('data-quiet', secs[best].matches('.hero, .closer'));
+      // One volt per viewport: the square rests while a hero or the closer (each with its own volt action) leads.
+      sq.toggleAttribute('data-quiet', secs[best].matches('.hero, .page-hero, .closer'));
     };
     const io = new IntersectionObserver((es) => { es.forEach((e) => seen.set(e.target, e.intersectionRatio * e.boundingClientRect.height)); place(); }, { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
     secs.forEach((s) => io.observe(s));

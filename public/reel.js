@@ -29,9 +29,14 @@
   // A move with a short ramp in, a steady middle and a ramp out: the velocity profile of a controlled rep.
   const rep = (x, a, b) => { const v = 1 / (1 - a / 2 - b / 2); return x <= 0 ? 0 : x >= 1 ? 1 : x < a ? (v * x * x) / (2 * a) : x < 1 - b ? v * (x - a / 2) : 1 - (v * (1 - x) * (1 - x)) / (2 * b); };
   const load = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2); // --ease-load, near enough
-  const DRIVE = 0.22, LOAD = 0.35; // --t-drive, --t-load
+  // Timing is in seconds, as constants mirroring --t-drive and --t-load: this script never reads CSS time tokens, so
+  // minified values such as .35s cannot be misparsed.
+  const DRIVE = 0.22, LOAD = 0.35;
   const DIM = 0.4;
   // When each tempo column changes: [time, [Lower, Pause, Drive]].
+  // The brace (and the poster) shows only the coming phase lit; the lockout lights all three, so the loop reads as a
+  // new rep, not a freeze. reel.tsx renders BRACE as inline opacities, so the poster is frame 0 exactly.
+  const BRACE = [1, DIM, DIM];
   const LIT = [[0.6, [1, DIM, DIM]], [3.6, [DIM, 1, DIM]], [4.6, [DIM, DIM, 1]], [5.3, [1, 1, 1]]];
   const APP = 6.4, BEAT = 1.2, LOCK = 10;
 
@@ -88,7 +93,7 @@
     // The readout: before and after the rep all three phases are lit; during it, only the phase in play. A phase
     // lights at drive speed and dims at load speed. The volt square steps to the phase in play and stays under Drive.
     cols.forEach((c, i) => {
-      let v = 1;
+      let v = BRACE[i];
       for (const [a, to] of LIT) {
         if (t < a) break;
         if (to[i] !== v) v += (to[i] - v) * (to[i] > v ? expo(k(t, a, a + DRIVE)) : load(k(t, a, a + LOAD)));
@@ -173,10 +178,12 @@
   // The app scene's screens: fetched only now (after load), from the same files the demo uses.
   $('[data-src]').forEach((shot) => {
     const img = new Image();
-    img.alt = ''; img.decoding = 'async'; img.sizes = '(min-width: 700px) 480px, 90vw'; img.srcset = shot.dataset.src;
+    img.alt = ''; img.decoding = 'async'; img.sizes = '(min-width: 700px) 720px, 90vw'; img.srcset = shot.dataset.src;
     shot.appendChild(img);
   });
 
+  // The poster's inline brace opacities are re-set by seek() in the same task, so every frame serializes the same way.
+  cols.forEach((c) => c.removeAttribute('style'));
   seek(current);
   host.classList.add('is-live');
   toggle.hidden = false;

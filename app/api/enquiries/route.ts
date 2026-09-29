@@ -7,16 +7,21 @@ const routes = new Set(["coaching", "programme", "app"]);
 type Outcome = "ok" | "invalid" | "duplicate" | "unavailable" | "forbidden" | "too-large" | "unsupported";
 
 /**
- * Where a plain HTML form post (no JavaScript) lands afterwards: back on its own page with a status flag, never with
- * anything the visitor typed. The page renders the matching message from that flag.
+ * Where a plain HTML form post (no JavaScript) lands afterwards. Success goes to a static confirmation page
+ * (/get/joined, /coaching/sent); anything else goes to a retry page with the reason and, for a validation failure,
+ * the name of the field at fault. Never anything the visitor typed.
  */
-function landing(request: Request, route: string, outcome: Outcome): Response {
+function landing(request: Request, route: string, outcome: Outcome, field: string | null): Response {
   const coachingForm = route === "coaching" || route === "programme";
-  const url = new URL(coachingForm ? "/coaching" : "/get", request.url);
-  if (outcome === "ok") url.searchParams.set(coachingForm ? "sent" : "joined", "1");
-  else url.searchParams.set("error", outcome);
-  url.hash = coachingForm ? "enquire" : "preview";
-  return new Response(null, { status: 303, headers: { ...noStore, Location: url.pathname + url.search + url.hash } });
+  const base = coachingForm ? "/coaching" : "/get";
+  let location: string;
+  if (outcome === "ok") location = `${base}/${coachingForm ? "sent" : "joined"}`;
+  else {
+    const q = new URLSearchParams({ error: outcome });
+    if (field) q.set("field", field);
+    location = `${base}/retry?${q}#${coachingForm ? "enquire" : "preview"}`;
+  }
+  return new Response(null, { status: 303, headers: { ...noStore, Location: location } });
 }
 
 async function readPayload(request: Request, json: boolean): Promise<Record<string, unknown> | null> {
@@ -36,8 +41,9 @@ export async function POST(request: Request) {
   const form = type.includes("application/x-www-form-urlencoded") || type.includes("multipart/form-data");
   // JSON callers (public/site.js) get JSON; plain form posts get a 303 back to their page.
   let route = "";
+  let field: string | null = null;
   const reply = (outcome: Outcome, body: Record<string, unknown>, status: number) =>
-    json ? Response.json(body, { status, headers: noStore }) : landing(request, route, outcome);
+    json ? Response.json(body, { status, headers: noStore }) : landing(request, route, outcome, field);
 
   if (!sameOrigin(request)) return reply("forbidden", { error: "Invalid request" }, 403);
   if (!json && !form) return Response.json({ error: "JSON required" }, { status: 415, headers: noStore });
@@ -67,10 +73,13 @@ export async function POST(request: Request) {
   const goal = value("goal");
   const website = value("website");
   const phoneDigits = phone.replace(/\D/g, "");
-  if (!name || name.length > 80 || !email || email.length > 120 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !routes.has(route) ||
-      (route !== "app" && !goal) || goal.length > 600 ||
-      (phone && (phone.length > 30 || phoneDigits.length < 7 || phoneDigits.length > 15 || !/^\+?[0-9\s().-]+$/.test(phone)))) {
+  // The first field at fault, in form order (a field name carries no personal data).
+  field = !name || name.length > 80 ? "name"
+    : !email || email.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "email"
+      : phone && (phone.length > 30 || phoneDigits.length < 7 || phoneDigits.length > 15 || !/^\+?[0-9\s().-]+$/.test(phone)) ? "phone"
+        : (route !== "app" && !goal) || goal.length > 600 ? "goal"
+          : null;
+  if (field || !routes.has(route)) {
     return reply("invalid", { error: "Check your details and try again" }, 400);
   }
   if (website) return reply("ok", { ok: true }, 201);
