@@ -11,16 +11,16 @@
 
 :root {
   /* Palette. Signal colours are used in small doses: one loud colour per viewport. */
-  --c-glass: #101113;   /* home ground */
-  --c-pane: #18191c;    /* black-glass objects, raised surfaces */
-  --c-facet: #2b2d32;   /* the lit facet; object frames on Glass */
-  --c-bone: #f4f5ef;    /* text on Glass; the specular edge */
-  --c-bone-2: #c3c6c0;  /* body text on Glass, 10.9:1 */
-  --c-bone-3: #a4a9ae;  /* labels on Glass, 8.0:1 */
+  --c-glass: #0b0d0e;   /* poster-black ground */
+  --c-pane: #15191b;    /* black-glass objects, raised surfaces */
+  --c-facet: #2b3032;   /* the lit facet; object frames on Glass */
+  --c-bone: #f1eee6;    /* warm printed bone on Glass */
+  --c-bone-2: #c8c6c0;  /* body text on Glass */
+  --c-bone-3: #aaa9a4;  /* labels on Glass */
   --c-paper: #eceae3;   /* the counter-surface: warm bone, ink 15.7:1 */
   --c-ink-2: #45484d;   /* body text and labels on Paper, 7.6:1 */
-  --c-volt: #d5ff3f;    /* the signal: markers, active states, one line per frame. On Paper: fills inside ink only. */
-  --c-ember: #de7f4e;   /* rare: one moment per page. Fill only; never text on Paper (2.4:1). */
+  --c-volt: #f43f46;    /* crimson signal: actions, active states and one graphic form per view. */
+  --c-ember: #b72f36;   /* deeper red for tonal artwork; never a second signal. */
   --c-danger: #ff8a80;  /* form errors on Glass */
 
   /* Ground: Glass. Sections set `.paper` to switch every semantic token below. */
@@ -29,9 +29,9 @@
   --fg: var(--c-bone);
   --fg-2: var(--c-bone-2);
   --fg-3: var(--c-bone-3);
-  --rule: rgba(244, 245, 239, .14);
-  --rule-strong: rgba(244, 245, 239, .32);
-  --grid: rgba(244, 245, 239, .04);
+  --rule: rgba(241, 238, 230, .17);
+  --rule-strong: rgba(241, 238, 230, .38);
+  --grid: rgba(241, 238, 230, .045);
   --signal: var(--c-volt);
   --action: var(--c-volt);     /* primary button fill */
   --on-action: var(--c-glass);
@@ -65,7 +65,7 @@
      - Drive (concentric): anything arriving, opening or answering the visitor moves at --t-drive with --ease-expo:
        it lands in 4–6 frames and locks. --ease-quart is kept for settles only.
      - Snap: a press, or a colour answering hover or focus, takes --t-snap. A press then releases at drive speed.
-     - Lockout: every move ends dead still. The volt square lands where a move completes.
+     - Lockout: every move ends dead still. The signal square lands where a move completes.
      Travel runs along the 45° facet vector or the reading axis. Nothing animates on first paint.
      Test for any new motion: name its load, its drive and its lockout, or cut it. */
   --t-load: 350ms;
@@ -84,16 +84,16 @@
   :root { --fs-label: .75rem; }
 }
 
-/* Paper: black-glass objects on warm bone. Volt appears only inside ink shapes here. */
+/* Paper: black-glass objects on warm bone. Crimson is used for graphic accents, never body text. */
 .paper {
   --ground: var(--c-paper);
   --surface: var(--c-glass);
   --fg: var(--c-glass);
   --fg-2: var(--c-ink-2);
   --fg-3: var(--c-ink-2);
-  --rule: rgba(16, 17, 19, .18);
-  --rule-strong: rgba(16, 17, 19, .42);
-  --grid: rgba(16, 17, 19, .045);
+  --rule: rgba(11, 13, 14, .18);
+  --rule-strong: rgba(11, 13, 14, .42);
+  --grid: rgba(11, 13, 14, .045);
   --action: var(--c-glass);
   --on-action: var(--c-bone);
   --focus: var(--c-glass);

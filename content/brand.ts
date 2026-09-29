@@ -4,7 +4,7 @@
  * and social artwork so every rendering is the real logo.
  */
 export const lockupViewBox = "0 0 530.087 88";
-export const colours = { ground: "#101113", pane: "#18191C", facet: "#2B2D32", bone: "#F4F5EF", volt: "#D5FF3F", grey: "#8E949B", line: "#2A2C30" };
+export const colours = { ground: "#0B0D0E", pane: "#15191B", facet: "#2B3032", bone: "#F1EEE6", volt: "#F43F46", grey: "#AAA9A4", line: "#2B3032" };
 export const paths = {
   pane: "M7.000 22.101 L22.101 7.000 L65.899 7.000 L81.000 22.101 L81.000 65.899 L65.899 81.000 L22.101 81.000 L7.000 65.899 Z",
   facet: "M73.450 14.550 L65.899 7.000 L22.101 7.000 L7.000 22.101 L7.000 65.899 L14.550 73.450 Z",

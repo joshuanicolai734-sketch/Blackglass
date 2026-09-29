@@ -11,7 +11,7 @@ Read `BLACKGLASS_HANDOFF.md` first, then `docs/MAINTAINING.md` and `docs/PUBLISH
   - The Android app is in development with no public download, and there is no iPhone app. Don't imply otherwise until `content/site.ts → app` has a real link.
   - Only describe features visible in `public/assets/` screens.
   - Don't invent testimonials, results, user numbers, qualifications or social handles.
-- **Design:** use the tokens and components in `app/site.css` and `components/site/`. Volt (`#D5FF3F`) is for primary actions and small markers only. Motion must honour reduced motion and work without JavaScript.
+- **Design:** use the tokens and components in `app/site.css` and `components/site/`. Crimson (`#F43F46`) is the signal for primary actions, small markers and restrained poster forms. Motion must honour reduced motion and work without JavaScript.
 - **Privacy:** don't copy enquiry data from the live database into tools or commits. Site measurement stays cookie-free daily counts (`db/events.ts`).
 
 ## Before committing

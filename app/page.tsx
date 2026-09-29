@@ -73,6 +73,7 @@ export default function Home() {
             {/* The section rule runs across both columns, tying the copy to the screen. */}
             <div className="hero-head"><SectionHead index="00" title="Strength training app" meta="Built in Dunedin" /></div>
             <div className="hero-copy">
+              <p className="hero-kicker label"><span aria-hidden="true">{"///"}</span> A clearer system for the work</p>
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
               <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each movement should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
@@ -93,6 +94,7 @@ export default function Home() {
             <Pane src="/assets/program.webp" className="hero-pane crop-train" priority media="(min-width: 1100px)" sizes="440px"
               alt="Blackglass Train screen: an active six-day strength programme, week 1 of 6, with Push, Pull and Legs days listed" />
           </div>
+          <div className="wrap poster-rail label" aria-hidden="true"><span>BG / 01</span><span>Programme / Session / Movement / Food</span><span>{"///"}</span></div>
         </section>
 
         <section className="section demo" id="how-it-works" aria-labelledby="how-title" data-sec>

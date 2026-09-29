@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#101113", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#0b0d0e", colorScheme: "dark" };
 
 // Runs before first paint: marks that scripts run, so no-JS visitors get the complete static page. On a
 // cross-document view transition it also names the arriving page's preview button "cta", so the tapped /get button
