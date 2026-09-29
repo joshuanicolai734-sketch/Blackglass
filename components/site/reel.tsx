@@ -20,7 +20,7 @@ const MODEL = {
 
 type Frame = "shin" | "thigh" | "torso" | "upper" | "fore";
 /** Mirrors pose() and at() in public/reel.js: each moving frame's CSS transform, in figure units of --u. */
-function pose(u: number): Record<Frame, string> {
+function pose(u: number): Record<Frame, string> & { barY: number } {
   const M = MODEL, R = Math.PI / 180;
   const s = (M.top[0] + (M.bottom[0] - M.top[0]) * u) * R, f = (M.top[1] + (M.bottom[1] - M.top[1]) * u) * R;
   const A = M.ankle;
@@ -36,7 +36,7 @@ function pose(u: number): Record<Frame, string> {
   const at = (P: number[], rad: number) => `translate(calc(var(--u) * ${P[0].toFixed(2)}), calc(var(--u) * ${P[1].toFixed(2)})) rotate(${(rad / R).toFixed(2)}deg)`;
   return {
     shin: at(A, Math.atan2(K[1] - A[1], K[0] - A[0])), thigh: at(K, Math.atan2(H[1] - K[1], H[0] - K[0])), torso: at(H, p - Math.PI / 2),
-    upper: at(S, ua), fore: at(E, Math.atan2(B[1] - E[1], B[0] - E[0])),
+    upper: at(S, ua), fore: at(E, Math.atan2(B[1] - E[1], B[0] - E[0])), barY: B[1],
   };
 }
 
@@ -91,7 +91,7 @@ function Athlete() {
   const torso = PARTS.torso.map(cap).join("");
   return (
     <div className="rl-fig" aria-hidden="true">
-      <span className="rl-path" />
+      <span className="rl-path"><i data-bar-dot style={{ transform: `translateY(calc(var(--u) * ${(400 + at.barY).toFixed(2)}))` }} /></span>
       <div className="rl-rig">
         <Limb frame="torso" kind="rl-plate" parts={plate} at={at}><circle cx={BX} cy={BY} r={50} /><circle className="rl-plate-in" cx={BX} cy={BY} r={38} /></Limb>
         {/* The arms sit behind the torso, so only the elbow shows behind the back and the body reads as one mass. */}
@@ -107,7 +107,7 @@ function Athlete() {
           <defs>
             <clipPath id="rl-tclip"><path d={torso} /></clipPath>
             <linearGradient id="rl-sg" gradientUnits="userSpaceOnUse" x1={26} y1={0} x2={104} y2={0}>
-              <stop offset="0" stopColor="#F4F5EF" stopOpacity="0" /><stop offset=".3" stopColor="#F4F5EF" /><stop offset=".72" stopColor="#F4F5EF" /><stop offset="1" stopColor="#F4F5EF" stopOpacity="0" />
+              <stop offset="0" stopColor="#F1EEE6" stopOpacity="0" /><stop offset=".3" stopColor="#F1EEE6" /><stop offset=".72" stopColor="#F1EEE6" /><stop offset="1" stopColor="#F1EEE6" stopOpacity="0" />
             </linearGradient>
           </defs>
           <g clipPath="url(#rl-tclip)"><path className="rl-spec" d="M26 -26L104 -20" data-spec /></g>
@@ -154,6 +154,7 @@ export function Reel() {
       <div className="reel-stage">
         <div className="reel-scenes" aria-hidden="true">
           <div className="rl-scene rl-squat" data-scene="0">
+            <p className="rl-study rl-label">Movement study <b>01 / Back squat</b></p>
             <Athlete />
             <span className="rl-floor" />
             <div className="rl-tempo">
