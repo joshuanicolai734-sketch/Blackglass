@@ -363,7 +363,7 @@ html:not(.js) .pane-glass img[data-src] { display: none; }
 /* How it works: hairline tabs with one shared indicator (a hairline and the volt square) that drives to the chosen tab.
    Panels share one grid cell, so the section never changes height and the outgoing screen can load out while the
    incoming one drives in (site.js, Web Animations). Without JavaScript all three panels stack and the tabs hide. */
-.demo-tabs { position: relative; display: flex; gap: 28px; margin: -4px -4px 48px; padding: 4px; overflow-x: auto; scrollbar-width: none;
+.demo-tabs { position: relative; display: flex; gap: 28px; margin: -4px -4px 48px; padding: 4px; min-height: 56px; /* a scroll container would otherwise collapse when the stage has a set height */ overflow-x: auto; scrollbar-width: none;
   /* The rule is drawn inside the 4px padding, so the focus ring fits within the scroll box and isn't clipped. */
   background: linear-gradient(var(--rule), var(--rule)) 4px calc(100% - 4px) / calc(100% - 8px) var(--hair) no-repeat; }
 .demo-tabs button:focus-visible { outline-offset: 1px; }
@@ -432,6 +432,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 /* The fork: two equal chamfered cards, stacked on phones, side by side from 900px. Actions sit on the card's floor. */
 .offer-grid { display: grid; gap: 20px; }
 .offer-grid.single { max-width: 46rem; }
+/* The second door, stated once under the two cards: a body-size line and a text link on one row (stacked on phones). */
+.fork-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; margin-top: 40px; }
+.fork-line p { color: var(--fg); max-width: 36em; }
 .offer-card { --cut: 20px; position: relative; display: flex; flex-direction: column; padding: clamp(28px, 4vw, 48px); clip-path: var(--chamfer); }
 .offer-app { --line: var(--rule-strong); border: var(--hair) solid var(--line);
   /* A hairline chamfer on Glass (the two cut corners drawn as 45° hairlines), so the ground reads through. */
@@ -636,4 +639,8 @@ html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bott
   [data-page="coaching"] .section.begin { padding-bottom: calc(var(--section) * .55); }
   [data-page="coaching"] .section.enquire { padding-top: calc(var(--section) * .7); }
   [data-page="coaching"] .enquire .split > div:first-child { position: sticky; top: 112px; }
+  /* "Built for real weeks" is a heading beside two short paragraphs, so it doesn't need a full section of air; the last FAQ
+     item doesn't sit a screenful above the footer. */
+  [data-page="coaching"] .section.fit { padding-block: calc(var(--section) * .6); }
+  .section.faq-end { padding-bottom: calc(var(--section) * .55); }
 }

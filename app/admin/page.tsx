@@ -13,7 +13,7 @@ const eventLabels: Record<string, string> = {
   outbound_play: "Play Store taps", outbound_apk: "APK download taps",
 };
 // The two money paths: taps that head for coaching (revenue now) and for the app (the preview list).
-const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "cta_enquire_header", "cta_coaching_sticky", "cta_enquire_sticky", "links_coaching"];
+const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_fork_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "cta_enquire_header", "cta_coaching_sticky", "cta_enquire_sticky", "links_coaching"];
 const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "cta_preview_header", "cta_get_sticky", "links_get"];
 type Activity = { name: string; source: string; total: number };
 

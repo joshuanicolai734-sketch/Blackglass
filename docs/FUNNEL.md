@@ -34,7 +34,7 @@ Each money door has its own event, so `/admin` can compare the two paths. Its "F
 
 | Path | Events |
 |---|---|
-| Coaching | `cta_coaching_hero`, `cta_offer_coaching`, `cta_coaching_closer`, plus `cta_enquire_hero`, `cta_enquire_header` (the header on `/coaching`), `cta_coaching_sticky`, `cta_enquire_sticky` (the phone bar) and `links_coaching` |
+| Coaching | `cta_coaching_hero`, `cta_offer_coaching`, `cta_fork_coaching` (the line under the home fork), `cta_coaching_closer`, plus `cta_enquire_hero`, `cta_enquire_header` (the header on `/coaching`), `cta_coaching_sticky`, `cta_enquire_sticky` (the phone bar) and `links_coaching` |
 | App | `cta_get_hero`, `cta_offer_app`, `cta_get_closer`, `cta_get_header`, `cta_get_menu`, `cta_get_sticky` (the phone bar), `cta_preview_header` (the header on `/get`), `cta_preview_anchor` and `links_get` |
 
 - Enquiries and sign-ups are counted on the server only when the database insert succeeds.

@@ -57,7 +57,7 @@ export default function Coaching() {
           </div>
         </section>
 
-        <section className="section" aria-labelledby="fit-title" data-sec>
+        <section className="section fit" aria-labelledby="fit-title" data-sec>
           <div className="wrap split">
             <div>
               <SectionHead index="01" title="Who it’s for" />
@@ -97,7 +97,7 @@ export default function Coaching() {
           </div>
         </section>
 
-        <section className="section" aria-labelledby="cq-title" data-sec>
+        <section className="section faq-end" aria-labelledby="cq-title" data-sec>
           <div className="wrap faq-grid">
             <div className="section-head"><SectionHead title="Questions" meta={`${String(coachingFaq.length).padStart(2, "0")} answers`} /><h2 id="cq-title" className="display">Good to know.</h2></div>
             <Faqs items={coachingFaq} />

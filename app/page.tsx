@@ -154,7 +154,6 @@ export default function Home() {
             <div className="section-head">
               <SectionHead index="03" title="Get started" meta={coaching.available ? "02 options" : "01 option"} />
               <h2 id="start-title" className="display">Choose your start.</h2>
-              {coaching.available && <p className="body-2 fork-line">Want a person, not an app? <a href="#coaching">Coaching with {site.founder}</a> is available now.</p>}
             </div>
             <div className={coaching.available ? "offer-grid" : "offer-grid single"}>
               <article className="offer-card offer-app" aria-labelledby="offer-app-title">
@@ -193,6 +192,12 @@ export default function Home() {
                 </article>
               )}
             </div>
+            {coaching.available && (
+              <div className="fork-line">
+                <p className="body-2">Want a person, not an app? Coaching with {site.founder} is available now.</p>
+                <TextLink href="/coaching#enquire" track="cta_fork_coaching">Enquire about coaching</TextLink>
+              </div>
+            )}
           </div>
         </section>
 

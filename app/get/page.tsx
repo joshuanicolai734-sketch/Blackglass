@@ -121,7 +121,7 @@ export default function Get() {
           </div>
         </section>
 
-        <section className="section" aria-labelledby="get-faq" data-sec>
+        <section className="section faq-end" aria-labelledby="get-faq" data-sec>
           <div className="wrap faq-grid">
             <div className="section-head"><SectionHead title="Questions" meta={`${String((hasDownload ? getFaqLive : getFaq).length).padStart(2, "0")} answers`} /><h2 id="get-faq" className="display">Before you sign up.</h2></div>
             <Faqs items={hasDownload ? getFaqLive : getFaq} />
