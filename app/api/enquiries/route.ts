@@ -10,8 +10,8 @@ type Outcome = "ok" | "invalid" | "duplicate" | "unavailable" | "forbidden" | "t
  * Where a plain HTML form post (no JavaScript) lands afterwards. Success goes to a static confirmation page
  * (/get/joined, /coaching/sent); anything else goes to a retry page with the reason and, for a validation failure,
  * the name of the field at fault. Nothing the visitor typed goes in the URL. So a rejected form isn't emptied, what
- * they typed rides back in a two-minute HttpOnly cookie scoped to the retry page alone: it is read once to pre-fill
- * the form, never logged or stored, and cleared by the next successful post.
+ * they typed rides back in a two-minute HttpOnly cookie scoped to the retry page alone. It pre-fills that page until
+ * it expires or a successful post clears it.
  */
 const KEEP = { name: 80, email: 120, phone: 30, goal: 600, route: 12 } as const;
 function landing(request: Request, route: string, outcome: Outcome, field: string | null, typed: Record<string, string> | null): Response {
@@ -40,9 +40,42 @@ function landing(request: Request, route: string, outcome: Outcome, field: strin
   return new Response(null, { status: 303, headers });
 }
 
-async function readPayload(request: Request, json: boolean): Promise<Record<string, unknown> | null> {
-  const body = await request.text();
-  if (body.length > 8192) throw new RangeError("Too large");
+const MAX_BODY_BYTES = 8192;
+
+/** Enforce the same byte limit with or without Content-Length, before parsing a multipart body. */
+async function readBody(request: Request): Promise<Uint8Array<ArrayBuffer>> {
+  if (!request.body) return new Uint8Array();
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > MAX_BODY_BYTES) {
+      await reader.cancel();
+      throw new RangeError("Too large");
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(new ArrayBuffer(size));
+  let offset = 0;
+  for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+  return body;
+}
+
+async function readPayload(request: Request, json: boolean, multipart: boolean, type: string): Promise<Record<string, unknown> | null> {
+  const bytes = await readBody(request);
+  if (multipart) {
+    const data = await new Request(request.url, { method: "POST", headers: { "Content-Type": type }, body: bytes }).formData();
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of data.entries()) {
+      if (typeof value !== "string") return null; // File parts are not enquiry fields.
+      payload[key] = value;
+    }
+    return payload;
+  }
+  const body = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   if (json) {
     const parsed: unknown = JSON.parse(body);
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
@@ -56,27 +89,21 @@ export async function POST(request: Request) {
   const json = type.includes("application/json");
   const form = type.includes("application/x-www-form-urlencoded") || type.includes("multipart/form-data");
   // JSON callers (public/site.js) get JSON; plain form posts get a 303 back to their page.
+  const from = new URL(request.url).searchParams.get("from") === "coaching" ? "coaching" : "app";
   let route = "";
   let field: string | null = null;
   let typed: Record<string, string> | null = null;
   const reply = (outcome: Outcome, body: Record<string, unknown>, status: number) =>
-    json ? Response.json(body, { status, headers: noStore }) : landing(request, route, outcome, field, typed);
+    json ? Response.json(body, { status, headers: noStore }) : landing(request, routes.has(route) ? route : from, outcome, field, typed);
 
   if (!sameOrigin(request)) return reply("forbidden", { error: "Invalid request" }, 403);
-  if (!json && !form) return Response.json({ error: "JSON required" }, { status: 415, headers: noStore });
+  if (!json && !form) return reply("unsupported", { error: "Unsupported form type" }, 415);
   const length = Number(request.headers.get("content-length") || "0");
-  if (length > 8192) return reply("too-large", { error: "Too large" }, 413);
+  if (length > MAX_BODY_BYTES) return reply("too-large", { error: "Too large" }, 413);
 
   let payload: Record<string, unknown> | null;
   try {
-    if (type.includes("multipart/form-data")) {
-      const data = await request.formData();
-      payload = {};
-      for (const [k, v] of data.entries()) if (typeof v === "string") payload[k] = v;
-      if (JSON.stringify(payload).length > 8192) throw new RangeError("Too large");
-    } else {
-      payload = await readPayload(request, json);
-    }
+    payload = await readPayload(request, json, type.includes("multipart/form-data"), type);
   } catch (e) {
     return e instanceof RangeError ? reply("too-large", { error: "Too large" }, 413) : reply("invalid", { error: "Invalid request" }, 400);
   }
@@ -104,11 +131,15 @@ export async function POST(request: Request) {
 
   try {
     const db = enquiriesDb();
-    const recent = await db.prepare("SELECT id FROM enquiries WHERE email = ? AND created_at > ? LIMIT 1")
-      .bind(email, new Date(Date.now() - 2 * 60_000).toISOString()).first();
-    if (recent) return reply("duplicate", { error: "An enquiry from this email was received in the last two minutes" }, 409);
-    await db.prepare("INSERT INTO enquiries (id, created_at, name, email, phone, route, goal, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'new')")
-      .bind(crypto.randomUUID(), new Date().toISOString(), name, email, phone || null, route, goal).run();
+    // A single SQLite statement closes the SELECT/INSERT race. A preview sign-up must not block a coaching enquiry.
+    const saved = await db.prepare(`INSERT INTO enquiries (id, created_at, name, email, phone, route, goal, status)
+      SELECT ?, ?, ?, ?, ?, ?, ?, 'new'
+      WHERE NOT EXISTS (SELECT 1 FROM enquiries WHERE email = ? AND route = ? AND created_at > ?)`)
+      .bind(crypto.randomUUID(), new Date().toISOString(), name, email, phone || null, route, goal,
+        email, route, new Date(Date.now() - 2 * 60_000).toISOString()).run();
+    if (!saved.success) throw new Error("Enquiry insert failed");
+    if (saved.meta.changes === 0) return reply("duplicate", { error: "A submission from this email was received in the last two minutes" }, 409);
+    if (saved.meta.changes !== 1) throw new Error("Enquiry insert did not save one row");
     await countEvent(db, route === "app" ? "preview_signup" : "enquiry_sent", value("src")).catch(() => {});
     return reply("ok", { ok: true }, 201);
   } catch {

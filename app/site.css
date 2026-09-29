@@ -240,7 +240,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .rl-col .rl-label { color: var(--fg); }
 .rl-mark { grid-row: 2; grid-column: 1; display: block; height: 6px; }
 .rl-mark i { display: block; width: var(--signal-size); height: var(--signal-size); background: var(--c-volt); }
-/* Scene 2, the app: three real screens, cropped, a hard cut every 1.2 s. */
+/* Scene 2: two cropped app screens and an illustrated Learn phase control, cut every 1.2 s. */
 .rl-mod { left: 5cqw; right: 5cqw; top: 9cqh; display: grid; gap: 4cqh; }
 .rl-mod .rl-pane { width: min(100%, 74cqw); } /* whole-card crops are tall: hold them inside the square stage */
 .rl-cap { display: grid; gap: 1.5cqh; }
@@ -321,9 +321,6 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
   .status-lines > :nth-child(3) { white-space: nowrap; }
   .status-lines > :nth-child(3):not(:last-child)::after { content: "\00a0·\00a0"; }
 }
-/* The hero's second button: on phones the name gives way to the term ("Coaching · NZ$59/wk · 12 weeks"). */
-.lbl-narrow { display: none; }
-@media (max-width: 599.98px) { .lbl-wide { display: none; } .lbl-narrow { display: inline; } }
 /* Hover on either hero button lifts the whole button 2px along the 45 degree axis (drive, expo), so it isn't colour alone. */
 @media (hover: hover) { .hero .btn:not(:active):not([data-press]):hover { transform: translate(-2px, -2px); } }
 @media (min-width: 900px) { .status { color: var(--fg-2); } } /* one step up from --fg-3 for the mono status on desktop */
@@ -423,7 +420,7 @@ html:not(.js) .pc-t { color: var(--fg); }
   /* Learn: the screen's top edge and the copy's heading start on one line. */
   /* The stage keeps the tallest panel's height; the phase card fills it and its top lines up with the copy heading. */
   .js .demo-panel[data-demo-panel="technique"] { align-self: stretch; }
-  .demo-pane.phase-card { align-self: stretch; display: flex; }
+  .demo-pane.phase-card { align-self: stretch; display: flex; flex-direction: column; }
   .phase-card .pane-glass { flex: 1; }
   .pc-chip { min-height: 0; flex: 1; }
   [data-demo-panel="technique"] .demo-copy { padding-top: 9px; }

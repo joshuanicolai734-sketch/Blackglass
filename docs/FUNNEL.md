@@ -14,10 +14,10 @@ The site must never imply the app can be bought or installed until `content/site
 
 1. **Hero:** the promise ("Know what today asks of you.") and two doors.
    - The primary button goes to the app (`/get`).
-   - A direct text link reads "Coaching with Josh · NZ$59/wk".
+   - The coaching action reads "Coaching with Josh · NZ$59/wk" on desktop and mobile.
    - The status line says the app is in development and **coaching is available now**.
-2. **Showreel:** the method in 24 s. The specimen is a **back squat**, the lift people most want coached. Its callouts show that every rep has phases and a working area, which bridges to coaching.
-3. **How it works:** the proof, with three real screens.
+2. **Showreel:** the method in 12 s. A **back squat** shows the 3-1-1 tempo and bar path, followed by two real Android screens and an illustrated Learn phase control.
+3. **How it works:** two real screens (Today and Train), followed by a labeled illustration of the Learn phase control. Do not describe the illustration as a screenshot.
 4. **Why it helps** (Paper): the benefits, each tied to a real screen.
 5. **Choose your start:** the fork, side by side.
    - **The app** is the free preview list, shown as a hairline panel with its three steps and a volt button.
