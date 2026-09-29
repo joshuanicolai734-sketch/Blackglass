@@ -9,6 +9,12 @@ This is the implementation handoff for the supplied `Blackglass-88_0-Flow-3D.apk
 - `assets/studio3d/` contains 54 primary `.s3d` movement assets and 54 alternate views, all with the `S3D3` header. `calf__bodyweight@FRONT.s3d` and `calf__machine@FRONT.s3d` are byte-identical; inspect whether that shared view is deliberate.
 - The APK is signed with certificate SHA-256 `EB:57:A2:CA:B0:F4:53:B3:63:22:59:00:AE:D6:12:C9:5C:4D:83:16:A9:B1:AC:8C:99:D5:B1:FF:E9:E6:E2:B1`. The latest saved source archive found so far is version 75; its certificate is different, and its selective patch script targets v74. It cannot be used as a safe v88 update base.
 
+## Fresh-install v88.1 visual prototype
+
+With a clean install accepted for this pre-release app, `Blackglass-88.1-Poster-3D.apk` was patched directly from the supplied v88 binary and signed using the older development certificate. It retains the package ID and every one of the 108 original S3D assets, changes the launcher, brand rasters, default appearance, app and studio color constants, and display font weights, and carries versionCode 898 / versionName `88.1-poster`. SHA-256: `8f24353b7c5ffcf4c36e4edd48f54cf0408bcfb64667858921a7d19d94d928ff`. The old v88 APK must be uninstalled first because its certificate differs.
+
+This binary patch changes how the 3D viewer looks. It does not alter the authored 3D poses, timing, camera or controls. Static ZIP, DEX, resource, asset-preservation and v2 signature checks pass, but there is no on-device launch or motion review. The separate rebuild kit documents the exact patch; it excludes the signing key. Continue the full exercise-studio work below when the matching v88 implementation source becomes available.
+
 ## App changes to implement against the matching v88 source
 
 1. **One brand system.** Replace the lime facet and signal UI with crimson, including launcher densities, adaptive foreground, startup, active navigation, progress, controls, focus and feedback. Keep the existing logo geometry. Use dark ink on bone surfaces and black text on crimson actions; crimson on the dark ground has 5.24:1 contrast, while crimson against Paper has 3.09:1 and is unsuitable for small text.
