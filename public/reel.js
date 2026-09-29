@@ -57,7 +57,7 @@
     const E = [S[0] + M.upper * Math.cos(ua), S[1] + M.upper * Math.sin(ua)];
     return {
       shin: tr(A, Math.atan2(K[1] - A[1], K[0] - A[0])), thigh: tr(K, Math.atan2(H[1] - K[1], H[0] - K[0])), torso: tr(H, p - Math.PI / 2),
-      upper: tr(S, ua), fore: tr(E, Math.atan2(B[1] - E[1], B[0] - E[0])),
+      upper: tr(S, ua), fore: tr(E, Math.atan2(B[1] - E[1], B[0] - E[0])), barY: B[1],
     };
   }
   // Depth over the rep: a 1.5% hip set as the brace, 3 s down, 1 s pause, up in 0.7 s, lockout.
@@ -72,6 +72,7 @@
 
   /* ---- Layers ---- */
   const joints = $('[data-j]').map((e) => [e, e.dataset.j]);
+  const barDot = host.querySelector('[data-bar-dot]');
   const scenes = $('[data-scene]'), cols = $('[data-col]'), mark = host.querySelector('[data-mark]'), mods = $('[data-mod]'), chips = $('[data-chip]'), pmark = host.querySelector('[data-pmark]'), spec = host.querySelector('[data-spec]').closest('svg');
   const lock = scenes[2].children;
   // Writes are cached, so a still layer costs nothing: between moves the reel does no style or paint work.
@@ -89,7 +90,13 @@
 
     // Squat.
     const u = depth(t);
-    if (u !== lastU) { const P = pose(u); joints.forEach(([e, n]) => set(e, 'transform', P[n])); op(spec, 1 - 0.8 * u); lastU = u; }
+    if (u !== lastU) {
+      const P = pose(u);
+      joints.forEach(([e, n]) => set(e, 'transform', P[n]));
+      css(barDot, `translateY(calc(var(--u) * ${(400 + P.barY).toFixed(2)}))`);
+      op(spec, 1 - 0.8 * u);
+      lastU = u;
+    }
     // The readout: before and after the rep all three phases are lit; during it, only the phase in play. A phase
     // lights at drive speed and dims at load speed. The volt square steps to the phase in play and stays under Drive.
     cols.forEach((c, i) => {

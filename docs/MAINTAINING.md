@@ -45,6 +45,8 @@ How the home page moves visitors towards coaching (revenue now) and the preview 
 
 The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE.md`. In short:
 
+The Android v88 alignment and 3D movement review gates are in `docs/APP_V88_DESIGN_INTEGRATION.md`.
+
 - **Tokens:** `app/tokens.css` is the only place values live (colour, type, spacing, hairlines, motion). `site.css`, the admin styles and the shadcn variables in `globals.css` all read from it. Change a value there, never on top of it.
 - **Grounds:**
   - **Glass** (`#0B0D0E`) is home.
