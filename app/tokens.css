@@ -4,6 +4,8 @@
 
 /* Brand faces (latin subset). Inter Tight is one variable file for every weight. */
 @font-face{font-family:"Inter Tight";src:url(/fonts/inter-tight-latin-wght.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+/* Metric-matched fallback so the swap to Inter Tight moves little (size-adjust from measured widths, ascent/descent from the font). */
+@font-face{font-family:"Inter Tight Fallback";src:local("Arial"),local("Helvetica"),local("Liberation Sans");size-adjust:95.5%;ascent-override:101.4%;descent-override:25.3%;line-gap-override:0%}
 @font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-500.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:"Geist Mono";src:url(/fonts/geist-mono-latin-700.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
 
@@ -36,7 +38,7 @@
   --focus: var(--c-volt);
 
   /* Type: two faces, five sizes. */
-  --font-sans: "Inter Tight", Arial, Helvetica, sans-serif;
+  --font-sans: "Inter Tight", "Inter Tight Fallback", Arial, Helvetica, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
   --fs-label: .6875rem;                          /* 11px; 12px from 900px */
   --fs-body: 1.0625rem;                          /* 17px */

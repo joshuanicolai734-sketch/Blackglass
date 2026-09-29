@@ -105,10 +105,12 @@
     });
 
     // The stage follows the active panel's height (animated over --t-drive) instead of leaving the tallest
-    // panel's height as a void under the shorter Learn panel (phones and desktop).
+    // panel's height as a void under the shorter Learn panel (phones only). On desktop the stage keeps the tallest
+    // panel's height, so switching to the short Learn card never moves the content below it (the card is centred).
     const ui = demo; // the [data-demo] element is the stage (.demo-ui)
     const fit = () => {
       if (!ui) return;
+      if (w.matchMedia('(min-width: 900px)').matches) { ui.style.height = ''; return; }
       const box = panels[current].getBoundingClientRect();
       ui.style.height = Math.ceil(box.bottom - ui.getBoundingClientRect().top) + 'px';
     };

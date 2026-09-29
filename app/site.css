@@ -305,6 +305,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 
 /* Hero: the promise, set heavy and tight, with the real Today screen as the one dominant shape (1100px and up). */
 .hero { padding: clamp(48px, 10vw, 136px) 0 clamp(56px, 9vw, 112px); }
+@media (max-width: 1099.98px) { .hero { padding-bottom: 16px; } }   /* no hero screen here: the next section's own 88px is the whole gap */
 .hero-copy { max-width: 46rem; }
 .hero h1 { margin: 0 0 28px; font-size: clamp(2.625rem, 1.2rem + 5.2vw, 5.25rem); font-weight: 650; line-height: .98; letter-spacing: -.012em; }
 .hero .body-2 { max-width: 34em; }
@@ -392,6 +393,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 /* A quiet ring: 1px, still the focus colour (visible), set 6px off so it sits in the gutter; on phones scroll-margin keeps the
    panel's lower edge above the sticky bar when it takes focus. */
 .demo-panel:focus-visible { outline-width: 1px; outline-offset: 6px; scroll-margin-block: 24px 104px; }
+/* Phones: the panel is taller than the screen, so its bottom edge and ring always sit under the sticky bar. The ring goes on the screen instead (the focus stays visible, at the top). */
+@media (max-width: 899.98px) { .demo-panel:focus-visible { outline: 0; } .demo-panel:focus-visible .demo-pane { outline: 1px solid var(--focus); outline-offset: 6px; } }
 .js .demo-pane { touch-action: pan-y; } /* horizontal swipes step the tabs (site.js) */
 /* The arriving screen drives in on top; its frame is see-through while it lands, so the leaving screen shows beneath
    it and the pane is never empty. */
@@ -409,6 +412,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .demo-pane { justify-self: start; width: min(100%, 360px); }
   .demo-pane.crop-learn { width: min(100%, 440px); }
   /* Learn: the screen's top edge and the copy's heading start on one line. */
+  /* The stage keeps the tallest panel's height; the short Learn card sits centred in it. */
+  .js .demo-panel[data-demo-panel="technique"] { align-self: center; }
   [data-demo-panel="technique"] .demo-copy { padding-top: 9px; }
   /* The copy stays beside the phone while it scrolls past. */
   .demo-copy { position: sticky; top: 120px; padding-top: 40px; }
@@ -642,5 +647,5 @@ html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bott
   /* "Built for real weeks" is a heading beside two short paragraphs, so it doesn't need a full section of air; the last FAQ
      item doesn't sit a screenful above the footer. */
   [data-page="coaching"] .section.fit { padding-block: calc(var(--section) * .6); }
-  .section.faq-end { padding-bottom: calc(var(--section) * .55); }
+  .section.faq-end { padding-bottom: calc(var(--section) * .3); }
 }
