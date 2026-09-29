@@ -31,10 +31,10 @@ const demo = [
   },
   {
     id: "technique", tab: "Learn", src: "/assets/movement.webp",
-    alt: "The top of a Blackglass exercise guide: Movement, Muscles and My record tabs, the exercise title, and an Add to my program button",
+    alt: "The tab row of a Blackglass exercise guide: Movement, Muscles and My record",
     title: "Learn each movement in phases.",
     text: "Each exercise guide plays the movement and breaks it into phases, so you can learn the pattern and control it.",
-    points: ["Phases you can step through: brace, reach, return", "Tabs for the muscles worked and your own record", "Add an exercise to your programme from its guide"],
+    points: ["Phases you can step through: brace, reach, return", "Tabs for the movement, the muscles worked and your own record", "Add an exercise to your programme from its guide"],
   },
 ];
 
