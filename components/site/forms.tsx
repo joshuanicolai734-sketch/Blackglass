@@ -72,7 +72,7 @@ const Arrow = () => (
 export function PreviewForm({ retry = null, typed = {} }: { retry?: Retry | null; typed?: Typed }) {
   const bad = (f: FormField) => retry?.error === "invalid" && retry.field === f;
   return (
-    <form className="form-card" id="preview" method="post" action="/api/enquiries" data-form="preview" data-email={contact.email} data-founder={site.founder}
+    <form className="form-card" id="preview" method="post" action="/api/enquiries?from=app" data-form="preview" data-email={contact.email} data-founder={site.founder}
       {...(retry ? { tabIndex: -1, "aria-describedby": "preview-error" } : {})}>
       <h2 className="title">Join the Android preview list</h2>
       <p>Free. One email when there&rsquo;s a build you can try. No newsletter, and you can ask to be removed at any time.</p>
@@ -108,7 +108,7 @@ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null
   const price = `${coaching.currency}${coaching.weekly}`;
   const bad = (f: FormField) => retry?.error === "invalid" && retry.field === f;
   return (
-    <form className="form-card" id="enquire" method="post" action="/api/enquiries" data-form="enquiry" data-email={contact.email} data-founder={site.founder}
+    <form className="form-card" id="enquire" method="post" action="/api/enquiries?from=coaching" data-form="enquiry" data-email={contact.email} data-founder={site.founder}
       {...(retry ? { tabIndex: -1, "aria-describedby": "enquire-error" } : {})}>
       <h2 className="title">Coaching enquiry</h2>
       <FormError id="enquire-error" retry={retry} subject="Blackglass coaching" />

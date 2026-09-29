@@ -78,7 +78,7 @@ export default function Home() {
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">{appCta}</Button>
                 {coaching.available
-                  ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">Coaching<span className="lbl-wide"> with {site.founder}</span> · {coaching.currency}{coaching.weekly}/wk<span className="lbl-narrow"> · {coaching.weeks} weeks</span></Button>
+                  ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">Coaching with {site.founder} · {coaching.currency}{coaching.weekly}/wk</Button>
                   : <TextLink href="#how-it-works" down>See how it works</TextLink>}
               </div>
               {/* One clause per line, so no separator is ever left dangling. */}
@@ -99,12 +99,12 @@ export default function Home() {
           <span id="app" aria-hidden="true" />
           <div className="wrap">
             <div className="section-head">
-              <SectionHead index="01" title="How it works" meta={`${String(demo.length).padStart(2, "0")} screens`} />
+              <SectionHead index="01" title="How it works" meta={`${String(demo.length).padStart(2, "0")} views`} />
               <h2 id="how-title" className="display">From the plan to the last set.</h2>
-              <p className="body-2">Three screens from the current Android build. Tap through the flow.</p>
+              <p className="body-2">Two screens from the current Android build and an illustration of the Learn phases. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
-              <div className="demo-tabs" role="tablist" aria-label="App screens">
+              <div className="demo-tabs" role="tablist" aria-label="How it works views">
                 {demo.map((d, i) => (
                   <button key={d.id} type="button" role="tab" id={`tab-${d.id}`} aria-controls={`panel-${d.id}`}
                     aria-selected={i === 0} tabIndex={i === 0 ? 0 : -1} data-demo-tab={d.id}>
@@ -129,6 +129,7 @@ export default function Home() {
                           ))}
                         </ol>
                       </div>
+                      <figcaption className="label">Learn phase control · illustration</figcaption>
                     </figure>
                   ) : (
                     <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "today" ? " crop-today" : d.id === "plan" ? " crop-plan" : ""}`} defer />
@@ -141,7 +142,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <p className="footnote">Real screens recorded on an Android phone. Programme and food figures are examples.</p>
+            <p className="footnote">Today and Train are real screens recorded on an Android phone; Learn illustrates the phase control. Programme and food figures are examples.</p>
           </div>
         </section>
 

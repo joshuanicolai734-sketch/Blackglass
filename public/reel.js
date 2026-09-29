@@ -8,8 +8,8 @@
     0.0  Squat    brace (0.15–0.6: a 1.5% hip set), lower 3 s under control, pause 1 s in the hole, drive up
                   4.6–5.3 (fast through the middle, decelerating only in the top 30%), lockout held dead still to
                   6.4. The readout lights the phase in play; the volt square steps to it; at lockout all three light.
-    6.4  The app  hard cuts every 1.2 s between three real screens (Today, Train, Learn), each landing on a full
-                  frame and driving the last 2% along the reading axis.
+    6.4  The app  hard cuts every 1.2 s between two real screens (Today, Train) and an illustrated Learn phase
+                  control, each landing on a full frame and driving the last 2% along the reading axis.
    10.0  Lockup   hard cut: the mark and wordmark land as one object, the line follows at 10.1. Still to 12.0.
    12.0 = 0.0     hard cut back to the braced athlete: seek(12) and seek(0) are the same frame.
    Every cut lands on a full frame. Plays only while at least half the reel is on screen. */

@@ -147,8 +147,9 @@ export function Reel() {
       <p className="sr-only">
         A 12-second looping animation without sound. An athlete braces under the bar and performs one back squat at a 3-1-1 tempo: three
         seconds down, a one-second pause at the bottom, a drive back up, and a held lockout, with the bar kept over the middle of the foot.
-        Then the app: Today, with an unfinished session ready to resume; Train, a six-day programme; and Learn, exercise guides taken phase
-        by phase. It ends on the Blackglass mark with the line &ldquo;{site.tagline}&rdquo;
+        Then two app screens: Today, with an unfinished session ready to resume, and Train, a six-day programme. An
+        illustration shows the Learn guide&rsquo;s three phases: Brace, Reach and Return. It ends on the Blackglass mark
+        with the line &ldquo;{site.tagline}&rdquo;
       </p>
       <div className="reel-stage">
         <div className="reel-scenes" aria-hidden="true">

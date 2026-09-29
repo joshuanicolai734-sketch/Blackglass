@@ -15,7 +15,7 @@ export default function Sent() {
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
-      <Header current="/coaching" />
+      <Header current="/coaching" result />
       <main id="main">
         <section className="page-hero result" aria-labelledby="sent-title" data-sec>
           <div className="wrap">

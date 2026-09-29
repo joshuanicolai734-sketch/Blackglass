@@ -12,7 +12,7 @@ export default function Joined() {
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
-      <Header current="/get" />
+      <Header current="/get" result />
       <main id="main">
         <section className="page-hero result" aria-labelledby="joined-title" data-sec>
           <div className="wrap">

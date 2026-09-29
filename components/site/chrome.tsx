@@ -6,7 +6,10 @@ import { Arrow, Button } from "./ui";
 export const hasDownload = Boolean(androidDownload);
 export const appCta = hasDownload ? "Get Blackglass" : "Join the preview list";
 
-export function Header({ current }: { current?: string }) {
+export function Header({ current, result = false }: { current?: string; result?: boolean }) {
+  const onGet = current === "/get";
+  const onCoaching = current === "/coaching";
+  const getTarget = !onGet ? "/get" : `${result ? "/get" : ""}#${hasDownload ? "android" : "preview"}`;
   return (
     <header className="hdr">
       <a className="hdr-brand" href="/" aria-label="Blackglass home">
@@ -20,17 +23,17 @@ export function Header({ current }: { current?: string }) {
           <a key={item.href} className="link" href={item.href} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
         ))}
       </nav>
-      {/* On /coaching the header's one action is the enquiry form on that page. */}
-      {current === "/coaching" ? (
-        <a className="btn btn-ghost btn-sm hdr-cta" href="#enquire" data-track="cta_enquire_header">
-          <span>Enquire</span><Arrow down />
+      {/* On coaching pages the header's action leads to the enquiry form. */}
+      {onCoaching ? (
+        <a className="btn btn-ghost btn-sm hdr-cta" href={result ? "/coaching#enquire" : "#enquire"} data-track="cta_enquire_header">
+          <span>Enquire</span><Arrow down={!result} />
         </a>
       ) : (
-        // On /get it jumps to the form on this page instead of reloading it. Phones show a short label (the accessible
-        // name is whichever label is visible, so the visible words are always in it).
-        <a className="btn btn-ghost btn-sm hdr-cta" href={current === "/get" ? "#preview" : "/get"}
-          data-track={current === "/get" ? "cta_preview_header" : "cta_get_header"}>
-          {hasDownload ? <span>{appCta}</span> : <span><span className="hdr-cta-long">Join the preview list</span><span className="hdr-cta-short">Preview list</span></span>}<Arrow down={current === "/get"} />
+        // On /get it jumps to the form or install steps; on the result page it returns to /get first.
+        // Phones show a short label whose visible words are always in the accessible name.
+        <a className="btn btn-ghost btn-sm hdr-cta" href={getTarget}
+          data-track={onGet && !hasDownload ? "cta_preview_header" : "cta_get_header"}>
+          {hasDownload ? <span>{appCta}</span> : <span><span className="hdr-cta-long">Join the preview list</span><span className="hdr-cta-short">Preview list</span></span>}<Arrow down={onGet && !result} />
         </a>
       )}
       {/* A native disclosure, so the menu works before (and without) JavaScript. */}
