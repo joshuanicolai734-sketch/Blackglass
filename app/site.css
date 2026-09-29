@@ -494,6 +494,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .platform-note:not([data-platform]) { display: none; }
 /* Space is reserved on phones (where site.js almost always picks a note), so the form below never shifts. */
 @media (max-width: 899.98px) { .js .platform-note { display: block; min-height: 3.2em; } }
+/* At 320px the iPhone note takes a third line; reserve it so nothing moves when the note appears. */
+@media (max-width: 359.98px) { .js .platform-note { min-height: 5.1em; } }
 .platform-note a { color: var(--fg); }
 .qr { display: none; }
 @media (min-width: 900px) and (pointer: fine) {
@@ -576,6 +578,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: clamp(40px, 4vw, 72px); align-items: center; }
   .hero-head { grid-column: 1 / -1; }
   .hero h1 { font-size: clamp(4.5rem, 2rem + 5.6vw, 7rem); }
+  [data-page="coaching"] .page-hero h1 { font-size: clamp(4.5rem, 2rem + 5.6vw, 7rem); }
   .hero-pane { display: block; justify-self: end; width: min(100%, 440px); }
   .hero .status .sq { display: none; }
 }

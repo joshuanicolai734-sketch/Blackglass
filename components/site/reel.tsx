@@ -155,7 +155,7 @@ export function Reel() {
               <p className="rl-label"><b>Back squat</b> · Tempo</p>
               <div className="rl-cols">
                 {[["3", "Lower"], ["1", "Pause"], ["1", "Drive"]].map(([num, w], i) => (
-                  <div key={w} className="rl-col" data-col={i} style={i ? { opacity: 0.4 } : undefined}><span className="rl-n">{num}</span><span className="rl-label">{w}</span></div>
+                  <div key={w} className="rl-col" data-col={i} style={i ? { opacity: 0.6 } : undefined}><span className="rl-n">{num}</span><span className="rl-label">{w}</span></div>
                 ))}
                 <span className="rl-mark" data-mark><i /></span>
               </div>

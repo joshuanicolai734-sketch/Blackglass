@@ -88,6 +88,10 @@ Colour rules:
 | Display word | Display face 600, uppercase, +0.04em, clamp(24px, 3.1vw, 44px) (h1, h2). The home h1 is 650 at −0.012em, 42–84px: power, not luxury. |
 | Monument | Display face 800, −0.05em, clamp(120px, 22vw, 360px) (numerals only, one per viewport) |
 
+**Buttons** are set in the display face (Inter Tight 600, uppercase, +0.06em). Geist Mono is for labels and data only, never for a control.
+
+**Screens** are real, unfiltered captures: no desaturation, no tint. Each screen appears at most once per page on desktop. Crops are set by `object-position` on the 720×1560 source: the default drops the status and navigation bars (720/1400); the hero shows the Train screen below its volt button (`crop-train`, 720/810) so volt stays for the one real action; the Learn tab shows the phase controls only (`crop-learn`, 720/240). Copy says "movement", not "lift", and no crop may show an exercise the copy does not name.
+
 The wordmark is only ever the wordmark paths. It's never set in type. The frames used 16px for card body text; phase 1 moves that to 17px so the count stays at five.
 
 ## The four-mark vocabulary

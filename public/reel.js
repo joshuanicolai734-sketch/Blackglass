@@ -32,7 +32,7 @@
   // Timing is in seconds, as constants mirroring --t-drive and --t-load: this script never reads CSS time tokens, so
   // minified values such as .35s cannot be misparsed.
   const DRIVE = 0.22, LOAD = 0.35;
-  const DIM = 0.4;
+  const DIM = 0.6;
   // When each tempo column changes: [time, [Lower, Pause, Drive]].
   // The brace (and the poster) shows only the coming phase lit; the lockout lights all three, so the loop reads as a
   // new rep, not a freeze. reel.tsx renders BRACE as inline opacities, so the poster is frame 0 exactly.

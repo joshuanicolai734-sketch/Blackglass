@@ -125,7 +125,11 @@ Both forms post to `/api/enquiries` (same database table as before):
 
 Validation happens in the browser (`public/site.js`) and again on the server. If a save fails, the visitor is told nothing was saved and is offered a pre-filled email instead.
 
-They work without JavaScript too. Each `<form>` has `method="post" action="/api/enquiries"`. The route accepts JSON (from `site.js`), `application/x-www-form-urlencoded` and `multipart/form-data`, with the same validation, honeypot, two-minute duplicate check and database save. A plain form post gets a `303` back to its page with only a flag: `/get?joined=1#preview`, `/coaching?sent=1#enquire`, or `?error=invalid|duplicate|…`. The page renders the matching confirmation or message (`components/site/forms.tsx`). Nothing the visitor typed ever goes into a URL or a log.
+They work without JavaScript too. Each `<form>` has `method="post" action="/api/enquiries"`. The route accepts JSON (from `site.js`), `application/x-www-form-urlencoded` and `multipart/form-data`, with the same validation, honeypot, two-minute duplicate check and database save. Without JavaScript the browser's own validation runs first (the forms have no `novalidate` attribute; `site.js` sets the `noValidate` property once React has hydrated, and its own messages take over). A plain form post that reaches the server gets a `303` to a static page: `/get/joined`, `/coaching/sent`, or `/get/retry` and `/coaching/retry` with `?error=invalid|duplicate|failed&field=name|email|phone|goal` (the retry page names the field at fault and focuses it). Result pages are `noindex`; `/get` and `/coaching` themselves are fully static. They render from `components/site/forms.tsx`. Nothing the visitor typed ever goes into a URL or a log.
+
+### Timing in scripts
+
+CSS time tokens (`--t-load`, `--t-drive`, `--t-snap`) are read in JavaScript only through `dur()` in `public/site.js` (also `window.blackglassDur`). The production minifier rewrites `350ms` as `.35s`, so never `parseFloat` a token and assume milliseconds. Anything that changes the DOM's text or children, or sets an attribute React also renders (a form's `novalidate`, the sticky bar's `data-show`, an image's `src`), waits for `whenHydrated`; listeners can attach at parse.
 
 ## Images
 
@@ -140,6 +144,10 @@ pnpm lint && pnpm exec tsc --noEmit && pnpm build
 ```
 
 Database changes: edit `db/schema.ts`, run `pnpm db:generate`, and commit the new file in `drizzle/`. Publishing applies it in production. Local steps are in `README.md → Local D1 migrations`.
+
+## Production check
+
+`scratchpad`-style journeys are dev-only, so a second script exists for the production build: `journeys-prod.js` (kept with `journeys.js`). It is read-only (it never submits a form) and takes `BASE=http://localhost:8787` (a production build) or `:5173` (dev). It checks unit-safe timing, the demo swap and press-hold durations, FAQ durations, view transitions, the skip link, the quiet gauge on every hero, the static result routes and console errors. Run it against a fresh build before publishing anything that touches timing or hydration.
 
 ## Deploying
 

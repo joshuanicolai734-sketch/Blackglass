@@ -220,12 +220,16 @@
     const controls = [...d.querySelectorAll('[data-reel-toggle], [data-reel-chapters]')];
     let heroGone = false, past = false, under = new Set();
     // The bar is hidden by CSS (visibility) until data-show, so it needs no attribute and never shows without JavaScript.
+    // Observers attach at parse, but the attribute writes wait for hydration (React would read them as a mismatch).
+    let live = false;
     const sync = () => {
+      if (!live) return;
       const show = heroGone && !past && under.size === 0;
       if (!show && bar.contains(d.activeElement)) { const m = d.querySelector('main'); m.tabIndex = -1; m.focus({ preventScroll: true }); }
       bar.toggleAttribute('data-show', show);
       root.toggleAttribute('data-sticky-on', show);
     };
+    whenHydrated(() => { live = true; sync(); });
     new IntersectionObserver(([e]) => { heroGone = !e.isIntersecting; sync(); }).observe(hero);
     // The root reaches far above the viewport, so "intersecting" means the stop's top has come into view or passed it.
     if (stop) new IntersectionObserver(([e]) => { past = e.isIntersecting; sync(); }, { rootMargin: '100000px 0px 0px 0px' }).observe(stop);
@@ -276,7 +280,8 @@
      (aria-disabled); on success the confirmation replaces the form and takes focus. ---- */
   const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   d.querySelectorAll('form[data-form]').forEach((form) => {
-    form.noValidate = true; // a property, not markup: without JavaScript the browser validates natively
+    // Native validation stays on until React has hydrated (the attribute would otherwise read as a mismatch); our own messages take over after.
+    whenHydrated(() => { form.noValidate = true; });
     const kind = form.dataset.form, who = form.dataset.founder || 'Josh', to = form.dataset.email;
     const msg = form.querySelector('[data-form-msg]');
     const button = form.querySelector('[type="submit"]');
