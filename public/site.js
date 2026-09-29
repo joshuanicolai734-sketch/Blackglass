@@ -11,7 +11,9 @@
     const probe = d.querySelector('main') || d.body;
     const t0 = performance.now();
     const check = () => {
-      if (Object.keys(probe).some((k) => k.startsWith('__react')) || performance.now() - t0 > 8000) fn();
+      const claimed = Object.keys(probe).some((k) => k.startsWith('__react'));
+      // React marks <main> when hydration reaches it, before the root's first commit: wait two frames past that.
+      if (claimed || performance.now() - t0 > 8000) requestAnimationFrame(() => requestAnimationFrame(fn));
       else setTimeout(check, 50);
     };
     check();
@@ -96,7 +98,7 @@
 
     // On phones the stage follows the active panel's height (animated over --t-drive) instead of leaving the tallest
     // panel's height as a void under the short Learn crop. Desktop keeps the shared cell.
-    const ui = demo.querySelector('.demo-ui');
+    const ui = demo; // the [data-demo] element is the stage (.demo-ui)
     const narrow = w.matchMedia('(max-width: 899.98px)');
     const fit = () => {
       if (!ui) return;
@@ -137,7 +139,9 @@
     // true when the image can be shown now; otherwise a promise that settles when it's decoded (or after 300ms).
     const ready = (img) => {
       if (!img) return true;
-      if (!claimed) return new Promise((r) => whenHydrated(r)).then(() => ready(img));
+      // Before React has claimed the page, a tap waits at most 300ms for it; after that the screen loads anyway (an
+      // image's src is an attribute, which React never repairs), so the tabs also work with hydration blocked.
+      if (!claimed) return Promise.race([new Promise((r) => whenHydrated(r)), new Promise((r) => setTimeout(r, 300))]).then(() => { if (!claimed) { claimed = true; queued.forEach(load); queued.clear(); } return ready(img); });
       warm(img);
       if (img.complete && img.naturalWidth > 1) return true;
       return Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);

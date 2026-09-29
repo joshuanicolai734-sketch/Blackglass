@@ -32,7 +32,7 @@ export default function Privacy() {
             <h2>Where it&rsquo;s kept</h2>
             <p>Submissions are stored in the website&rsquo;s database with its hosting provider and are visible only in an owner sign-in area. They&rsquo;re kept while needed for the conversation, the preview and any resulting service or records, then removed.</p>
             <h2>Visit counts</h2>
-            <p>The site counts a few actions, such as visits to the Get Blackglass page, button taps and completed forms, as daily totals, along with the campaign a visit came from (for example &ldquo;instagram&rdquo;). It sets no cookies, and stores no IP address, device identifier or anything you type into a form.</p>
+            <p>The site counts a few actions, such as visits to the Get Blackglass page, button taps and completed forms, as daily totals, along with the campaign a visit came from (for example &ldquo;instagram&rdquo;). It sets no tracking cookies and stores no IP address or device identifier. The one exception: if you submit a form with JavaScript switched off and it is rejected, your typed answers are held in a single cookie for two minutes so the form can be filled back in for you. It is never used for anything else.</p>
             <h2>Your choices</h2>
             <p>Ask {site.founder} for access to, correction of, or deletion of your details at <a href={`mailto:${contact.email}`}>{contact.email}</a>. You can also leave the preview list at any time by emailing the same address.</p>
             <h2>The app</h2>

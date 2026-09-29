@@ -188,6 +188,8 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .form-steps { margin: 28px 0 0; }
 /* Result and retry pages (static routes a no-JavaScript submit lands on). */
 .result-msg { max-width: 40rem; margin: 8px 0 32px; }
+.result-next { max-width: 40rem; margin: 0 0 32px; }
+.result-next a { color: var(--fg); }
 .result .next-steps { margin-bottom: 32px; }
 .msg { position: relative; margin-top: 20px; padding: 16px 18px 16px 20px; background: var(--c-facet); }
 .msg::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--c-volt); transform-origin: 50% 0; }
@@ -603,10 +605,14 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .hero-pane { display: block; justify-self: end; width: min(100%, 440px); }
   .hero .status .sq { display: none; }
 }
+/* The hero screen's one moment at first paint: it drives in 24px over --t-load and locks out, once. Transform only, so
+   the LCP image is painted from the first frame; no JavaScript involved. */
+@keyframes pane-drive { from { transform: translateX(24px); } }
+@media (min-width: 1100px) and (prefers-reduced-motion: no-preference) { .hero-pane .pane-glass { animation: pane-drive var(--t-load) var(--ease-load) both; } }
 
 /* Phone action bar (components/site/chrome.tsx StickyCta, site.js). Drives in, loads out, never covers the fork,
    a form or the footer. Hidden without JavaScript and from 900px. */
-.sticky-cta { position: fixed; z-index: 70; left: 0; right: 0; bottom: 0; display: flex; gap: 10px; padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+.sticky-cta { position: fixed; z-index: 70; left: 0; right: 0; bottom: 0; display: flex; gap: 16px; padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
   background: var(--c-glass); border-top: var(--hair) solid var(--rule); transform: translateY(100%); visibility: hidden;
   transition: transform var(--t-load) var(--ease-load), visibility 0s linear var(--t-load); }
 .sticky-cta[data-show] { transform: none; visibility: visible; transition: transform var(--t-drive) var(--ease-expo), visibility 0s; }
