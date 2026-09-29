@@ -55,7 +55,7 @@ function FormError({ id, retry, subject }: { id: string; retry: Retry | null; su
       ? `We received a message from this email in the last two minutes. If this is something new, email ${site.founder} instead.`
       : `That didn’t go through, and nothing was saved. Try again, or email ${site.founder} instead.`;
   return (
-    <div className="msg error" id={id}>
+    <div className="msg error" id={id} role="alert">
       <p>{text}</p>
       {retry.error !== "invalid" && (
         <a className="link" href={`mailto:${contact.email}?subject=${encodeURIComponent(subject)}`}><span>Email {site.founder}</span></a>
@@ -78,9 +78,9 @@ export function PreviewForm({ retry = null, typed = {} }: { retry?: Retry | null
       <p>Free. One email when there&rsquo;s a build you can try. No newsletter, and you can ask to be removed at any time.</p>
       <FormError id="preview-error" retry={retry} subject="Blackglass Android preview list" />
       <div className="field"><label htmlFor="p-name">Your name</label>
-        <input id="p-name" name="name" type="text" defaultValue={typed.name} autoComplete="name" maxLength={80} required autoFocus={bad("name")} aria-invalid={bad("name") || undefined} /></div>
+        <input id="p-name" name="name" type="text" defaultValue={typed.name} autoComplete="name" maxLength={80} required autoFocus={bad("name")} aria-invalid={bad("name") || undefined} aria-describedby={bad("name") ? "preview-error" : undefined} /></div>
       <div className="field"><label htmlFor="p-email">Email address</label>
-        <input id="p-email" name="email" type="email" defaultValue={typed.email} autoComplete="email" inputMode="email" maxLength={120} required autoFocus={bad("email")} aria-invalid={bad("email") || undefined} /></div>
+        <input id="p-email" name="email" type="email" defaultValue={typed.email} autoComplete="email" inputMode="email" maxLength={120} required autoFocus={bad("email")} aria-invalid={bad("email") || undefined} aria-describedby={bad("email") ? "preview-error" : undefined} /></div>
       <div className="field"><label htmlFor="p-note">What do you want from a training app?<span className="opt">OPTIONAL</span></label>
         <input id="p-note" name="goal" type="text" defaultValue={typed.goal} maxLength={200} /></div>
       <div className="trap" aria-hidden="true"><label htmlFor="p-website">Leave blank</label><input id="p-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
@@ -113,15 +113,15 @@ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null
       <h2 className="title">Coaching enquiry</h2>
       <FormError id="enquire-error" retry={retry} subject="Blackglass coaching" />
       <div className="row2">
-        <div className="field"><label htmlFor="e-name">Your name</label><input id="e-name" name="name" type="text" defaultValue={typed.name} autoComplete="name" maxLength={80} required autoFocus={bad("name")} aria-invalid={bad("name") || undefined} /></div>
-        <div className="field"><label htmlFor="e-email">Email address</label><input id="e-email" name="email" type="email" defaultValue={typed.email} autoComplete="email" inputMode="email" maxLength={120} required autoFocus={bad("email")} aria-invalid={bad("email") || undefined} /></div>
+        <div className="field"><label htmlFor="e-name">Your name</label><input id="e-name" name="name" type="text" defaultValue={typed.name} autoComplete="name" maxLength={80} required autoFocus={bad("name")} aria-invalid={bad("name") || undefined} aria-describedby={bad("name") ? "enquire-error" : undefined} /></div>
+        <div className="field"><label htmlFor="e-email">Email address</label><input id="e-email" name="email" type="email" defaultValue={typed.email} autoComplete="email" inputMode="email" maxLength={120} required autoFocus={bad("email")} aria-invalid={bad("email") || undefined} aria-describedby={bad("email") ? "enquire-error" : undefined} /></div>
       </div>
       <div className="field"><label htmlFor="e-phone">Mobile for a text reply<span className="opt">OPTIONAL</span></label>
-        <input id="e-phone" name="phone" type="tel" defaultValue={typed.phone} autoComplete="tel" inputMode="tel" maxLength={30} pattern="\+?[0-9\s\(\)\.\-]{7,30}" aria-describedby="e-phone-hint" autoFocus={bad("phone")} aria-invalid={bad("phone") || undefined} /><span className="hint" id="e-phone-hint">Only used to reply to this enquiry.</span></div>
+        <input id="e-phone" name="phone" type="tel" defaultValue={typed.phone} autoComplete="tel" inputMode="tel" maxLength={30} pattern="\+?[0-9\s\(\)\.\-]{7,30}" aria-describedby={bad("phone") ? "e-phone-hint enquire-error" : "e-phone-hint"} autoFocus={bad("phone")} aria-invalid={bad("phone") || undefined} /><span className="hint" id="e-phone-hint">Only used to reply to this enquiry.</span></div>
       <div className="field"><label htmlFor="e-route">What are you looking for?</label>
         <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"}><option value="coaching">{coaching.weeks}-week coaching ({price}/week)</option><option value="programme">A personal training programme</option></select></div>
       <div className="field"><label htmlFor="e-goal">What do you want to change?</label>
-        <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby="e-goal-hint" autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
+        <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby={bad("goal") ? "e-goal-hint enquire-error" : "e-goal-hint"} autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
       <div className="trap" aria-hidden="true"><label htmlFor="e-website">Leave blank</label><input id="e-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
       {/* Reassurance at the click: what happens next, from facts already on this page. */}
       <NextSteps className="form-steps" />

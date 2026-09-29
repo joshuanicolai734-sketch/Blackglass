@@ -18,7 +18,9 @@ function landing(request: Request, route: string, outcome: Outcome, field: strin
   const coachingForm = route === "coaching" || route === "programme";
   const base = coachingForm ? "/coaching" : "/get";
   const headers = new Headers({ ...noStore });
-  const secure = new URL(request.url).protocol === "https:" ? "; Secure" : "";
+  // Secure whenever the visitor reached us over https: the URL's own scheme, or the proxy's word for it.
+  const proto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ?? new URL(request.url).protocol.replace(":", "");
+  const secure = proto === "https" ? "; Secure" : "";
   const cookie = (value: string, age: number) => `bg-retry=${value}; Path=${base}/retry; Max-Age=${age}; HttpOnly; SameSite=Lax${secure}`;
   let location: string;
   if (outcome === "ok") {

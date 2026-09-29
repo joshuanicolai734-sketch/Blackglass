@@ -63,6 +63,14 @@
     const sync = () => { root.style.overflow = menu.open ? 'hidden' : ''; behind().forEach((el) => { el.inert = menu.open; }); };
     menu.addEventListener('toggle', sync);
     menu.addEventListener('click', (e) => { if (e.target.closest('a')) { menu.open = false; sync(); } });
+    // Tab stays inside the open menu: past the last link it returns to the button, and Shift+Tab from the button goes to the last link.
+    d.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !menu.open) return;
+      const stops = [menu.querySelector('summary'), ...menu.querySelectorAll('a[href]')];
+      const first = stops[0], last = stops[stops.length - 1];
+      if (!e.shiftKey && d.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (e.shiftKey && d.activeElement === first) { e.preventDefault(); last.focus(); }
+    });
     d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) { menu.open = false; sync(); menu.querySelector('summary').focus(); } });
     w.matchMedia('(min-width: 900px)').addEventListener('change', (m) => { if (m.matches) { menu.open = false; sync(); } });
   }
@@ -112,11 +120,8 @@
 
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.
     const shots = [...demo.querySelectorAll('img[data-src]')];
-    // The swap of a deferred screen's attributes waits for React to claim the page (dev builds log a mismatch otherwise).
-    let claimed = false;
-    const queued = new Set();
-    const warm = (img) => { if (!img) return; if (claimed) load(img); else queued.add(img); };
-    whenHydrated(() => { claimed = true; queued.forEach(load); queued.clear(); });
+    // The deferred <img> elements carry suppressHydrationWarning, so their attributes can be written at any time.
+    const warm = (img) => load(img);
     const load = (img) => {
       if (!img?.dataset.src) return;
       img.fetchPriority = 'low';
@@ -136,9 +141,6 @@
     // true when the image can be shown now; otherwise a promise that settles when it's decoded (or after 300ms).
     const ready = (img) => {
       if (!img) return true;
-      // Before React has claimed the page, a tap waits at most 300ms for it; after that the screen loads anyway (an
-      // image's src is an attribute, which React never repairs), so the tabs also work with hydration blocked.
-      if (!claimed) return Promise.race([new Promise((r) => whenHydrated(r)), new Promise((r) => setTimeout(r, 300))]).then(() => { if (!claimed) { claimed = true; queued.forEach(load); queued.clear(); } return ready(img); });
       warm(img);
       if (img.complete && img.naturalWidth > 1) return true;
       return Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);

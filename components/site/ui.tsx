@@ -105,7 +105,7 @@ export function Pane({ src, alt, width = 720, height = 1560, priority = false, c
         {defer ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}
-            <img src={BLANK} alt={alt} width={width} height={height} decoding="async" data-src={src}
+            <img src={BLANK} alt={alt} width={width} height={height} decoding="async" data-src={src} suppressHydrationWarning
               data-srcset={src.endsWith(".webp") ? srcSet : undefined} data-sizes={sizes} />
             <noscript>
               {/* eslint-disable-next-line @next/next/no-img-element -- static WebP screens served as-is */}

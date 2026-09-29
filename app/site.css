@@ -323,8 +323,8 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 /* The hero's second button: on phones the name gives way to the term ("Coaching · NZ$59/wk · 12 weeks"). */
 .lbl-narrow { display: none; }
 @media (max-width: 599.98px) { .lbl-wide { display: none; } .lbl-narrow { display: inline; } }
-/* Hover on the hero's outline button also lifts 2px along the 45 degree axis, like the volt one, so it isn't colour alone. */
-@media (hover: hover) { .hero .btn-ghost:not(:active):not([data-press]):hover { transform: translate(-2px, -2px); } }
+/* Hover on either hero button lifts the whole button 2px along the 45 degree axis (drive, expo), so it isn't colour alone. */
+@media (hover: hover) { .hero .btn:not(:active):not([data-press]):hover { transform: translate(-2px, -2px); } }
 @media (min-width: 900px) { .status { color: var(--fg-2); } } /* one step up from --fg-3 for the mono status on desktop */
 .nb { white-space: nowrap; }
 @media (max-width: 479.98px) { .hero .sh-meta { display: none; } } /* keeps the category on one line on phones */
