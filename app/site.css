@@ -354,7 +354,6 @@ html:not(.js) .pane-glass img[data-src] { display: none; }
 /* Crops: one screen shows once per page, so a repeat shows only the part that says something different. Each is the
    source rectangle in the 720x1560 screen: object-position = top / (1560 - height). */
 .crop-train .pane-glass img { aspect-ratio: 720 / 768; object-position: 50% 61.6%; }   /* source rows 488-1256: below the volt button, ending between plan rows 05 and 06 */
-.crop-learn .pane-glass img { aspect-ratio: 720 / 120; object-position: 50% 12.22%; }   /* source rows 176-296: only the MOVEMENT / MUSCLES / MY RECORD tab row. Never the title band below (the exercise name), the volt "Add to my program" button or the figure. */
 /* Phones only: the Today screen ends on the boundary under "Log food" (source rows 72-1240), before the next card is cut by the tab bar. */
 @media (max-width: 899.98px) { .crop-today .pane-glass img { aspect-ratio: 720 / 1168; object-position: 50% 18.4%; } }
 /* The demo's Train screen ends on the boundary under plan row 05, before row 06 is cut by the tab bar (source rows 72-1252). */
@@ -402,7 +401,17 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-panel.is-entering .pane-glass { background: transparent; }
 .js .demo-panel.is-entering .pane-glass::after { content: none; }
 .demo-pane { width: min(78vw, 340px); justify-self: center; }
-.demo-pane.crop-learn { width: min(100%, 440px); }
+/* Learn: three phase chips (the reel's stepper look). The volt marker is small and steps with the active chip. */
+.demo-pane.phase-card { width: 100%; }
+.phase-card .pane-glass { display: flex; }
+.pc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; width: 100%; }
+.pc-chip { position: relative; display: flex; align-items: center; gap: 18px; min-height: 88px; padding: 0 20px 0 58px; background: var(--c-pane); }
+.pc-chip i { position: absolute; left: 22px; top: 50%; width: var(--signal-size); height: var(--signal-size); margin-top: calc(var(--signal-size) / -2); background: var(--c-volt); opacity: 0; }
+.pc-chip[data-on] i { opacity: 1; }
+.pc-t { font-weight: 600; font-size: var(--fs-display); line-height: 1; letter-spacing: var(--tr-display); text-transform: uppercase; color: var(--fg-3); }
+.pc-chip[data-on] .pc-t { color: var(--fg); }
+@media (prefers-reduced-motion: no-preference) { .js .pc-chip i, .js .pc-t { transition: opacity var(--t-snap) var(--ease-expo), color var(--t-snap) var(--ease-expo); } }
+html:not(.js) .pc-t { color: var(--fg); }
 .demo-copy .title { margin-bottom: 14px; }
 .demo-copy > p { color: var(--fg-2); max-width: 36em; }
 .ticks { list-style: none; margin: 28px 0 0; padding: 0; border-top: var(--hair) solid var(--rule); max-width: 36em; }
@@ -410,10 +419,13 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 @media (min-width: 900px) {
   .demo-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; align-items: start; }
   .demo-pane { justify-self: start; width: min(100%, 360px); }
-  .demo-pane.crop-learn { width: min(100%, 440px); }
+  .demo-pane.phase-card { width: min(100%, 440px); }
   /* Learn: the screen's top edge and the copy's heading start on one line. */
-  /* The stage keeps the tallest panel's height; the short Learn card sits centred in it. */
-  .js .demo-panel[data-demo-panel="technique"] { align-self: center; }
+  /* The stage keeps the tallest panel's height; the phase card fills it and its top lines up with the copy heading. */
+  .js .demo-panel[data-demo-panel="technique"] { align-self: stretch; }
+  .demo-pane.phase-card { align-self: stretch; display: flex; }
+  .phase-card .pane-glass { flex: 1; }
+  .pc-chip { min-height: 0; flex: 1; }
   [data-demo-panel="technique"] .demo-copy { padding-top: 9px; }
   /* The copy stays beside the phone while it scrolls past. */
   .demo-copy { position: sticky; top: 120px; padding-top: 40px; }

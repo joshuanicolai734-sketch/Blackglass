@@ -31,10 +31,10 @@ const demo = [
   },
   {
     id: "technique", tab: "Learn", src: "/assets/movement.webp",
-    alt: "The tab row of a Blackglass exercise guide: Movement, Muscles and My record",
+    alt: "The three phases of a Blackglass exercise guide: Brace, Reach and Return",
     title: "Learn each movement in phases.",
-    text: "Each exercise guide plays the movement and breaks it into phases, so you can learn the pattern and control it.",
-    points: ["Phases you can step through: brace, reach, return", "Tabs for the movement, the muscles worked and your own record", "Add an exercise to your programme from its guide"],
+    text: "Each exercise guide breaks the movement into phases, so you can learn the pattern and control it.",
+    points: ["Three phases: brace, reach, return", "Every exercise has its own guide"],
   },
 ];
 
@@ -118,8 +118,21 @@ export default function Home() {
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
                   {/* No demo screen is fetched with the first paint: site.js warms them after load, or when the demo nears. */}
-                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : d.id === "today" ? " crop-today" : d.id === "plan" ? " crop-plan" : ""}`} defer
-                    sizes={d.id === "technique" ? "(min-width: 900px) 422px, min(100vw - 50px, 422px)" : undefined} />
+                  {d.id === "technique" ? (
+                    /* Learn: the app's phase control drawn as three chips (no screen image, no exercise name). Complete and static
+                       without JavaScript; site.js steps the volt marker while the panel is on screen. */
+                    <figure className="pane demo-pane phase-card">
+                      <div className="pane-glass">
+                        <ol className="pc-list" aria-label={d.alt}>
+                          {["Brace", "Reach", "Return"].map((w, j) => (
+                            <li key={w} className="pc-chip" data-on={j === 0 ? "" : undefined} suppressHydrationWarning><i aria-hidden="true" /><span className="rl-label">0{j + 1}</span><span className="pc-t">{w}</span></li>
+                          ))}
+                        </ol>
+                      </div>
+                    </figure>
+                  ) : (
+                    <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "today" ? " crop-today" : d.id === "plan" ? " crop-plan" : ""}`} defer />
+                  )}
                   <div className="demo-copy">
                     <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
