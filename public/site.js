@@ -124,10 +124,10 @@
     // active from the markup; reduced motion never steps.
     const chips = [...demo.querySelectorAll('.pc-chip')];
     if (chips.length && !reduce.matches) whenHydrated(() => {
-      let seen = false, at = 0, timer = 0;
-      const live = () => seen && panels[current]?.dataset.demoPanel === 'technique' && !d.hidden;
+      let seen = false, at = 0;
+      const live = () => seen && panels[current]?.dataset.demoPanel === 'technique';
       const tick = () => { if (!live()) return; at = (at + 1) % chips.length; chips.forEach((c, k) => (k === at ? c.setAttribute('data-on', '') : c.removeAttribute('data-on'))); };
-      timer = w.setInterval(tick, 1200);
+      w.setInterval(tick, 1200);
       if ('IntersectionObserver' in w) new IntersectionObserver((es) => { seen = es[es.length - 1].isIntersecting; }).observe(demo); else seen = true;
     });
 
