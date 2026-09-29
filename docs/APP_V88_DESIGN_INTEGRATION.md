@@ -11,9 +11,11 @@ This is the implementation handoff for the supplied `Blackglass-88_0-Flow-3D.apk
 
 ## Fresh-install v88.1 visual prototype
 
-With a clean install accepted for this pre-release app, `Blackglass-88.1-Poster-3D.apk` was patched directly from the supplied v88 binary and signed using the older development certificate. It retains the package ID and every one of the 108 original S3D assets, changes the launcher, brand rasters, default appearance, app and studio color constants, and display font weights, and carries versionCode 898 / versionName `88.1-poster`. SHA-256: `8f24353b7c5ffcf4c36e4edd48f54cf0408bcfb64667858921a7d19d94d928ff`. The old v88 APK must be uninstalled first because its certificate differs.
+With a clean install accepted for this pre-release app, `Blackglass-88.1-Poster-3D.apk` was patched directly from the supplied v88 binary and signed using the older development certificate. It retains the package ID and every one of the 108 original S3D assets, changes the launcher, brand rasters, default appearance, app and studio color constants, and display font weights, and carries versionCode 898 / versionName `88.1-poster`. The entry copy now calls the prerecorded animation a "3D pose study" rather than a validated form guide. SHA-256: `7bf4d64699b977e2663f765532ebb3511aa28e1073c1aea18ef99411da7667b9`. The old v88 APK must be uninstalled first because its certificate differs.
 
 This binary patch changes how the 3D viewer looks. It does not alter the authored 3D poses, timing, camera or controls. Static ZIP, DEX, resource, asset-preservation and v2 signature checks pass, but there is no on-device launch or motion review. The separate rebuild kit documents the exact patch; it excludes the signing key. Continue the full exercise-studio work below when the matching v88 implementation source becomes available.
+
+Sampled squat and deadlift frames visibly have poor foot contact and awkward load positions. Those source animations need a new rig/render review before they should be presented as reliable technique instruction; a palette or timing change cannot repair the poses.
 
 ## App changes to implement against the matching v88 source
 
