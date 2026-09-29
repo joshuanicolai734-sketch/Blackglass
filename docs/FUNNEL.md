@@ -20,7 +20,7 @@ The site must never imply the app can be bought or installed until `content/site
 3. **How it works:** two real screens (Today and Train), followed by a labeled illustration of the Learn phase control. Do not describe the illustration as a screenshot.
 4. **Why it helps** (Paper): the benefits, each tied to a real screen.
 5. **Choose your start:** the fork, side by side.
-   - **The app** is the free preview list, shown as a hairline panel with its three steps and a volt button.
+   - **The app** is the free preview list, shown as a hairline panel with its three steps and a crimson button.
    - **Coaching** is the heavier Paper panel: the monumental 59, what's included, an "Enquire" button, and "No payment is taken on this site".
    - The paid path carries the visual weight; the free path carries the colour.
 6. **Questions:** answers the objections.

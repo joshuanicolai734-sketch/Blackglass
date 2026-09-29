@@ -47,14 +47,13 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
 
 - **Tokens:** `app/tokens.css` is the only place values live (colour, type, spacing, hairlines, motion). `site.css`, the admin styles and the shadcn variables in `globals.css` all read from it. Change a value there, never on top of it.
 - **Grounds:**
-  - **Glass** (`#101113`) is home.
+  - **Glass** (`#0B0D0E`) is home.
   - **Paper** (`#ECEAE3`, add `class="paper"` to a section) is for one or two feature sections per page. It switches every semantic token and adds a 3% grain.
-  - On Paper, volt only ever appears inside ink shapes (it's 1.04:1 against Paper).
+  - On Paper, crimson is a graphic accent. Text and actions use ink.
 - **Signal colours:**
-  - **Volt** is for primary buttons on Glass, markers and active states.
-  - **Ember** (`#DE7F4E`) is one moment per page and fill only. The showreel doesn't use it (it would share a frame with volt).
-  - Never have both loud in one viewport.
-- **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (semibold 600, uppercase, +0.04em; the home h1 is heavier and tighter) and monument (heavy numerals, one per viewport).
+  - **Crimson** (`#F43F46`) is for primary buttons on Glass, markers and a single large structural form in the home hero.
+  - The deeper red (`#B72F36`) is a tonal part of the same form, not a second signal.
+- **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (heavy, tight and uppercase) and monument (heavy numerals, one per viewport).
 - **Annotation vocabulary:** only four marks are used. Each must point at something real, and there are at most three per viewport.
   1. Hairline rule.
   2. Tick scale. The desktop scroll gauge counts as one tick scale, including its marker.
@@ -62,7 +61,7 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
   4. 6px signal square (`Signal`).
 - **Corners:** square, or 45° chamfers (`--chamfer`). No rounded corners.
 - **Components** (`components/site/ui.tsx`):
-  - `Button` (primary: volt on Glass, ink on Paper; ghost: hairline chamfer)
+  - `Button` (primary: crimson on Glass, ink on Paper; ghost: hairline chamfer)
   - `TextLink` (the hairline draws on hover)
   - `SectionHead` (`01 — TITLE ———— meta`)
   - `SpecCard` (label–value rows)
@@ -94,11 +93,11 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
   - **Demo tabs:** one shared indicator (a hairline and the volt square) drives to the chosen tab. The incoming screen drives in 24px along the direction of travel on top of the outgoing one, whose frame stays until it lands, so the pane is never empty (checked frame by frame at 60 fps). All three panels share one grid cell, so nothing below moves. A horizontal swipe on the screen steps the tabs. Without JavaScript all three screens show; with reduced motion the swap is instant.
   - **Demo screens:** no demo image loads with the first paint: every panel ships as `data-src` (`Pane defer`, so the Inter font gets the bandwidth) and `site.js` loads them after the load event once the demo is within about 600px, or on the first touch of the tabs. Loading never waits for hydration, so tab switches take the same time with or without React. `.demo-tabs` has `min-height: 56px`: without it the fixed stage height set by `fit()` collapses the tab grid track on phones. `fit()` follows the active panel on phones only; on desktop the stage keeps the tallest panel's height and the short Learn card is centred in it (`.js .demo-panel[data-demo-panel="technique"]`). `html[data-sticky-on]` already sets `scroll-padding-bottom: 88px`, so nothing focused scrolls under the bar. On phones the focus ring sits on the screen, not the panel (the panel's edge is under the sticky bar). A swap waits for the incoming image to decode, capped at 300 ms.
   - **FAQ:** a 32px hairline box with a plus that becomes a minus. The answer's height drives open; closing fades the words first (`--t-snap`), then loads the height down (`interpolate-size`, Chromium; other browsers snap open). This is the site's one layout animation.
-  - **Form success:** after the server confirms, the confirmation replaces the form and takes focus, and its volt rule locks in top to bottom (`.msg.is-ok`). Failures never animate; the email fallback is a ghost button.
+  - **Form success:** after the server confirms, the confirmation replaces the form and takes focus, and its signal rule locks in top to bottom (`.msg.is-ok`). Failures never animate; the email fallback is a ghost button.
 - **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square steps to the section in view at drive speed. Decorative, and hidden from assistive tech.
 - **Phone action bar** (`StickyCta` in `components/site/chrome.tsx`, below 900px): on the home page (preview list and coaching) and `/coaching` (enquire). It sits right after the header in the DOM, so keyboard users reach it early. It drives in once the hero has left view and loads out for good at the page's decision point (the fork, or the enquiry form): two state changes per page. It steps aside only while a reel control is under it, and moves focus to the page if it hides while focused. It ships `hidden`, so without JavaScript it isn't shown.
 - **Phone menu:** while open, `main`, the footer, the phone bar and the rest of the header are `inert`, so Tab stays in the sheet.
-- **Volt discipline:** the gauge square rests while the hero, the reel or the closer holds the screen (each has its own volt). Screens sit above the column grid (`.pane-glass` z-index 61); the header and phone bar sit above screens (70). The hero screen's own volt is muted beside the real CTA and returns to full colour on hover.
+- **Signal discipline:** the gauge square rests while the hero, the reel or the closer holds the screen. Screens sit above the column grid (`.pane-glass` z-index 61); the header and phone bar sit above screens (70). The hero screen's own app accent is muted beside the real CTA and returns to full colour on hover.
 - **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
 - **Hero screen** (1100px and wider): the real Train screen in a `Pane`, the hero's one dominant shape (the demo opens on Today, so no screen repeats; the Technique screen is never used in the hero). It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
 - **Screens:** the Android status bar and nav bar are cropped off every `Pane` in CSS (`.pane-glass img`, 720/1400). Remove the crop once the screens are re-captured cleanly. Repeated screens show a crop (source rows of the 720x1560 files, `object-position = top / (1560 - height)`): hero Train 488-1256 (ends between plan rows 05 and 06; the edit pencil sits at the left of rows 03-04 and cannot be cropped out without a re-capture), Learn is no longer a screen crop: the demo shows the app's phase control as three chips (`.phase-card`: BRACE / REACH / RETURN, no image, no exercise name, no button), because no contiguous crop of the guide is free of the exercise name, the volt button or the wheel, the demo Train screen 72-1252 (`crop-plan`, 720/1180, ends under plan row 05), and Today on phones 72-1240 (ends under "Log food"). Demo images use `srcset` with the 480w and 720w files and a `sizes` that matches the pane's slot; screens behind the other tabs are deferred (`data-src`) and warmed near the demo.

@@ -1,4 +1,18 @@
-# Blackglass design language: phase 0 (audit and direction)
+# Blackglass design language
+
+## Current direction: poster system (September 2026)
+
+The current website takes its visual direction from the Blackglass crimson-horizon and Accelerate Everything posters. It uses poster-black `#0B0D0E`, warm bone `#F1EEE6`, and one crimson signal `#F43F46`. The deeper red `#B72F36` shades the same graphic form. `app/tokens.css` is authoritative for the implemented values.
+
+- Give the home hero a compact, heavy, uppercase headline and one red disc/diagonal structure. Use generous black space and small factual editorial labels.
+- Keep primary actions crimson on Glass and ink on Paper. Do not set long text in crimson on Paper.
+- Keep the real app captures unfiltered and the release status and coaching offer truthful. Graphic forms are decoration, never evidence of a feature or result.
+- Use the existing wordmark paths and Inter Tight/Geist Mono. The poster typography is translated into weight, tracking, and layout; do not substitute a lookalike logo or add an unlicensed display font.
+- Preserve reduced-motion behavior and working no-JavaScript paths.
+
+## Previous direction: phase 0 audit and decisions
+
+The following is an archive of the original approved phase 0 system and frames. Its Volt/Ember palette and exclusions of the red disc have been superseded by the poster direction above.
 
 Status: **approved** (Ember `#DE7F4E`, Inter Tight kept, recommendations taken). Phases 1–3 are built. The style frames are in `design/frames/`. Rebuild them with `node design/frames/build.mjs`.
 
