@@ -96,13 +96,11 @@
       d.fonts?.ready.then(ink);
     });
 
-    // On phones the stage follows the active panel's height (animated over --t-drive) instead of leaving the tallest
-    // panel's height as a void under the short Learn crop. Desktop keeps the shared cell.
+    // The stage follows the active panel's height (animated over --t-drive) instead of leaving the tallest
+    // panel's height as a void under the shorter Learn panel (phones and desktop).
     const ui = demo; // the [data-demo] element is the stage (.demo-ui)
-    const narrow = w.matchMedia('(max-width: 899.98px)');
     const fit = () => {
       if (!ui) return;
-      if (!narrow.matches) { ui.style.height = ''; return; }
       const box = panels[current].getBoundingClientRect();
       ui.style.height = Math.ceil(box.bottom - ui.getBoundingClientRect().top) + 'px';
     };
@@ -110,7 +108,6 @@
       fit();
       requestAnimationFrame(() => requestAnimationFrame(() => ui?.setAttribute('data-fit', '')));
       if ('ResizeObserver' in w && ui) { const ro = new ResizeObserver(fit); panels.forEach((p) => ro.observe(p)); }
-      narrow.addEventListener?.('change', fit);
     });
 
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.

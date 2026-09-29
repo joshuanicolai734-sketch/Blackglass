@@ -31,7 +31,7 @@ const demo = [
   },
   {
     id: "technique", tab: "Learn", src: "/assets/movement.webp",
-    alt: "The phase controls of a Blackglass exercise guide: a scrubber and three phase buttons, Brace, Reach and Return",
+    alt: "The top of a Blackglass exercise guide: Movement, Muscles and My record tabs, the exercise title, and an Add to my program button",
     title: "Learn each movement in phases.",
     text: "Each exercise guide plays the movement and breaks it into phases, so you can learn the pattern and control it.",
     points: ["Phases you can step through: brace, reach, return", "Tabs for the muscles worked and your own record", "Add an exercise to your programme from its guide"],
@@ -117,8 +117,8 @@ export default function Home() {
               {demo.map((d, i) => (
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
-                  {/* Screens behind the other tabs cost nothing before load: site.js warms them near the demo. */}
-                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : d.id === "today" ? " crop-today" : ""}`} defer={i !== 0}
+                  {/* No demo screen is fetched with the first paint: site.js warms them after load, or when the demo nears. */}
+                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : d.id === "today" ? " crop-today" : d.id === "plan" ? " crop-plan" : ""}`} defer
                     sizes={d.id === "technique" ? "(min-width: 900px) 422px, min(100vw - 50px, 422px)" : undefined} />
                   <div className="demo-copy">
                     <h3 className="title">{d.title}</h3>

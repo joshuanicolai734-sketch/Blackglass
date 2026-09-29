@@ -111,12 +111,12 @@
       css(m, `translateX(${on ? ((1 - x) * -2).toFixed(2) : '0.00'}%)`);
     });
 
-    // Learn: three phase chips step in at snap speed (the first is there on the cut) and the volt marker steps with them.
+    // Learn: all three phase chips are on screen from the cut, dimmed; the phase in play lights at snap speed, dims
+    // when the next takes over, and the volt marker steps with it. The first is lit on the cut itself.
     const L0 = APP + 2 * BEAT;
     chips.forEach((c, j) => {
       const a = L0 + j * 0.4;
-      op(c.firstChild, j ? expo(k(t, a, a + SNAP)) : 1);
-      op(c.firstChild.lastChild, j < 2 ? 1 - 0.5 * expo(k(t, a + 0.4, a + 0.4 + SNAP)) : 1);
+      op(c.firstChild.lastChild, 0.45 + 0.55 * (j ? expo(k(t, a, a + SNAP)) : 1) * (j < 2 ? 1 - expo(k(t, a + 0.4, a + 0.4 + SNAP)) : 1));
     });
     css(pmark, `translateY(calc(${(expo(k(t, L0 + 0.4, L0 + 0.4 + SNAP)) + expo(k(t, L0 + 0.8, L0 + 0.8 + SNAP))).toFixed(3)} * (100% + 3px)))`);
 

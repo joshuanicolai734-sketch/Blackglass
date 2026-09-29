@@ -263,10 +263,10 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .rl-wm { width: 64cqw; height: calc(64cqw * 40 / 409.593); }
 .rl-tag { font-weight: 600; font-size: var(--fs-display); line-height: 1.1; letter-spacing: var(--tr-display); text-transform: uppercase; color: var(--fg); padding-left: var(--tr-display); }
 @container reel (min-aspect-ratio: 1.2 / 1) {
-  .rl-squat { --fl: 86cqh; --fh: 82cqh; --fx: 32cqw; }
+  .rl-squat { --fl: 92cqh; --fh: 88cqh; --fx: 32cqw; }
   .rl-floor { left: 8cqw; right: 8cqw; }
-  .rl-tempo { left: 58cqw; right: auto; width: min(26cqw, 44cqh); }
-  .rl-n { font-size: min(13cqh, 7cqw); }
+  .rl-tempo { left: 58cqw; right: auto; width: min(30cqw, 52cqh); }
+  .rl-n { font-size: min(17cqh, 9cqw); }
   .rl-mod .rl-pane { width: auto; }
   .rl-mod { left: 8cqw; right: 8cqw; top: 0; bottom: 0; grid-template-columns: 1fr minmax(0, 480px); align-items: center; gap: 6cqw; }
   .rl-word { font-size: min(18cqh, 10cqw); }
@@ -353,9 +353,11 @@ html:not(.js) .pane-glass img[data-src] { display: none; }
 /* Crops: one screen shows once per page, so a repeat shows only the part that says something different. Each is the
    source rectangle in the 720x1560 screen: object-position = top / (1560 - height). */
 .crop-train .pane-glass img { aspect-ratio: 720 / 768; object-position: 50% 61.6%; }   /* source rows 488-1256: below the volt button, ending between plan rows 05 and 06 */
-.crop-learn .pane-glass img { aspect-ratio: 720 / 304; object-position: 50% 87.3%; }   /* source rows 1096-1400: the phase controls only (no exercise name, no figure) */
+.crop-learn .pane-glass img { aspect-ratio: 720 / 440; object-position: 50% 15.36%; }   /* source rows 172-612: the guide's tabs, title and "Add to my program" (stops above the exercise figure) */
 /* Phones only: the Today screen ends on the boundary under "Log food" (source rows 72-1240), before the next card is cut by the tab bar. */
 @media (max-width: 899.98px) { .crop-today .pane-glass img { aspect-ratio: 720 / 1168; object-position: 50% 18.4%; } }
+/* The demo's Train screen ends on the boundary under plan row 05, before row 06 is cut by the tab bar (source rows 72-1252). */
+.crop-plan .pane-glass img { aspect-ratio: 720 / 1180; object-position: 50% 18.95%; }
 .pane figcaption { margin-top: 16px; text-align: center; }
 
 /* How it works: hairline tabs with one shared indicator (a hairline and the volt square) that drives to the chosen tab.
@@ -383,7 +385,7 @@ html:not(.js) .demo-tabs { display: none; }
 .demo-panel { display: grid; gap: 40px; align-items: center; }
 html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-ui { display: grid; }
-@media (max-width: 899.98px) and (prefers-reduced-motion: no-preference) { .js .demo-ui[data-fit] { transition: height var(--t-drive) var(--ease-expo); } }
+@media (prefers-reduced-motion: no-preference) { .js .demo-ui[data-fit] { transition: height var(--t-drive) var(--ease-expo); } }
 .js .demo-panel { grid-area: 2 / 1; align-self: start; } /* each screen keeps its own height, so a short crop isn't stranded mid-cell */
 .js .demo-panel[data-inactive] { visibility: hidden; }
 .js .demo-panel.is-leaving { z-index: 62; visibility: visible; pointer-events: none; }
@@ -405,7 +407,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 @media (min-width: 900px) {
   .demo-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; align-items: start; }
   .demo-pane { justify-self: start; width: min(100%, 360px); }
-  .demo-pane.crop-learn { width: min(100%, 440px); align-self: center; }
+  .demo-pane.crop-learn { width: min(100%, 440px); }
+  /* Learn: the screen's top edge and the copy's heading start on one line. */
+  [data-demo-panel="technique"] .demo-copy { padding-top: 9px; }
   /* The copy stays beside the phone while it scrolls past. */
   .demo-copy { position: sticky; top: 120px; padding-top: 40px; }
 }
