@@ -5,6 +5,8 @@
 /* ---- Base ---- */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
+/* While the phone action bar is showing, in-page targets and focused fields stay clear of it. */
+html[data-sticky-on] { scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
 /* No smooth-scroll on html: keyboard focus moves land instantly. In-page anchor clicks scroll smoothly in site.js. */
 body { margin: 0; background: var(--ground); color: var(--fg); font: 400 var(--fs-body)/1.6 var(--font-sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 img, svg { display: block; max-width: 100%; }
@@ -12,6 +14,9 @@ a { color: inherit; text-decoration: inherit; }
 p { margin: 0 0 1em; }
 h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transparent; }
+/* Programmatic focus targets (skip link, form landings, tab panels) never show a ring for a pointer or a script. */
+[tabindex="-1"]:focus:not(:focus-visible) { outline: 0; }
 ::selection { background: var(--c-volt); color: var(--c-glass); }
 .wrap { width: 100%; max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
 .skip { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 12px 16px; background: var(--c-volt); color: var(--c-glass); font: 500 var(--fs-label)/1 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; transform: translateY(-160%); }
@@ -68,7 +73,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 
 /* ---- Actions ---- */
 .btn { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 48px; padding: 0 20px; border: 0; background: none; color: var(--fg); cursor: pointer; text-decoration: none; white-space: nowrap;
-  font: 500 var(--fs-label)/1 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; -webkit-tap-highlight-color: transparent; transition: transform var(--t-drive) var(--ease-expo); }
+  font: 600 .8125rem/1 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; -webkit-tap-highlight-color: transparent; transition: transform var(--t-drive) var(--ease-expo); }
 .btn::before, .btn::after { content: ""; position: absolute; z-index: -1; clip-path: var(--chamfer); }
 .btn::before { inset: 0; }
 .btn .arrow { width: 14px; height: 14px; flex: none; transition: transform var(--t-drive) var(--ease-expo); }
@@ -104,7 +109,9 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .link > span::after { background: var(--fg); transform: scaleX(0); transform-origin: left; transition: transform var(--t-load) var(--ease-load); }
 @media (hover: hover) { .link:hover > span::after { transform: scaleX(1); transition: transform var(--t-drive) var(--ease-expo); } }
 .link:focus-visible > span::after { transform: scaleX(1); transition: transform var(--t-drive) var(--ease-expo); }
-.link .arrow { width: 14px; height: 14px; }
+.link .arrow { width: 14px; height: 14px; transition: transform var(--t-drive) var(--ease-expo); }
+.link .arrow-down { transform: rotate(90deg); }
+@media (hover: hover) { .link:hover .arrow { transform: translate(3px, -3px); } .link:hover .arrow-down { transform: rotate(90deg) translate(3px, -3px); } }
 /* Links inside running text keep a visible underline. */
 .prose a, .inline-link, .form-note a, .footnote a { color: var(--fg); text-decoration: underline; text-decoration-thickness: var(--hair); text-underline-offset: 3px; text-decoration-color: var(--rule-strong); }
 .prose a:hover, .inline-link:hover, .form-note a:hover, .footnote a:hover { text-decoration-color: var(--fg); }
@@ -173,6 +180,15 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .form-card .btn { width: 100%; margin-top: 28px; }
 .form-note { margin: 16px 0 0; font-size: .875rem; color: var(--fg-3); }
+/* What happens next: three numbered facts, from the coaching page's own terms. Static text, no motion. */
+.next-steps { display: grid; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; counter-reset: ns; max-width: 40rem; }
+.next-steps li { position: relative; padding-left: 40px; color: var(--fg-2); counter-increment: ns; }
+.next-steps li::before { content: "0" counter(ns); position: absolute; left: 0; top: .3em; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: var(--tr-label); color: var(--fg-3); }
+.next-steps-label { margin-top: 40px; }
+.form-steps { margin: 28px 0 0; }
+/* Result and retry pages (static routes a no-JavaScript submit lands on). */
+.result-msg { max-width: 40rem; margin: 8px 0 32px; }
+.result .next-steps { margin-bottom: 32px; }
 .msg { position: relative; margin-top: 20px; padding: 16px 18px 16px 20px; background: var(--c-facet); }
 .msg::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--c-volt); transform-origin: 50% 0; }
 .msg.error::before { background: var(--c-danger); }
@@ -286,6 +302,16 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .status { display: flex; align-items: flex-start; gap: 10px; max-width: 34em; margin: 32px 0 0; }
 .status .sq { margin-top: .5em; }
 .status-lines { display: grid; gap: 2px; }
+/* Phones: two lines, not four. "Status" stays for screen readers; the first fact takes line one, the rest share line two. */
+@media (max-width: 899.98px) {
+  .status-lines { display: flex; flex-wrap: wrap; gap: 2px 0; }
+  .status-lines > :first-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .status-lines > :nth-child(2) { flex: 0 0 100%; }
+  .status-lines { letter-spacing: .06em; }
+  .status-lines > :nth-child(3) { white-space: nowrap; }
+  .status-lines > :nth-child(3):not(:last-child)::after { content: "\00a0·\00a0"; }
+}
+.nb { white-space: nowrap; }
 @media (max-width: 479.98px) { .hero .sh-meta { display: none; } } /* keeps the category on one line on phones */
 .hero-pane { display: none; }
 
@@ -307,8 +333,12 @@ h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .paper .pane-glass { background: var(--c-glass); }
 /* Deferred screens (Pane defer) show their <noscript> copy without JavaScript, so the placeholder hides. */
 html:not(.js) .pane-glass img[data-src] { display: none; }
-.pane-glass img { width: 100%; height: auto; aspect-ratio: 720 / 1400; object-fit: cover; object-position: 50% 45%; /* crops the Android status bar (72px) and nav bar (88px) */ clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+.pane-glass img { width: 100%; height: auto; aspect-ratio: 720 / 1400; object-fit: cover; object-position: 50% 45%; background: var(--c-glass); /* crops the Android status bar (72px) and nav bar (88px) */ clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .pane-glass::after { content: ""; position: absolute; left: 0; top: 0; width: 31px; height: 1.5px; background: var(--c-bone); transform-origin: 0 0; transform: translate(0, 22px) rotate(-45deg); }
+/* Crops: one screen shows once per page, so a repeat shows only the part that says something different. Each is the
+   source rectangle in the 720x1560 screen: object-position = top / (1560 - height). */
+.crop-train .pane-glass img { aspect-ratio: 720 / 810; object-position: 50% 66.7%; }   /* below the volt button: the plan */
+.crop-learn .pane-glass img { aspect-ratio: 720 / 240; object-position: 50% 88.3%; }   /* the phase controls only */
 .pane figcaption { margin-top: 16px; text-align: center; }
 
 /* How it works: hairline tabs with one shared indicator (a hairline and the volt square) that drives to the chosen tab.
@@ -336,7 +366,7 @@ html:not(.js) .demo-tabs { display: none; }
 .demo-panel { display: grid; gap: 40px; align-items: center; }
 html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-ui { display: grid; }
-.js .demo-panel { grid-area: 2 / 1; }
+.js .demo-panel { grid-area: 2 / 1; align-self: start; } /* each screen keeps its own height, so a short crop isn't stranded mid-cell */
 .js .demo-panel[data-inactive] { visibility: hidden; }
 .js .demo-panel.is-leaving { z-index: 62; visibility: visible; pointer-events: none; }
 .demo-panel:focus-visible { outline-offset: 8px; }
@@ -347,6 +377,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-panel.is-entering .pane-glass { background: transparent; }
 .js .demo-panel.is-entering .pane-glass::after { content: none; }
 .demo-pane { width: min(78vw, 340px); justify-self: center; }
+.demo-pane.crop-learn { width: min(88vw, 440px); }
 .demo-copy .title { margin-bottom: 14px; }
 .demo-copy > p { color: var(--fg-2); max-width: 36em; }
 .ticks { list-style: none; margin: 28px 0 0; padding: 0; border-top: var(--hair) solid var(--rule); max-width: 36em; }
@@ -354,21 +385,16 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 @media (min-width: 900px) {
   .demo-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; align-items: start; }
   .demo-pane { justify-self: start; width: min(100%, 360px); }
+  .demo-pane.crop-learn { width: min(100%, 440px); align-self: center; }
   /* The copy stays beside the phone while it scrolls past. */
   .demo-copy { position: sticky; top: 120px; padding-top: 40px; }
 }
 
-/* Why it helps (Paper): label–value spec cards beside one black-glass screen. */
+/* Why it helps (Paper): four label–value spec cards, no screen (the demo above already shows them; a screen appears once per page). */
 .why-grid { display: grid; gap: 48px; }
-.why .pane { display: none; } /* phones: the Train screen is already in the demo, one scroll up */
 .cards { display: grid; list-style: none; margin: 0; padding: 0; }
-@media (min-width: 900px) {
-  .why-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 24px; }
-  .why .section-head { grid-column: 1 / 8; }
-  .why-grid { grid-template-rows: auto 1fr; align-content: start; }
-  .why .pane { display: block; grid-column: 9 / 13; grid-row: 1 / 3; width: 100%; align-self: start; }
-  .cards { grid-column: 1 / 8; grid-row: 2; align-self: start; grid-template-columns: 1fr 1fr; gap: 0 40px; }
-}
+@media (min-width: 900px) { .cards { grid-template-columns: 1fr 1fr; gap: 0 40px; } }
+@media (min-width: 1200px) { .cards { grid-template-columns: repeat(4, 1fr); } }
 
 /* Steps: three spec cards. */
 .steps { display: grid; list-style: none; margin: 0; padding: 0; }
@@ -387,6 +413,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   /* A hairline chamfer on Glass (the two cut corners drawn as 45° hairlines), so the ground reads through. */
   background: linear-gradient(to bottom right, transparent calc(50% - .75px), var(--line) calc(50% - .75px), var(--line) calc(50% + .25px), transparent calc(50% + .25px)) -1px -1px / 20px 20px no-repeat,
     linear-gradient(to bottom right, transparent calc(50% - .25px), var(--line) calc(50% - .25px), var(--line) calc(50% + .75px), transparent calc(50% + .75px)) calc(100% + 1px) calc(100% + 1px) / 20px 20px no-repeat; }
+.offer-card > .spec-k { min-height: 32px; }
+.offer-card.paper { z-index: 61; } /* lifts the Paper card above the page grid (z 60): no hairline runs through it */
 .offer-steps-short { margin: 24px 0 0; color: var(--fg-2); }
 @media (max-width: 899.98px) { .offer-steps { display: none; } }
 @media (min-width: 900px) { .offer-steps-short { display: none; } }
@@ -425,7 +453,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   @supports (interpolate-size: allow-keywords) {
     .faqs { interpolate-size: allow-keywords; }
     /* The one layout animation on the site (documented in design/DESIGN_LANGUAGE.md): a short list, height only. */
-    .faq::details-content { block-size: 0; overflow: clip; transition: block-size var(--t-load) var(--ease-load) var(--t-snap), content-visibility var(--t-load) allow-discrete var(--t-snap); }
+    .faq::details-content { block-size: 0; overflow: clip; transition: block-size var(--t-load) var(--ease-load) calc(var(--t-snap) * .5), content-visibility var(--t-load) allow-discrete calc(var(--t-snap) * .5); }
     .faq[open]::details-content { block-size: auto; transition: block-size var(--t-drive) var(--ease-expo), content-visibility var(--t-drive) allow-discrete; }
     /* Closing: the words leave before the box loads down, so no line is sliced mid-collapse. */
     .faq p { transition: opacity var(--t-snap) linear; }
@@ -528,6 +556,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 /* Continuity: the /get button tapped on one page becomes the preview form's button on the next (names are set by
    site.js on tap and by the pagereveal hook in app/layout.tsx, only when the form's button is on screen). */
 ::view-transition-group(cta) { animation-duration: var(--t-drive); animation-timing-function: var(--ease-expo); }
+/* The plate morphs; the label never stretches or shows twice: the old snapshot leaves fast, the new one lands after it. */
+::view-transition-old(cta), ::view-transition-new(cta) { height: 100%; object-fit: none; overflow: clip; }
+::view-transition-old(cta) { animation: vt-out var(--t-snap) var(--ease-load) both; }
+::view-transition-new(cta) { animation: vt-in var(--t-drive) var(--ease-expo) calc(var(--t-snap) * .5) both; }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
@@ -536,19 +568,16 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 /* ---- Motion. Content is complete on first paint: nothing waits to be revealed, nothing moves on load or on
    scroll. Motion answers the visitor (hover, focus, a tab, a page change) or lives in the showreel. ---- */
 
-/* Hero screen (1100px and up). Still. */
+/* Hero screen (1100px and up). Still, in full colour, cropped below its own volt button so the hero's one volt is
+   the real action. The headline is set large enough that the two columns meet with no void between them. */
 .hero { position: relative; overflow: hidden; }
 @media (min-width: 1100px) {
   .hero { padding: clamp(56px, 6vw, 88px) 0; }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: clamp(48px, 5vw, 96px); align-items: center; }
-  /* The section rule runs across both columns and ties the copy to the screen. */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: clamp(40px, 4vw, 72px); align-items: center; }
   .hero-head { grid-column: 1 / -1; }
-  .hero-pane { display: block; justify-self: end; width: min(100%, 300px); }
-  /* One volt action in the hero: the screen's own volt is muted beside the real CTA (full colour on hover), and
-     the status line drops its square. */
+  .hero h1 { font-size: clamp(4.5rem, 2rem + 5.6vw, 7rem); }
+  .hero-pane { display: block; justify-self: end; width: min(100%, 440px); }
   .hero .status .sq { display: none; }
-  .hero-pane img { filter: saturate(.2) brightness(.92); transition: filter var(--t-load) var(--ease-load); }
-  @media (hover: hover) { .hero-pane:hover img { filter: none; transition-duration: var(--t-drive); transition-timing-function: var(--ease-expo); } }
 }
 
 /* Phone action bar (components/site/chrome.tsx StickyCta, site.js). Drives in, loads out, never covers the fork,
@@ -556,7 +585,6 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .sticky-cta { position: fixed; z-index: 70; left: 0; right: 0; bottom: 0; display: flex; gap: 10px; padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
   background: var(--c-glass); border-top: var(--hair) solid var(--rule); transform: translateY(100%); visibility: hidden;
   transition: transform var(--t-load) var(--ease-load), visibility 0s linear var(--t-load); }
-.sticky-cta[hidden] { display: none; }
 .sticky-cta[data-show] { transform: none; visibility: visible; transition: transform var(--t-drive) var(--ease-expo), visibility 0s; }
 .sticky-cta .btn { flex: 1 1 auto; padding: 0 14px; gap: 12px; }
 .sticky-cta .btn-ghost { flex: 0 0 auto; }

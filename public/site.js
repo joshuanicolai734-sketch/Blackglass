@@ -96,7 +96,12 @@
 
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.
     const shots = [...demo.querySelectorAll('img[data-src]')];
-    const warm = (img) => {
+    // The swap of a deferred screen's attributes waits for React to claim the page (dev builds log a mismatch otherwise).
+    let claimed = false;
+    const queued = new Set();
+    const warm = (img) => { if (!img) return; if (claimed) load(img); else queued.add(img); };
+    whenHydrated(() => { claimed = true; queued.forEach(load); queued.clear(); });
+    const load = (img) => {
       if (!img?.dataset.src) return;
       img.fetchPriority = 'low';
       if (img.dataset.srcset) { img.sizes = img.dataset.sizes || ''; img.srcset = img.dataset.srcset; }
@@ -115,6 +120,7 @@
     // true when the image can be shown now; otherwise a promise that settles when it's decoded (or after 300ms).
     const ready = (img) => {
       if (!img) return true;
+      if (!claimed) return new Promise((r) => whenHydrated(r)).then(() => ready(img));
       warm(img);
       if (img.complete && img.naturalWidth > 1) return true;
       return Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);
@@ -213,7 +219,7 @@
     const stop = d.querySelector('#start, #enquire');
     const controls = [...d.querySelectorAll('[data-reel-toggle], [data-reel-chapters]')];
     let heroGone = false, past = false, under = new Set();
-    // The bar keeps its `hidden` attribute (it's what hides it without JavaScript); CSS shows it under html.js.
+    // The bar is hidden by CSS (visibility) until data-show, so it needs no attribute and never shows without JavaScript.
     const sync = () => {
       const show = heroGone && !past && under.size === 0;
       if (!show && bar.contains(d.activeElement)) { const m = d.querySelector('main'); m.tabIndex = -1; m.focus({ preventScroll: true }); }

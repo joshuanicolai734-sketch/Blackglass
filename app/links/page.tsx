@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Pages use full document loads so the enhancement script initialises on each one. */
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { appCta, hasDownload } from "@/components/site/chrome";
 import { Arrow } from "@/components/site/ui";
 import { paths } from "@/content/brand";
@@ -13,12 +14,17 @@ export const metadata: Metadata = {
   openGraph: { title: "Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
 };
 
-function Item({ href, title, note, primary, track }: { href: string; title: string; note: string; primary?: boolean; track: string }) {
+function Item({ href, title, note, primary, track }: { href: string; title: string; note: ReactNode; primary?: boolean; track: string }) {
   return (
     <a className={`btn ${primary ? "btn-primary" : "btn-ghost"}`} href={href} data-track={track}>
       <span>{title}<small>{note}</small></span><Arrow />
     </a>
   );
+}
+
+// Each clause stays whole, so a narrow phone breaks the note at a separator and never inside "12 weeks".
+function clauses(parts: string[]): ReactNode {
+  return parts.map((t, i) => <span key={t}>{i > 0 && " · "}<span className="nb">{t}</span></span>);
 }
 
 export default function Links() {
@@ -36,7 +42,7 @@ export default function Links() {
             note={hasDownload ? "Android · download and install" : "Free · in development · no iPhone app"} />
           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
-            note={`Available now · ${coaching.currency}${coaching.weekly} a week · ${coaching.weeks} weeks · any phone`} />}
+            note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "any phone"])} />}
           {socialLinks.map((s) => (
             <Item key={s.key} href={s.href} track={`links_${s.key}`} title={s.label} note="Follow Blackglass" />
           ))}

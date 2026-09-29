@@ -31,8 +31,8 @@ const demo = [
   },
   {
     id: "technique", tab: "Learn", src: "/assets/movement.webp",
-    alt: "Blackglass exercise guide for the ab wheel rollout, playing the movement with phases labelled Brace, Reach and Return",
-    title: "Know how the lift should look.",
+    alt: "The phase controls of a Blackglass exercise guide: a scrubber and three phase buttons, Brace, Reach and Return",
+    title: "Learn each movement in phases.",
     text: "Each exercise guide plays the movement and breaks it into phases, so you can learn the pattern and control it.",
     points: ["Phases you can step through: brace, reach, return", "Tabs for the muscles worked and your own record", "Add an exercise to your programme from its guide"],
   },
@@ -74,7 +74,7 @@ export default function Home() {
             <div className="hero-head"><SectionHead index="00" title="Strength training app" meta="Built in Dunedin" /></div>
             <div className="hero-copy">
               <h1 id="hero-title" className="display">Know what today asks of you.</h1>
-              <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each lift should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
+              <p className="body-2">Blackglass keeps your programme, today&rsquo;s session, how each movement should look and what you&rsquo;re eating in one clear place. Open it, see the work, get on with it.</p>
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">{appCta}</Button>
                 {coaching.available
@@ -90,7 +90,7 @@ export default function Home() {
             </div>
             {/* The hero's one dominant shape: the real Train screen (the demo below opens on Today, so no screen
                 repeats). Desktop only; phones never fetch it, so the phone LCP stays the headline. */}
-            <Pane src="/assets/program.webp" className="hero-pane" priority media="(min-width: 1100px)" sizes="300px"
+            <Pane src="/assets/program.webp" className="hero-pane crop-train" priority media="(min-width: 1100px)" sizes="440px"
               alt="Blackglass Train screen: an active six-day strength programme, week 1 of 6, with Push, Pull and Legs days listed" />
           </div>
         </section>
@@ -118,7 +118,7 @@ export default function Home() {
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
                   {/* Screens behind the other tabs cost nothing before load: site.js warms them near the demo. */}
-                  <Pane src={d.src} alt={d.alt} className="demo-pane" defer={i !== 0} />
+                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : ""}`} defer={i !== 0} />
                   <div className="demo-copy">
                     <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
@@ -139,7 +139,6 @@ export default function Home() {
               <SectionHead index="02" title="Why it helps" meta={`${String(benefits.length).padStart(2, "0")} principles`} />
               <h2 id="why-title" className="display">Less guessing. More training.</h2>
             </div>
-            <Pane src="/assets/program.webp" alt="The Train screen: this week’s plan, five exercises a day" sizes="(min-width: 900px) 300px, 70vw" />
             <ol className="cards">
               {benefits.map((b, i) => (
                 <SpecCard key={b.title} as="li" index={`0${i + 1}`} kicker={b.key} title={b.title} specs={b.specs}><p>{b.text}</p></SpecCard>

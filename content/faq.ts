@@ -17,7 +17,7 @@ export const homeFaq: Faq[] = [
   },
   {
     q: "What does the app do?",
-    a: "It keeps your programme, today's session, movement guides and food targets together. You can see the week's plan, pick up a session where you left off, check how a lift should look phase by phase, and log food against a calorie and protein target.",
+    a: "It keeps your programme, today's session, movement guides and food targets together. You can see the week's plan, pick up a session where you left off, check how a movement should look phase by phase, and log food against a calorie and protein target.",
   },
   {
     q: "What will the app cost?",
