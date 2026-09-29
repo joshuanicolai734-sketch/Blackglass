@@ -94,6 +94,23 @@
       d.fonts?.ready.then(ink);
     });
 
+    // On phones the stage follows the active panel's height (animated over --t-drive) instead of leaving the tallest
+    // panel's height as a void under the short Learn crop. Desktop keeps the shared cell.
+    const ui = demo.querySelector('.demo-ui');
+    const narrow = w.matchMedia('(max-width: 899.98px)');
+    const fit = () => {
+      if (!ui) return;
+      if (!narrow.matches) { ui.style.height = ''; return; }
+      const box = panels[current].getBoundingClientRect();
+      ui.style.height = Math.ceil(box.bottom - ui.getBoundingClientRect().top) + 'px';
+    };
+    whenHydrated(() => {
+      fit();
+      requestAnimationFrame(() => requestAnimationFrame(() => ui?.setAttribute('data-fit', '')));
+      if ('ResizeObserver' in w && ui) { const ro = new ResizeObserver(fit); panels.forEach((p) => ro.observe(p)); }
+      narrow.addEventListener?.('change', fit);
+    });
+
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.
     const shots = [...demo.querySelectorAll('img[data-src]')];
     // The swap of a deferred screen's attributes waits for React to claim the page (dev builds log a mismatch otherwise).
@@ -135,6 +152,7 @@
       current = i;
       tabs.forEach((t, j) => { t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; });
       ink();
+      fit();
       if (!interacted) { interacted = true; track('demo_engaged'); }
       const out = panels[prev], inn = panels[i], img = inn.querySelector('.pane-glass img');
       const r = ready(img);
@@ -149,10 +167,12 @@
       out.classList.add('is-leaving'); out.inert = true;
       const outAnims = [
         out.querySelector('.pane-glass img')?.animate([
-          { opacity: 1, transform: 'none' },
-          { opacity: 1, transform: `translateX(${-dir * 8}px)`, offset: 0.2 },
-          { opacity: 0, transform: `translateX(${-dir * 24}px)` },
+          { transform: 'none' },
+          { transform: `translateX(${-dir * 8}px)`, offset: 0.2 },
+          { transform: `translateX(${-dir * 24}px)` },
         ], { duration: load, easing: curve('--ease-load'), fill: 'forwards' }),
+        // The outgoing screen fades in --t-snap, timed to finish as the incoming one lands.
+        out.querySelector('.pane-glass img')?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: snap, delay: Math.max(0, drive - snap), easing: 'linear', fill: 'both' }),
         out.querySelector('.demo-copy')?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: snap, easing: 'linear', fill: 'forwards' }),
       ].filter(Boolean);
       leaving.set(out, outAnims);
@@ -220,16 +240,13 @@
     const controls = [...d.querySelectorAll('[data-reel-toggle], [data-reel-chapters]')];
     let heroGone = false, past = false, under = new Set();
     // The bar is hidden by CSS (visibility) until data-show, so it needs no attribute and never shows without JavaScript.
-    // Observers attach at parse, but the attribute writes wait for hydration (React would read them as a mismatch).
-    let live = false;
+    // The bar element carries suppressHydrationWarning, so its data-show can be written at parse.
     const sync = () => {
-      if (!live) return;
       const show = heroGone && !past && under.size === 0;
       if (!show && bar.contains(d.activeElement)) { const m = d.querySelector('main'); m.tabIndex = -1; m.focus({ preventScroll: true }); }
       bar.toggleAttribute('data-show', show);
       root.toggleAttribute('data-sticky-on', show);
     };
-    whenHydrated(() => { live = true; sync(); });
     new IntersectionObserver(([e]) => { heroGone = !e.isIntersecting; sync(); }).observe(hero);
     // The root reaches far above the viewport, so "intersecting" means the stop's top has come into view or passed it.
     if (stop) new IntersectionObserver(([e]) => { past = e.isIntersecting; sync(); }, { rootMargin: '100000px 0px 0px 0px' }).observe(stop);

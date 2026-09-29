@@ -21,6 +21,7 @@ export default function Joined() {
             <div className="msg is-ok result-msg" role="status">
               <p>This page confirms a preview-list sign-up. {site.founder} will email the address that was given when there&rsquo;s an Android build you can try. No newsletter, and you can ask to be removed at any time.</p>
             </div>
+            <p className="body-2 result-next"><strong>Next:</strong> there&rsquo;s nothing else to do. {coaching.available ? <>If you&rsquo;d rather not wait for the app, <a href="/coaching">coaching with {site.founder}</a> is available now, with any phone.</> : "Watch for the email."}</p>
             <div className="actions">
               <Button href="/#how-it-works" variant="ghost">See how the app works</Button>
               {coaching.available && <TextLink href="/coaching">{`Coaching with ${site.founder}`}</TextLink>}

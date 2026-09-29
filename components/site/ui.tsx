@@ -94,7 +94,7 @@ const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAA
  * (the hero screen is desktop-only, so phones never download it). With `defer`, the image ships as `data-src` and
  * public/site.js fetches it after the page's load event; a <noscript> copy keeps it for visitors without JavaScript.
  */
-export function Pane({ src, alt, width = 720, height = 1560, priority = false, caption, className = "", sizes = "(min-width: 900px) 380px, 76vw", media, defer = false }: {
+export function Pane({ src, alt, width = 720, height = 1560, priority = false, caption, className = "", sizes = "(min-width: 900px) 342px, min(78vw - 18px, 322px)", media, defer = false }: {
   src: string; alt: string; width?: number; height?: number; priority?: boolean; caption?: ReactNode; className?: string; sizes?: string; media?: string; defer?: boolean;
 }) {
   const srcSet = src.endsWith(".webp") ? `${src.replace(".webp", "-480.webp")} 480w, ${src} 720w` : src;

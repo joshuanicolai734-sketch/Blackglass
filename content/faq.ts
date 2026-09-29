@@ -29,6 +29,13 @@ export const homeFaq: Faq[] = [
   }] : []),
 ];
 
+/** What happens when you join the preview list: the same facts as the first answer in `getFaq`, in steps (shown beside the form). */
+export const previewSteps: string[] = [
+  "Your name and email are saved so Josh can contact you about Blackglass for Android.",
+  "You get one email when there's a build you can try. There's no newsletter.",
+  "You can ask to be removed at any time.",
+];
+
 export const getFaq: Faq[] = [
   {
     q: "What happens when I join the preview list?",

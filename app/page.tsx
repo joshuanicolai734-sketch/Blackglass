@@ -78,7 +78,7 @@ export default function Home() {
               <div className="actions">
                 <Button href="/get" track="cta_get_hero">{appCta}</Button>
                 {coaching.available
-                  ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</Button>
+                  ? <Button href="/coaching" variant="ghost" track="cta_coaching_hero">Coaching<span className="lbl-wide"> with {site.founder}</span> · {coaching.currency}{coaching.weekly}/wk<span className="lbl-narrow"> · {coaching.weeks} weeks</span></Button>
                   : <TextLink href="#how-it-works" down>See how it works</TextLink>}
               </div>
               {/* One clause per line, so no separator is ever left dangling. */}
@@ -118,7 +118,8 @@ export default function Home() {
                 <div key={d.id} className="demo-panel" role="tabpanel" id={`panel-${d.id}`} aria-labelledby={`tab-${d.id}`}
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
                   {/* Screens behind the other tabs cost nothing before load: site.js warms them near the demo. */}
-                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : ""}`} defer={i !== 0} />
+                  <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "technique" ? " crop-learn" : d.id === "today" ? " crop-today" : ""}`} defer={i !== 0}
+                    sizes={d.id === "technique" ? "(min-width: 900px) 422px, min(100vw - 50px, 422px)" : undefined} />
                   <div className="demo-copy">
                     <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
@@ -153,6 +154,7 @@ export default function Home() {
             <div className="section-head">
               <SectionHead index="03" title="Get started" meta={coaching.available ? "02 options" : "01 option"} />
               <h2 id="start-title" className="display">Choose your start.</h2>
+              {coaching.available && <p className="body-2 fork-line">Want a person, not an app? <a href="#coaching">Coaching with {site.founder}</a> is available now.</p>}
             </div>
             <div className={coaching.available ? "offer-grid" : "offer-grid single"}>
               <article className="offer-card offer-app" aria-labelledby="offer-app-title">
@@ -210,8 +212,8 @@ export default function Home() {
               <path fill="var(--c-pane)" d={paths.pane} /><path fill="var(--c-facet)" d={paths.facet} />
               <path fill="var(--c-volt)" d={paths.glint} /><path fill="var(--c-bone)" fillRule="evenodd" d={paths.rim} />
             </svg>
-            <h2 id="closer-title" className="display">{site.tagline}</h2>
-            <p className="body-2">{hasDownload ? "One place for the plan, the lift and the food. Get Blackglass for Android and open today’s session." : "One place for the plan, the lift and the food. Join the preview list to hear first when the Android build is ready."}</p>
+            <h2 id="closer-title" className="display">One place for the plan, the lift and the food.</h2>
+            <p className="body-2">{hasDownload ? "Get Blackglass for Android and open today’s session." : "Join the preview list to hear first when the Android build is ready."}</p>
             <div className="actions closer-actions">
               <Button href="/get" track="cta_get_closer">{appCta}</Button>
               {coaching.available && <Button href="/coaching" variant="ghost" track="cta_coaching_closer">{`Coaching with ${site.founder} · ${coaching.currency}${coaching.weekly}/wk`}</Button>}

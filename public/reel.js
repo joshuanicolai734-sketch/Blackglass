@@ -38,7 +38,7 @@
   // new rep, not a freeze. reel.tsx renders BRACE as inline opacities, so the poster is frame 0 exactly.
   const BRACE = [1, DIM, DIM];
   const LIT = [[0.6, [1, DIM, DIM]], [3.6, [DIM, 1, DIM]], [4.6, [DIM, DIM, 1]], [5.3, [1, 1, 1]]];
-  const APP = 6.4, BEAT = 1.2, LOCK = 10;
+  const APP = 6.4, BEAT = 1.2, LOCK = 10, SNAP = 0.12;
 
   /* ---- The athlete: the same solver as pose() in reel.tsx (keep them identical; the poster is its u = 0). ---- */
   const R = Math.PI / 180;
@@ -72,7 +72,7 @@
 
   /* ---- Layers ---- */
   const joints = $('[data-j]').map((e) => [e, e.dataset.j]);
-  const scenes = $('[data-scene]'), cols = $('[data-col]'), mark = host.querySelector('[data-mark]'), mods = $('[data-mod]');
+  const scenes = $('[data-scene]'), cols = $('[data-col]'), mark = host.querySelector('[data-mark]'), mods = $('[data-mod]'), chips = $('[data-chip]'), pmark = host.querySelector('[data-pmark]'), spec = host.querySelector('[data-spec]').closest('svg');
   const lock = scenes[2].children;
   // Writes are cached, so a still layer costs nothing: between moves the reel does no style or paint work.
   const last = new Map();
@@ -89,7 +89,7 @@
 
     // Squat.
     const u = depth(t);
-    if (u !== lastU) { const P = pose(u); joints.forEach(([e, n]) => set(e, 'transform', P[n])); lastU = u; }
+    if (u !== lastU) { const P = pose(u); joints.forEach(([e, n]) => set(e, 'transform', P[n])); op(spec, 1 - 0.8 * u); lastU = u; }
     // The readout: before and after the rep all three phases are lit; during it, only the phase in play. A phase
     // lights at drive speed and dims at load speed. The volt square steps to the phase in play and stays under Drive.
     cols.forEach((c, i) => {
@@ -110,6 +110,15 @@
       op(m, on ? 1 : 0);
       css(m, `translateX(${on ? ((1 - x) * -2).toFixed(2) : '0.00'}%)`);
     });
+
+    // Learn: three phase chips step in at snap speed (the first is there on the cut) and the volt marker steps with them.
+    const L0 = APP + 2 * BEAT;
+    chips.forEach((c, j) => {
+      const a = L0 + j * 0.4;
+      op(c.firstChild, j ? expo(k(t, a, a + SNAP)) : 1);
+      op(c.firstChild.lastChild, j < 2 ? 1 - 0.5 * expo(k(t, a + 0.4, a + 0.4 + SNAP)) : 1);
+    });
+    css(pmark, `translateY(calc(${(expo(k(t, L0 + 0.4, L0 + 0.4 + SNAP)) + expo(k(t, L0 + 0.8, L0 + 0.8 + SNAP))).toFixed(3)} * (100% + 3px)))`);
 
     // Lockup: the mark and the wordmark land as one object on the cut (driving the last 3% along the facet's 45°);
     // the line then arrives along the reading axis.

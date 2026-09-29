@@ -80,7 +80,7 @@ The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE
 ## Motion pieces
 
 - **Showreel:** `components/site/reel.tsx` (every layer, the athlete's geometry and the first frame, which is the poster) and `public/reel.js` (the engine: a pure `seek(t)` that only sets transform and opacity).
-  - It's a 12 s tempo film (a 3-1-1 back squat with a held lockout, two real app screens plus a caption-only Learn card, the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
+  - It's a 12 s tempo film (a 3-1-1 back squat with a held lockout, two real app screens plus Learn as three phase chips (BRACE / REACH / RETURN), the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
   - `site.js` loads it after the page's load event and never with reduced motion. The server-rendered first frame is the first paint, the no-JS view and the reduced-motion view. The app screens are fetched only once it starts.
   - The athlete: each limb is an SVG layer moved with a CSS transform in figure units (`--u`). `pose()` exists in both files and must stay identical (a journeys check compares the poster pose with live frame 0). Tune the body in `PARTS` (reel.tsx) and the joints in `MODEL`.
   - App-scene crops (`MODULES` in reel.tsx, `[y, height]` in source pixels of the 720x1560 screens) must start and end in empty rows; a journeys check samples both edges. Never crop to the exercise render (`movement`), and never show the ab wheel. `reel.js` keeps its timings in seconds and never reads CSS time tokens (the minifier rewrites `350ms` as `.35s`).

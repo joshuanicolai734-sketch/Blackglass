@@ -4,7 +4,7 @@ import { Footer, Header } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { PreviewForm } from "@/components/site/forms";
 import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, TextLink } from "@/components/site/ui";
-import { getFaq, getFaqLive } from "@/content/faq";
+import { getFaq, getFaqLive, previewSteps } from "@/content/faq";
 import { app, coaching, contact, site } from "@/content/site";
 
 const hasPlay = Boolean(app.android.playUrl);
@@ -45,6 +45,11 @@ export default function Get() {
                 <p data-note="ios" hidden>You&rsquo;re on an iPhone. There&rsquo;s no iPhone app{coaching.available ? <>, but <a href="/coaching">coaching</a> works with any phone.</> : "."}</p>
                 <p data-note="android" hidden>You&rsquo;re on Android, so you&rsquo;re in the right place.</p>
               </div>
+              {!hasDownload && (
+                <ol className="next-steps get-steps" aria-label="What happens when you join">
+                  {previewSteps.map((t) => <li key={t}>{t}</li>)}
+                </ol>
+              )}
             </div>
 
             <div>

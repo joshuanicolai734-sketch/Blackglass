@@ -44,9 +44,9 @@ function pose(u: number): Record<Frame, string> {
 const PARTS: Record<"foot" | Frame, number[][]> = {
   foot: [[60, 9, 6, -15, -8]],
   shin: [[97, 8, 15.5, 0, 0], [40, 7, 13.5, 42, -3]], // the knee end covers the thigh's end cap: no seam
-  thigh: [[97, 15, 26, 0, 0]],
+  thigh: [[97, 15, 23, 0, 0]],
   // glutes, waist, chest (lat width), trap, neck, head
-  torso: [[0, 24, 24, 6, -7], [56, 20, 25, 0, 2], [50, 30, 24, 56, 6], [20, 14, 12, 92, -4], [26, 11, 11, 102, 4], [0, 20, 20, 138, 10]],
+  torso: [[0, 21, 21, 5, -6], [56, 20, 25, 0, 2], [50, 30, 24, 56, 6], [20, 14, 12, 92, -4], [26, 11, 11, 102, 4], [0, 20, 20, 138, 10]],
   upper: [[46, 12, 10, 0, 0]],
   fore: [[40, 9, 7.5, 0, 0]],
 };
@@ -86,9 +86,9 @@ function Athlete() {
   const at = pose(0);
   const body: ("foot" | Frame)[] = ["foot", "shin", "thigh", "torso"], arm: Frame[] = ["upper", "fore"];
   const plate = [[0, 50, 50, BX, BY]], hub = [[0, 7, 7, BX, BY]];
-  // The lit facet: a bone band just inside the silhouette along the upper back. It is the torso's union in bone
-  // under the same union inset by 2.2 units, clipped to the upper back, so it never leaves the body or shows a seam.
-  const torso = PARTS.torso.map(cap).join(""), inset = PARTS.torso.map(([L, a, b, x, y]) => cap([L, a - 2.2, b - 2.2, x, y])).join("");
+  // The lit facet: a bone line along the upper back with soft ends, clipped to the torso's own silhouette so it can
+  // never leave the body, and on its own layer so reel.js can fade it with depth (opacity, compositor only).
+  const torso = PARTS.torso.map(cap).join("");
   return (
     <div className="rl-fig" aria-hidden="true">
       <span className="rl-path" />
@@ -100,15 +100,18 @@ function Athlete() {
         {body.map((p) => <Limb key={`o-${p}`} frame={p === "foot" ? undefined : p} kind="rl-o" parts={PARTS[p]} at={at} />)}
         {body.map((p) => (
           <Limb key={`f-${p}`} frame={p === "foot" ? undefined : p} kind="rl-f" parts={PARTS[p]} at={at}>
-            {p === "torso" ? (
-              <>
-                <path d={torso} />
-                <clipPath id="rl-back"><rect x={40} y={-60} width={92} height={50} /></clipPath>
-                <g clipPath="url(#rl-back)"><path className="rl-spec" d={torso} /><path d={inset} /></g>
-              </>
-            ) : undefined}
+            {p === "torso" ? <path d={torso} /> : undefined}
           </Limb>
         ))}
+        <Limb frame="torso" kind="rl-specl" parts={PARTS.torso} at={at}>
+          <defs>
+            <clipPath id="rl-tclip"><path d={torso} /></clipPath>
+            <linearGradient id="rl-sg" gradientUnits="userSpaceOnUse" x1={26} y1={0} x2={104} y2={0}>
+              <stop offset="0" stopColor="#F4F5EF" stopOpacity="0" /><stop offset=".3" stopColor="#F4F5EF" /><stop offset=".72" stopColor="#F4F5EF" /><stop offset="1" stopColor="#F4F5EF" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <g clipPath="url(#rl-tclip)"><path className="rl-spec" d="M26 -26L104 -20" data-spec /></g>
+        </Limb>
         <Limb frame="torso" kind="rl-hub" parts={hub} at={at} />
       </div>
     </div>
@@ -117,15 +120,16 @@ function Athlete() {
 
 /**
  * The app scene: two real screens, each cropped to one whole card (public/assets, the demo's own files), and Learn
- * as a caption-only card: the only Learn screen shows an exercise the owner rejected, so it never appears here.
+ * as three phase chips (no image): the only Learn screen shows an exercise the owner rejected, so it never appears here.
  * Crops are [top, height] in the 720 x 1560 source, measured so both edges fall in an empty gap between rows (the
  * journeys check samples those edges). reel.js sets the image sources once the reel starts, so the screens cost
  * nothing before the page's load event (and are usually cached by the demo already).
  */
-const MODULES: { name: string; fact: string; src?: string; crop?: [number, number]; card?: [string, string] }[] = [
-  { name: "Today", fact: "Resume where you stopped", src: "/assets/dashboard", crop: [286, 302] },
-  { name: "Train", fact: "The whole week, planned", src: "/assets/program", crop: [488, 360] },
-  { name: "Learn", fact: "Phase by phase", card: ["Exercise guide", "Learn the pattern. Control the movement."] },
+const PHASES = ["Brace", "Reach", "Return"]; // the phase control the app's exercise guide shows (movement screen)
+const MODULES: { name: string; fact: string; src?: string; crop?: [number, number]; phases?: boolean }[] = [
+  { name: "Today", fact: "Resume where you stopped", src: "/assets/dashboard", crop: [284, 568] },
+  { name: "Train", fact: "The whole week, planned", src: "/assets/program", crop: [488, 452] },
+  { name: "Learn", fact: "Phase by phase", phases: true },
 ];
 
 /**
@@ -162,7 +166,7 @@ export function Reel() {
             </div>
           </div>
           <div className="rl-scene rl-mods" data-scene="1">
-            {MODULES.map(({ name, fact, src, crop, card }, i) => (
+            {MODULES.map(({ name, fact, src, crop, phases }, i) => (
               <div key={name} className="rl-mod" data-mod={i}>
                 <div className="rl-cap">
                   <p className="rl-label"><b>0{i + 1}</b> / 0{MODULES.length}</p>
@@ -174,8 +178,11 @@ export function Reel() {
                     <div className="rl-shot" style={{ aspectRatio: `720 / ${crop[1]}`, "--y": `${((-crop[0] / 1560) * 100).toFixed(3)}%` } as CSSProperties}
                       data-src={`${src}-480.webp 480w, ${src}.webp 720w`} data-crop={crop.join(" ")} />
                   </div>
-                ) : card ? (
-                  <div className="rl-pane rl-card"><p className="rl-label">{card[0]}</p><p className="rl-card-t">{card[1]}</p></div>
+                ) : phases ? (
+                  <div className="rl-pane rl-phases">
+                    <span className="rl-pmark" data-pmark><i /></span>
+                    {PHASES.map((w, j) => <p key={w} className="rl-chip" data-chip={j}><span className="rl-chip-c"><span className="rl-label">0{j + 1}</span><span className="rl-chip-t">{w}</span></span></p>)}
+                  </div>
                 ) : null}
               </div>
             ))}

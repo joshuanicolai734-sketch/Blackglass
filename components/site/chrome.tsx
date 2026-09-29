@@ -100,7 +100,7 @@ export function Footer() {
  */
 export function StickyCta({ enquire = false }: { enquire?: boolean }) {
   return (
-    <aside className="sticky-cta" aria-label="Quick actions" data-sticky>
+    <aside className="sticky-cta" aria-label="Quick actions" data-sticky suppressHydrationWarning>
       {enquire ? (
         <Button href="#enquire" track="cta_enquire_sticky" down>Enquire about coaching</Button>
       ) : (

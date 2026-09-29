@@ -9,19 +9,33 @@ type Outcome = "ok" | "invalid" | "duplicate" | "unavailable" | "forbidden" | "t
 /**
  * Where a plain HTML form post (no JavaScript) lands afterwards. Success goes to a static confirmation page
  * (/get/joined, /coaching/sent); anything else goes to a retry page with the reason and, for a validation failure,
- * the name of the field at fault. Never anything the visitor typed.
+ * the name of the field at fault. Nothing the visitor typed goes in the URL. So a rejected form isn't emptied, what
+ * they typed rides back in a two-minute HttpOnly cookie scoped to the retry page alone: it is read once to pre-fill
+ * the form, never logged or stored, and cleared by the next successful post.
  */
-function landing(request: Request, route: string, outcome: Outcome, field: string | null): Response {
+const KEEP = { name: 80, email: 120, phone: 30, goal: 600, route: 12 } as const;
+function landing(request: Request, route: string, outcome: Outcome, field: string | null, typed: Record<string, string> | null): Response {
   const coachingForm = route === "coaching" || route === "programme";
   const base = coachingForm ? "/coaching" : "/get";
+  const headers = new Headers({ ...noStore });
+  const secure = new URL(request.url).protocol === "https:" ? "; Secure" : "";
+  const cookie = (value: string, age: number) => `bg-retry=${value}; Path=${base}/retry; Max-Age=${age}; HttpOnly; SameSite=Lax${secure}`;
   let location: string;
-  if (outcome === "ok") location = `${base}/${coachingForm ? "sent" : "joined"}`;
-  else {
+  if (outcome === "ok") {
+    location = `${base}/${coachingForm ? "sent" : "joined"}`;
+    headers.append("Set-Cookie", cookie("", 0));
+  } else {
     const q = new URLSearchParams({ error: outcome });
     if (field) q.set("field", field);
     location = `${base}/retry?${q}#${coachingForm ? "enquire" : "preview"}`;
+    if (typed) {
+      const keep: Record<string, string> = {};
+      for (const [k, n] of Object.entries(KEEP)) if (typed[k]) keep[k] = typed[k].slice(0, n);
+      headers.append("Set-Cookie", cookie(encodeURIComponent(JSON.stringify(keep)), 120));
+    }
   }
-  return new Response(null, { status: 303, headers: { ...noStore, Location: location } });
+  headers.set("Location", location);
+  return new Response(null, { status: 303, headers });
 }
 
 async function readPayload(request: Request, json: boolean): Promise<Record<string, unknown> | null> {
@@ -42,8 +56,9 @@ export async function POST(request: Request) {
   // JSON callers (public/site.js) get JSON; plain form posts get a 303 back to their page.
   let route = "";
   let field: string | null = null;
+  let typed: Record<string, string> | null = null;
   const reply = (outcome: Outcome, body: Record<string, unknown>, status: number) =>
-    json ? Response.json(body, { status, headers: noStore }) : landing(request, route, outcome, field);
+    json ? Response.json(body, { status, headers: noStore }) : landing(request, route, outcome, field, typed);
 
   if (!sameOrigin(request)) return reply("forbidden", { error: "Invalid request" }, 403);
   if (!json && !form) return Response.json({ error: "JSON required" }, { status: 415, headers: noStore });
@@ -72,6 +87,7 @@ export async function POST(request: Request) {
   route = value("route");
   const goal = value("goal");
   const website = value("website");
+  typed = { name, email, phone, goal, route };
   const phoneDigits = phone.replace(/\D/g, "");
   // The first field at fault, in form order (a field name carries no personal data).
   field = !name || name.length > 80 ? "name"
