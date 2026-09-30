@@ -30,7 +30,7 @@ The short version: **settings live in `content/`, pages in `app/`, styles in `ap
 
 That's all. /get switches from the preview list to a download with install steps, and the home steps, FAQ and link-in-bio follow.
 
-**App name in screenshots:** the Today screen in `public/assets/dashboard*.webp` has the Blackglass lockup in place of the app's old header name. The Android build still shows the old name, so rename the app before sending preview builds out.
+**App name in screenshots:** the Today screen in `public/assets/dashboard*.webp` has an edited Blackglass lockup. These are historical captures, not screenshots of the current 89.0 source build. The reconstructed build has the Blackglass app label; review its actual native header on a phone before distributing new captures.
 
 Then email the preview list (the owner inbox at `/admin`, route "ANDROID PREVIEW LIST") and update the "preview list" captions in `social/KIT.md`.
 
@@ -46,7 +46,7 @@ How the home page moves visitors towards coaching (revenue now) and the preview 
 
 The direction, the refs it draws on and the rules are in `design/DESIGN_LANGUAGE.md`. In short:
 
-The Android v88 alignment and 3D movement review gates are in `docs/APP_V88_DESIGN_INTEGRATION.md`.
+The Android 89.0 source build, historical alignment work and remaining device review gates are in `docs/APP_V88_DESIGN_INTEGRATION.md`. The complete private source bundle is supplied separately from this website repository.
 
 - **Tokens:** `app/tokens.css` is the only place values live (colour, type, spacing, hairlines, motion). `site.css`, the admin styles and the shadcn variables in `globals.css` all read from it. Change a value there, never on top of it.
 - **Grounds:**
