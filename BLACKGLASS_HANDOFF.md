@@ -31,6 +31,7 @@ Start with `docs/MAINTAINING.md` (what to edit for common changes), `docs/DIRECT
 | Shared components | `components/site/` (header, footer, buttons, panes, FAQ, showreel) |
 | Design system and page styles | `app/tokens.css`, `app/site.css` (owner inbox styles are in `app/globals.css`) |
 | Homepage showreel | `components/site/reel.tsx` + `public/reel.js`; see `docs/MAINTAINING.md` |
+| Website movement previews | `app/movements/`, `components/site/movement-studio.tsx`, `content/movements.ts`, `public/movements/`; see `docs/MOVEMENT_STUDIO.md` |
 | Enhancements: demo, menu, forms, scroll gauge, measurement | `public/site.js` |
 | Logo geometry used by the intro, OG images and social kit | `content/brand.ts` |
 | Brand mark, lockup, app screens, fonts, OG images, QR | `public/brand/`, `public/assets/`, `public/fonts/`, `public/og/`, `public/qr/` |

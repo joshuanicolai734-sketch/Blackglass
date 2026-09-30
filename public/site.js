@@ -120,17 +120,6 @@
       if ('ResizeObserver' in w && ui) { const ro = new ResizeObserver(fit); panels.forEach((p) => ro.observe(p)); }
     });
 
-    // Learn's phase chips: the volt marker steps every ~1.2s while that panel is showing and on screen. The first chip is
-    // active from the markup; reduced motion never steps.
-    const chips = [...demo.querySelectorAll('.pc-chip')];
-    if (chips.length && !reduce.matches) whenHydrated(() => {
-      let seen = false, at = 0;
-      const live = () => seen && panels[current]?.dataset.demoPanel === 'technique';
-      const tick = () => { if (!live()) return; at = (at + 1) % chips.length; chips.forEach((c, k) => (k === at ? c.setAttribute('data-on', '') : c.removeAttribute('data-on'))); };
-      w.setInterval(tick, 1200);
-      if ('IntersectionObserver' in w) new IntersectionObserver((es) => { seen = es[es.length - 1].isIntersecting; }).observe(demo); else seen = true;
-    });
-
     // Warm the deferred screens: after load, when the demo is within ~600px, or on first contact with the tabs.
     const shots = [...demo.querySelectorAll('img[data-src]')];
     // The deferred <img> elements carry suppressHydrationWarning, so their attributes can be written at any time.

@@ -17,6 +17,10 @@ This binary patch changes how the 3D viewer looks. It does not alter the authore
 
 Sampled squat and deadlift frames visibly have poor foot contact and awkward load positions. Those source animations need a new rig/render review before they should be presented as reliable technique instruction; a palette or timing change cannot repair the poses.
 
+## v88.2 movement asset rebuild
+
+The saved `Blackglass-88.2-Movement-3D.apk` replaces all 108 packs (53 exercise/equipment variants plus a neutral fallback, each with two views) with the new rig/render catalogue. SHA-256: `307d56afef53c241bda2a583f1282df4d9385067a2163492807297aaaaf7ddbc`; versionCode 899 / versionName `88.2-motion`. The rebuild kit contains the rig, per-family movement code, export scripts, catalogue and numerical audit records; it excludes signing keys. This is rendered geometry stored as frame packs, not an arbitrarily rotatable live model. Native playback controls and phone performance remain untested. The native progression and coaching workflows proposed next are not part of this asset release.
+
 ## App changes to implement against the matching v88 source
 
 1. **One brand system.** Replace the lime facet and signal UI with crimson, including launcher densities, adaptive foreground, startup, active navigation, progress, controls, focus and feedback. Keep the existing logo geometry. Use dark ink on bone surfaces and black text on crimson actions; crimson on the dark ground has 5.24:1 contrast, while crimson against Paper has 3.09:1 and is unsuitable for small text.
@@ -28,7 +32,7 @@ Sampled squat and deadlift frames visibly have poor foot contact and awkward loa
 
 ## Website counterpart
 
-The home reel remains a **schematic side-view squat**, separate from the Android 3D model. Its red bar-path marker is computed from the same joint solver as the figure, so it follows the actual drawn bar. The model is not presented as an Android recording. The site keeps real Android captures unfiltered and labels the Learn phase graphic as an illustration.
+The home reel remains a **schematic side-view squat**, separate from the Android 3D model. Its red bar-path marker is computed from the same joint solver as the figure, so it follows the actual drawn bar. The model is not presented as an Android recording. The site retains the existing Android captures (including the previously updated Today header branding). The homepage Learn panel now shows a labelled 88.2 movement still and links to `/movements`, whose three studies export the actual angled/front packs into small browser clips. See `docs/MOVEMENT_STUDIO.md`; this route does not run the Android app.
 
 ## Review standard
 

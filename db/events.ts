@@ -1,13 +1,14 @@
 /** Site action counts: daily totals per event and campaign source. See docs/MAINTAINING.md → Measurement. */
 
 export const EVENTS = new Set([
-  "home_view", "get_view", "coaching_view", "links_view",
+  "home_view", "get_view", "coaching_view", "links_view", "movements_view",
   "cta_get_header", "cta_get_menu", "cta_get_hero", "cta_get_steps", "cta_get_closer",
   "cta_preview_anchor", "cta_coaching_home", "cta_enquire_hero",
   "cta_coaching_hero", "cta_offer_app", "cta_offer_coaching", "cta_fork_coaching", "cta_coaching_closer",
   "cta_get_sticky", "cta_preview_header", "cta_coaching_sticky", "cta_enquire_sticky", "cta_enquire_header",
   "links_get", "links_how", "links_coaching", "links_instagram", "links_tiktok", "links_youtube", "links_facebook",
   "outbound_play", "outbound_apk", "demo_engaged", "teaser_open",
+  "cta_movement_home", "cta_movement_preview", "movement_engaged",
   // Counted on the server when the database insert succeeds, never from the browser:
   "preview_signup", "enquiry_sent",
 ]);
