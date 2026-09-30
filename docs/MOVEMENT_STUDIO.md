@@ -30,6 +30,8 @@ The matching full current Android source and a real phone test are still require
 
 ## Browser review
 
+The 30 September kinetic pass adds phase feedback outside the video image, stronger selected camera/exercise states and control grouping. The separate homepage squat reel has corrected 3/1/1 timing, a fixed floor shadow, a far leg and phase-specific cues. See `docs/KINETIC_UPGRADE.md` for implementation, current browser checks and local preview limits. Existing studio clips retain their original source and timing.
+
 The supervised Chrome preview was checked on 30 September 2026. All three exercises loaded; changing views retained the selected position and paused; phase jumps, half speed, keyboard exercise selection and scrubbing worked. Rapid Play followed by a scrub no longer produces a false playback error. Frame viewports at 390px and 320px showed no horizontal overflow after the small-screen label fix. With scripts disabled, all three studies retained native controls and the video could be played and paused from the keyboard. The homepage Learn link reached the studio.
 
 The [desktop review](reviews/movement-studio-review.jpg) shows the squat paused at Reach. These checks are browser previews, not real-phone, Safari, Firefox or native Android validation. Lifecycle and reduced-motion pause handlers were reviewed in source; changing the browser's reduced-motion setting was not exercised.

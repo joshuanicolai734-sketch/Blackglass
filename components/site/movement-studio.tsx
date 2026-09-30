@@ -8,6 +8,7 @@ const clientSnapshot = () => true;
 const serverSnapshot = () => false;
 const views = ["Angled", "Front"] as const;
 const viewFile = (view: number) => view === 0 ? "angled" : "front";
+const phaseStarts = [0, 0.12, 0.56, 0.94];
 
 /** Native video and all three studies remain usable when JavaScript is unavailable. */
 export function MovementStudio() {
@@ -150,7 +151,7 @@ export function MovementStudio() {
   };
 
   return (
-    <div className="ms-studio" data-enhanced={enhanced ? "" : undefined} ref={stage}>
+    <div className="ms-studio" data-enhanced={enhanced ? "" : undefined} data-playing={playing ? "" : undefined} ref={stage}>
       <nav className="ms-exercises" aria-label="Choose a movement" role={enhanced ? "tablist" : undefined}>
         {movements.map((movement, index) => (
           <a key={movement.id} href={`#${movement.id}`} id={`ms-tab-${movement.id}`} ref={(node) => { tabs.current[index] = node; }}
@@ -205,7 +206,9 @@ export function MovementStudio() {
                   }}>
                   Your browser does not support video. The movement notes and direct clip link are below.
                 </video>
+                <div className="ms-frame-caption" aria-hidden="true"><span>{movement.name}</span><span>0{phase + 1} / {exercise.phases[phase].name}</span></div>
               </figure>
+              <div className="ms-phase-track" aria-hidden="true">{movement.phases.map((part, step) => <span key={part.name} data-current={step === phase ? "" : undefined}><i style={{ transform: `scaleX(${progress >= 0.94 ? step === 0 ? 1 : 0 : Math.max(0, Math.min(1, (progress - phaseStarts[step]) / (phaseStarts[step + 1] - phaseStarts[step])))})` }} /><b>0{step + 1}</b>{part.name}</span>)}</div>
               <div className="ms-transport">
                 <div className="ms-play-row">
                   <button className="ms-play" type="button" onClick={play} aria-label={`${playing ? "Pause" : "Play"} ${exercise.name.toLowerCase()}`}>

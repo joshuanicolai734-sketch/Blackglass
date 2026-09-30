@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { appCta, Footer, hasDownload, Header, StickyCta } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
 import { Reel } from "@/components/site/reel";
+import { MotionPoster } from "@/components/site/motion-poster";
 import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink } from "@/components/site/ui";
 import { paths } from "@/content/brand";
 import { homeFaq } from "@/content/faq";
@@ -89,10 +90,7 @@ export default function Home() {
                 {coaching.available && <span>Coaching available now</span>}
               </span></p>
             </div>
-            {/* The hero's one dominant shape: the real Train screen (the demo below opens on Today, so no screen
-                repeats). Desktop only; phones never fetch it, so the phone LCP stays the headline. */}
-            <Pane src="/assets/program.webp" className="hero-pane crop-train" priority media="(min-width: 1100px)" sizes="440px"
-              alt="Blackglass Train screen: an active six-day strength programme, week 1 of 6, with Push, Pull and Legs days listed" />
+            <MotionPoster />
           </div>
           <div className="wrap poster-rail label" aria-hidden="true"><span>BG / 01</span><span>Programme / Session / Movement / Food</span><span>{"///"}</span></div>
         </section>

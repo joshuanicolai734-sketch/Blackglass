@@ -2,6 +2,8 @@
 
 ## Current direction: poster system (September 2026)
 
+The 30 September kinetic upgrade adds an authored, controlled nine-second brand film to the hero, following the owner's expanded request for high-energy motion graphics. Useful content still paints immediately. The film is a separate graphic surface with explicit pause and chapter controls, offscreen/background suspension, a complete static poster and reduced-motion support. The previous archive's ban on motion outside the showreel is superseded for this bounded film. The crimson arc now lives inside the composition instead of behind the hero text. See `docs/KINETIC_UPGRADE.md`.
+
 The current website takes its visual direction from the Blackglass crimson-horizon and Accelerate Everything posters. It uses poster-black `#0B0D0E`, warm bone `#F1EEE6`, and one crimson signal `#F43F46`. The deeper red `#B72F36` shades the same graphic form. `app/tokens.css` is authoritative for the implemented values.
 
 - Give the home hero a compact, heavy, uppercase headline and one red disc/diagonal structure. Use generous black space and small factual editorial labels.

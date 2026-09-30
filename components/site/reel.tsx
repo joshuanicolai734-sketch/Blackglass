@@ -42,7 +42,7 @@ function pose(u: number): Record<Frame, string> & { barY: number } {
 
 /** Tapered capsules in each frame's local space: [length, radius at start, radius at end, x, y]. The foot is in world space. */
 const PARTS: Record<"foot" | Frame, number[][]> = {
-  foot: [[60, 9, 6, -15, -8]],
+  foot: [[55, 9, 6, -12, -8]],
   shin: [[97, 8, 15.5, 0, 0], [40, 7, 13.5, 42, -3]], // the knee end covers the thigh's end cap: no seam
   thigh: [[97, 15, 23, 0, 0]],
   // glutes, waist, chest (lat width), trap, neck, head
@@ -93,6 +93,14 @@ function Athlete() {
     <div className="rl-fig" aria-hidden="true">
       <span className="rl-path"><i data-bar-dot style={{ transform: `translateY(calc(var(--u) * ${(400 + at.barY).toFixed(2)}))` }} /></span>
       <div className="rl-rig">
+        {/* A fixed contact shadow and a quieter far leg make the loaded stance readable.
+            Both soles stay planted; no scale/bounce is applied to the athlete. */}
+        <svg className="rl-limb" viewBox="-38 -8 112 16" style={{ left: 'calc(var(--u) * -38)', top: 'calc(var(--u) * -8)', width: 'calc(var(--u) * 112)', height: 'calc(var(--u) * 16)' }}>
+          <ellipse cx="14" cy="0" rx="52" ry="5" fill="var(--c-bone)" opacity=".12" />
+        </svg>
+        <div style={{ transform: 'translate(calc(var(--u) * -14), calc(var(--u) * -3))', opacity: .38 }}>
+          {(["foot", "shin", "thigh"] as const).map((p) => <Limb key={`far-${p}`} frame={p === "foot" ? undefined : p} kind="rl-o" parts={PARTS[p]} at={at} />)}
+        </div>
         <Limb frame="torso" kind="rl-plate" parts={plate} at={at}><circle cx={BX} cy={BY} r={50} /><circle className="rl-plate-in" cx={BX} cy={BY} r={38} /></Limb>
         {/* The arms sit behind the torso, so only the elbow shows behind the back and the body reads as one mass. */}
         {arm.map((p) => <Limb key={`o-${p}`} frame={p} kind="rl-o" parts={PARTS[p]} at={at} />)}
@@ -165,6 +173,7 @@ export function Reel() {
                 ))}
                 <span className="rl-mark" data-mark><i /></span>
               </div>
+              <p className="rl-label" data-rep-cue style={{ marginTop: '2cqh', minHeight: '3em' }}><b>Brace</b><br />Feet planted. Bar over midfoot.</p>
             </div>
           </div>
           <div className="rl-scene rl-mods" data-scene="1">

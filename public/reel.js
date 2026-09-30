@@ -6,7 +6,7 @@
    Beat sheet and rules: design/DESIGN_LANGUAGE.md.
 
     0.0  Squat    brace (0.15–0.6: a 1.5% hip set), lower 3 s under control, pause 1 s in the hole, drive up
-                  4.6–5.3 (fast through the middle, decelerating only in the top 30%), lockout held dead still to
+                  4.6-5.6 (fast through the middle, decelerating only in the top 30%), lockout held dead still to
                   6.4. The readout lights the phase in play; the volt square steps to it; at lockout all three light.
     6.4  The app  hard cuts every 1.2 s between two real screens (Today, Train) and an illustrated Learn phase
                   control, each landing on a full frame and driving the last 2% along the reading axis.
@@ -16,6 +16,10 @@
 (() => {
   const host = document.querySelector('[data-reel]');
   if (!host || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (host.dataset.reelBound) return;
+  window.blackglassReel?.destroy?.();
+  host.dataset.reelBound = 'true';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const stage = host.querySelector('.reel-stage');
   const { model: M, dur: DUR } = JSON.parse(host.dataset.geometry);
   const $ = (s) => [...host.querySelectorAll(s)];
@@ -37,7 +41,7 @@
   // The brace (and the poster) shows only the coming phase lit; the lockout lights all three, so the loop reads as a
   // new rep, not a freeze. reel.tsx renders BRACE as inline opacities, so the poster is frame 0 exactly.
   const BRACE = [1, DIM, DIM];
-  const LIT = [[0.6, [1, DIM, DIM]], [3.6, [DIM, 1, DIM]], [4.6, [DIM, DIM, 1]], [5.3, [1, 1, 1]]];
+  const LIT = [[0.6, [1, DIM, DIM]], [3.6, [DIM, 1, DIM]], [4.6, [DIM, DIM, 1]], [5.6, [1, 1, 1]]];
   const APP = 6.4, BEAT = 1.2, LOCK = 10, SNAP = 0.12;
 
   /* ---- The athlete: the same solver as pose() in reel.tsx (keep them identical; the poster is its u = 0). ---- */
@@ -60,19 +64,28 @@
       upper: tr(S, ua), fore: tr(E, Math.atan2(B[1] - E[1], B[0] - E[0])), barY: B[1],
     };
   }
-  // Depth over the rep: a 1.5% hip set as the brace, 3 s down, 1 s pause, up in 0.7 s, lockout.
+  // Depth over the rep: a 1.5% hip set as the brace, 3 s down, 1 s pause, 1 s drive, lockout.
   const SET = 0.015;
   const depth = (t) => {
     if (t < 0.15 || t >= APP) return 0;
     if (t < 0.6) return SET * rep(k(t, 0.15, 0.6), 0.3, 0.3);
     if (t < 3.6) return SET + (1 - SET) * rep(k(t, 0.6, 3.6), 0.15, 0.25);
     if (t < 4.6) return 1;
-    return 1 - rep(k(t, 4.6, 5.3), 0.12, 0.3);
+    return 1 - rep(k(t, 4.6, 5.6), 0.12, 0.3);
   };
 
   /* ---- Layers ---- */
   const joints = $('[data-j]').map((e) => [e, e.dataset.j]);
   const barDot = host.querySelector('[data-bar-dot]');
+  const cue = host.querySelector('[data-rep-cue]');
+  const cueLines = [
+    ['Brace', 'Feet planted. Bar over midfoot.'],
+    ['Lower / 3 seconds', 'Hips and knees bend together.'],
+    ['Pause / 1 second', 'Hold depth. Keep the load steady.'],
+    ['Drive / 1 second', 'Hips and shoulders rise together.'],
+    ['Lockout', 'Stand tall. Settle before the next rep.'],
+  ];
+  let cuePhase = -1;
   const scenes = $('[data-scene]'), cols = $('[data-col]'), mark = host.querySelector('[data-mark]'), mods = $('[data-mod]'), chips = $('[data-chip]'), pmark = host.querySelector('[data-pmark]'), spec = host.querySelector('[data-spec]').closest('svg');
   const lock = scenes[2].children;
   // Writes are cached, so a still layer costs nothing: between moves the reel does no style or paint work.
@@ -90,6 +103,12 @@
 
     // Squat.
     const u = depth(t);
+    const phase = t < .6 || t >= APP ? 0 : t < 3.6 ? 1 : t < 4.6 ? 2 : t < 5.6 ? 3 : 4;
+    if (cue && phase !== cuePhase) {
+      cue.firstElementChild.textContent = cueLines[phase][0];
+      cue.lastChild.textContent = cueLines[phase][1];
+      cuePhase = phase;
+    }
     if (u !== lastU) {
       const P = pose(u);
       joints.forEach(([e, n]) => set(e, 'transform', P[n]));
@@ -153,21 +172,31 @@
     chRun.style.transform = `translateX(${((t / DUR) * 100).toFixed(2)}%)`;
   };
   const toggleText = toggle.querySelector('[data-reel-toggle-text]');
-  let base = 0, t0 = 0, userPaused = false, inView = false, running = false, raf = 0, current = 0;
+  let base = 0, t0 = 0, userPaused = false, inView = false, running = false, raf = 0, current = 0, suspended = false, destroyed = false;
   const now = () => (running ? (base + (performance.now() - t0) / 1000) % DUR : current);
-  const frame = () => { current = now(); seek(current); drawChapters(current); raf = requestAnimationFrame(frame); };
+  const frame = () => {
+    if (!host.isConnected) { destroy(); return; }
+    if (reduced.matches) { userPaused = true; updateControls(); sync(); return; }
+    current = now(); seek(current); drawChapters(current); raf = requestAnimationFrame(frame);
+  };
   const sync = () => {
-    const should = !userPaused && inView && !document.hidden;
+    const should = !destroyed && !suspended && host.isConnected && !reduced.matches && !userPaused && inView && !document.hidden;
     if (should === running) return;
     if (should) { base = current; t0 = performance.now(); running = true; raf = requestAnimationFrame(frame); }
     else { current = now(); running = false; cancelAnimationFrame(raf); }
   };
+  const updateControls = () => {
+    const paused = userPaused || reduced.matches;
+    toggleText.textContent = reduced.matches ? 'Motion off' : paused ? 'Play' : 'Pause';
+    toggle.setAttribute('aria-label', reduced.matches ? 'Showreel paused for reduced motion' : paused ? 'Play the showreel' : 'Pause the showreel');
+    toggle.disabled = reduced.matches;
+    toggle.classList.toggle('is-paused', paused);
+    host.classList.toggle('is-paused', paused);
+  };
   toggle.addEventListener('click', () => {
+    if (reduced.matches) return;
     userPaused = !userPaused;
-    toggleText.textContent = userPaused ? 'Play' : 'Pause';
-    toggle.setAttribute('aria-label', userPaused ? 'Play the showreel' : 'Pause the showreel');
-    toggle.classList.toggle('is-paused', userPaused);
-    host.classList.toggle('is-paused', userPaused);
+    updateControls();
     sync();
   });
   // Chapters are one toolbar: a single tab stop, arrow keys (and Home, End) move between them, Enter or Space jumps.
@@ -189,7 +218,24 @@
   stage.addEventListener('pointerenter', show(true)); stage.addEventListener('pointerleave', show(false));
   chapters.addEventListener('focusin', show(true)); chapters.addEventListener('focusout', show(false));
   document.addEventListener('visibilitychange', sync);
-  new IntersectionObserver((e) => { inView = e[0].intersectionRatio >= 0.5; host.classList.toggle('in-view', inView); sync(); }, { threshold: [0, 0.5, 1] }).observe(stage);
+  const observer = new IntersectionObserver((e) => { inView = e[0].intersectionRatio >= 0.5; host.classList.toggle('in-view', inView); sync(); }, { threshold: [0, 0.5, 1] });
+  observer.observe(stage);
+  const preference = () => { if (reduced.matches) userPaused = true; updateControls(); sync(); };
+  const leave = () => { suspended = true; sync(); };
+  const restore = () => { suspended = false; sync(); };
+  reduced.addEventListener('change', preference);
+  window.addEventListener('pagehide', leave);
+  window.addEventListener('pageshow', restore);
+  function destroy() {
+    destroyed = true;
+    sync();
+    observer.disconnect();
+    reduced.removeEventListener('change', preference);
+    document.removeEventListener('visibilitychange', sync);
+    window.removeEventListener('pagehide', leave);
+    window.removeEventListener('pageshow', restore);
+    delete host.dataset.reelBound;
+  }
 
   // The app scene's screens: fetched only now (after load), from the same files the demo uses.
   $('[data-src]').forEach((shot) => {
@@ -206,5 +252,5 @@
   chapters.hidden = false;
   drawChapters(current);
   // Frame capture: blackglassReel.seek(t) renders any moment and stops playback.
-  window.blackglassReel = { duration: DUR, seek: (t) => { userPaused = true; sync(); current = t; seek(t); drawChapters(t); } };
+  window.blackglassReel = { duration: DUR, destroy, seek: (t) => { userPaused = true; sync(); current = t; seek(t); drawChapters(t); updateControls(); } };
 })();
