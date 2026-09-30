@@ -412,31 +412,16 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-panel.is-entering .pane-glass { background: transparent; }
 .js .demo-panel.is-entering .pane-glass::after { content: none; }
 .demo-pane { width: min(78vw, 340px); justify-self: center; }
-/* Learn: three phase chips (the reel's stepper look). The volt marker is small and steps with the active chip. */
-.demo-pane.phase-card { width: 100%; }
-.phase-card .pane-glass { display: flex; }
-.pc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; width: 100%; }
-.pc-chip { position: relative; display: flex; align-items: center; gap: 18px; min-height: 88px; padding: 0 20px 0 58px; background: var(--c-pane); }
-.pc-chip i { position: absolute; left: 22px; top: 50%; width: var(--signal-size); height: var(--signal-size); margin-top: calc(var(--signal-size) / -2); background: var(--c-volt); opacity: 0; }
-.pc-chip[data-on] i { opacity: 1; }
-.pc-t { font-weight: 600; font-size: var(--fs-display); line-height: 1; letter-spacing: var(--tr-display); text-transform: uppercase; color: var(--fg-3); }
-.pc-chip[data-on] .pc-t { color: var(--fg); }
-@media (prefers-reduced-motion: no-preference) { .js .pc-chip i, .js .pc-t { transition: opacity var(--t-snap) var(--ease-expo), color var(--t-snap) var(--ease-expo); } }
-html:not(.js) .pc-t { color: var(--fg); }
 .demo-copy .title { margin-bottom: 14px; }
+.demo-copy > .link { margin-top: 20px; }
 .demo-copy > p { color: var(--fg-2); max-width: 36em; }
 .ticks { list-style: none; margin: 28px 0 0; padding: 0; border-top: var(--hair) solid var(--rule); max-width: 36em; }
 .ticks li { padding: 14px 0; border-bottom: var(--hair) solid var(--rule); color: var(--fg); }
 @media (min-width: 900px) {
   .demo-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; align-items: start; }
   .demo-pane { justify-self: start; width: min(100%, 360px); }
-  .demo-pane.phase-card { width: min(100%, 440px); }
-  /* Learn: the screen's top edge and the copy's heading start on one line. */
-  /* The stage keeps the tallest panel's height; the phase card fills it and its top lines up with the copy heading. */
-  .js .demo-panel[data-demo-panel="technique"] { align-self: stretch; }
-  .demo-pane.phase-card { align-self: stretch; display: flex; flex-direction: column; }
-  .phase-card .pane-glass { flex: 1; }
-  .pc-chip { min-height: 0; flex: 1; }
+  /* The stage keeps the tallest panel's height; the authored Learn still and copy sit together in its centre. */
+  .js .demo-panel[data-demo-panel="technique"] { align-self: center; }
   [data-demo-panel="technique"] .demo-copy { padding-top: 9px; }
   /* The copy stays beside the phone while it scrolls past. */
   .demo-copy { position: sticky; top: 120px; padding-top: 40px; }
@@ -624,6 +609,88 @@ html:not(.js) .pc-t { color: var(--fg); }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Movement Studio: a still first frame, then visitor-controlled playback.
+   Load: pause before seeking or changing view. Drive: the requested frame/view arrives.
+   Lockout: hold that position until Play; returning to the page never resumes motion. */
+.movement-hero { padding: clamp(32px, 4vw, 56px) 0 32px; }
+.movement-hero::before { content: none; }
+.movement-hero .sh { margin-bottom: 24px; }
+.movement-hero h1 { margin-bottom: 16px; }
+.movement-hero .body-2 { margin-bottom: 16px; }
+.movement-section { padding-top: clamp(24px, 3vw, 40px); }
+.ms-studio { display: grid; gap: 32px; }
+.ms-exercises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: var(--hair) solid var(--rule); }
+.ms-exercises a { position: relative; display: grid; align-content: center; gap: 10px; min-height: 92px; padding: 12px 8px; border-bottom: 2px solid transparent; }
+.ms-exercises .title { font-weight: 650; }
+.ms-studio[data-enhanced] .ms-exercises a[data-selected] { border-color: var(--c-volt); }
+.ms-studio[data-enhanced] .ms-exercises a[data-selected] .label { color: var(--fg); }
+.ms-studio[data-enhanced] .ms-panel[data-inactive] { display: none; }
+.ms-panel { display: grid; gap: 32px; min-width: 0; scroll-margin-top: 100px; }
+.ms-panel + .ms-panel { margin-top: 72px; }
+.ms-studio[data-enhanced] .ms-panel + .ms-panel { margin-top: 0; }
+.ms-player, .ms-panels, .ms-notes { min-width: 0; }
+.ms-player-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 52px; }
+.ms-views { display: none; gap: 4px; }
+.ms-studio[data-enhanced] .ms-views { display: flex; }
+.ms-studio button { min-height: 44px; padding: 0 14px; border: var(--hair) solid var(--rule-strong); border-radius: 0; background: transparent; color: var(--fg); cursor: pointer; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+.ms-studio button[aria-pressed="true"] { border-color: var(--fg); background: var(--surface); }
+.ms-studio button:is(:hover, :focus-visible) { border-color: var(--fg); }
+.ms-studio button:active { background: var(--surface); }
+.ms-frame { position: relative; z-index: 61; margin: 0; padding: 1px; border: var(--hair) solid var(--rule-strong); background: var(--c-glass); }
+.ms-frame video { display: block; width: 100%; height: auto; aspect-ratio: 768 / 588; background: var(--c-glass); }
+.ms-transport { display: none; margin-top: 16px; }
+.ms-studio[data-enhanced] .ms-transport { display: block; }
+.ms-play-row { display: flex; align-items: center; gap: 8px; }
+.ms-studio .ms-play { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 100px; background: var(--action); color: var(--on-action); border-color: var(--action); }
+.ms-state { margin-left: auto; letter-spacing: .04em; white-space: nowrap; }
+.ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
+.ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
+.ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
+.ms-scrub input::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; margin-top: -6px; border: 0; border-radius: 0; background: var(--c-volt); }
+.ms-scrub input::-moz-range-track { height: 2px; background: var(--rule-strong); }
+.ms-scrub input::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 0; background: var(--c-volt); }
+.ms-notes > .label { margin-bottom: 14px; }
+.ms-notes .display { margin-bottom: 16px; }
+.ms-notes > .body-2 { margin-bottom: 28px; }
+.ms-phases { list-style: none; margin: 0; padding: 0; border-top: var(--hair) solid var(--rule); }
+.ms-phases li { position: relative; min-height: 120px; padding: 14px 0; border-bottom: var(--hair) solid var(--rule); }
+.ms-studio[data-enhanced] .ms-phases li[data-active]::before { content: ""; position: absolute; top: 18px; left: -14px; width: var(--signal-size); height: var(--signal-size); background: var(--c-volt); }
+.ms-phases button { display: none; justify-content: space-between; align-items: center; gap: 12px; width: 100%; padding: 0; min-height: 44px; border: 0; text-align: left; background: transparent !important; }
+.ms-studio[data-enhanced] .ms-phases button { display: flex; }
+.ms-phases button > span:nth-child(2) { margin-right: auto; }
+.ms-phases button > span:last-child { color: var(--fg-3); }
+.ms-phases p { margin: 10px 0 0; color: var(--fg-2); }
+.ms-studio[data-enhanced] .ms-static-phase { display: none; }
+.ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
+.ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
+.ms-error { margin: 20px 0 0; color: var(--c-danger); }
+.movement-next .display { max-width: 24em; }
+.movement-next .body-2 { margin-top: 20px; }
+.movement-card .pane-glass img { aspect-ratio: 480 / 368; object-fit: contain; object-position: center; }
+.demo-pane.movement-card { width: min(100%, 480px); }
+@media (max-width: 639.98px) {
+  .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
+}
+@media (max-width: 419.98px) {
+  .ms-exercises .label { font-size: .625rem; letter-spacing: .04em; }
+  .ms-exercises .title { font-size: 1.0625rem; }
+  .ms-state { font-size: .625rem; }
+  .ms-studio .ms-play { min-width: 88px; }
+}
+@media (min-width: 900px) {
+  .ms-panel { grid-template-columns: minmax(0, 1.65fr) minmax(250px, 1fr); gap: 48px; align-items: start; }
+  .ms-notes { padding-top: 12px; }
+  .ms-notes .display { font-size: var(--fs-display); }
+  .ms-phases li { min-height: 128px; }
+}
+@media (min-width: 1200px) {
+  .ms-studio { grid-template-columns: 180px minmax(0, 1fr); gap: 40px; }
+  .ms-exercises { display: flex; flex-direction: column; align-self: start; border-bottom: 0; border-right: var(--hair) solid var(--rule); padding-right: 24px; }
+  .ms-exercises a { min-height: 112px; padding-inline: 0; border-bottom: var(--hair) solid var(--rule); }
+  .ms-exercises a + a { margin-top: 16px; }
+  .ms-studio[data-enhanced] .ms-exercises a[data-selected] { border-color: var(--c-volt); }
 }
 
 /* ---- Motion. Content is complete on first paint: nothing waits to be revealed, nothing moves on load or on

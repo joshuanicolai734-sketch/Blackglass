@@ -11,10 +11,11 @@ const eventLabels: Record<string, string> = {
   home_view: "Homepage visits", get_view: "Get Blackglass visits", coaching_view: "Coaching page visits", links_view: "Link-in-bio visits",
   preview_signup: "Preview list sign-ups", enquiry_sent: "Coaching enquiries", demo_engaged: "Used the app demo", teaser_open: "Opened the teaser",
   outbound_play: "Play Store taps", outbound_apk: "APK download taps",
+  movements_view: "Movement Studio visits", movement_engaged: "Used the Movement Studio",
 };
 // The two money paths: taps that head for coaching (revenue now) and for the app (the preview list).
 const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_fork_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "cta_enquire_header", "cta_coaching_sticky", "cta_enquire_sticky", "links_coaching"];
-const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "cta_preview_header", "cta_get_sticky", "links_get"];
+const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "cta_preview_header", "cta_get_sticky", "links_get", "cta_movement_preview"];
 type Activity = { name: string; source: string; total: number };
 
 /** Last 30 days of site action counts, or none if the events table isn't there yet. */

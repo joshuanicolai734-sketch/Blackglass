@@ -17,7 +17,7 @@ The site must never imply the app can be bought or installed until `content/site
    - The coaching action reads "Coaching with Josh · NZ$59/wk" on desktop and mobile.
    - The status line says the app is in development and **coaching is available now**.
 2. **Showreel:** the method in 12 s. A **back squat** shows the 3-1-1 tempo and bar path, followed by two real Android screens and an illustrated Learn phase control.
-3. **How it works:** two real screens (Today and Train), followed by a labeled illustration of the Learn phase control. Do not describe the illustration as a screenshot.
+3. **How it works:** two real screens (Today and Train), followed by a labeled still from the new authored movement artwork. Learn links to `/movements`, where squat, deadlift and push-up studies have two views and visitor-controlled playback. Do not describe the artwork as an Android screen recording, a running app or a form assessment.
 4. **Why it helps** (Paper): the benefits, each tied to a real screen.
 5. **Choose your start:** the fork, side by side.
    - **The app** is the free preview list, shown as a hairline panel with its three steps and a crimson button.
@@ -35,10 +35,11 @@ Each money door has its own event, so `/admin` can compare the two paths. Its "F
 | Path | Events |
 |---|---|
 | Coaching | `cta_coaching_hero`, `cta_offer_coaching`, `cta_fork_coaching` (the line under the home fork), `cta_coaching_closer`, plus `cta_enquire_hero`, `cta_enquire_header` (the header on `/coaching`), `cta_coaching_sticky`, `cta_enquire_sticky` (the phone bar) and `links_coaching` |
-| App | `cta_get_hero`, `cta_offer_app`, `cta_get_closer`, `cta_get_header`, `cta_get_menu`, `cta_get_sticky` (the phone bar), `cta_preview_header` (the header on `/get`), `cta_preview_anchor` and `links_get` |
+| App | `cta_get_hero`, `cta_offer_app`, `cta_get_closer`, `cta_get_header`, `cta_get_menu`, `cta_get_sticky` (the phone bar), `cta_preview_header` (the header on `/get`), `cta_preview_anchor`, `links_get` and `cta_movement_preview` (the studio’s next step) |
 
 - Enquiries and sign-ups are counted on the server only when the database insert succeeds.
 - A tap is not an enquiry, and a sign-up is not an install.
+- `movements_view` and `movement_engaged` measure visits and first player interactions; `cta_movement_home` measures the Learn link. None of these counts is a conversion. See `docs/MOVEMENT_STUDIO.md`.
 
 ## Rules
 

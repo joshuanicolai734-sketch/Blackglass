@@ -1,0 +1,100 @@
+{
+  "source_apk_sha256": "307d56afef53c241bda2a583f1282df4d9385067a2163492807297aaaaf7ddbc",
+  "source_version": "88.2-motion",
+  "kind": "authored movement artwork, not an Android screen recording",
+  "duration_seconds": 4,
+  "output": [
+    {
+      "file": "back-squat-cover.webp",
+      "source_pack": "assets/studio3d/back_squat__barbell.s3d",
+      "source_pack_sha256": "5172d64fb2bb24b3ad563bc294aefecc88dc9e649b729c302f23948b739773a6",
+      "bytes": 2308,
+      "sha256": "56ba06fceaa37b7a7547f8bdc8a7795c4afb3c8c96e240698ef4471348f3e514",
+      "source_frame": 32
+    },
+    {
+      "file": "back-squat-angled.mp4",
+      "source_pack": "assets/studio3d/back_squat__barbell.s3d",
+      "source_pack_sha256": "5172d64fb2bb24b3ad563bc294aefecc88dc9e649b729c302f23948b739773a6",
+      "bytes": 50207,
+      "sha256": "9e49bc8155e50adc0386e71e91a8113f1aa1db53bbd9df98c3eb41f073406d9b"
+    },
+    {
+      "file": "back-squat-angled.webp",
+      "source_pack": "assets/studio3d/back_squat__barbell.s3d",
+      "source_pack_sha256": "5172d64fb2bb24b3ad563bc294aefecc88dc9e649b729c302f23948b739773a6",
+      "bytes": 4966,
+      "sha256": "06592e1c8c4eefbd3d27dd65167948893c01a1c225153bc4e0f5ccbde13316f3"
+    },
+    {
+      "file": "back-squat-front.mp4",
+      "source_pack": "assets/studio3d/back_squat__barbell@FRONT.s3d",
+      "source_pack_sha256": "e79100ba0f2af02beeac8179f7dd4567dd5edf859972d58599b51e33995db622",
+      "bytes": 54810,
+      "sha256": "90cc2b28a95dd339cc8f686a09d28a3e4d3416e7555be6387dc7273b8a296aa5"
+    },
+    {
+      "file": "back-squat-front.webp",
+      "source_pack": "assets/studio3d/back_squat__barbell@FRONT.s3d",
+      "source_pack_sha256": "e79100ba0f2af02beeac8179f7dd4567dd5edf859972d58599b51e33995db622",
+      "bytes": 6136,
+      "sha256": "db8247e2826fdea5e7fa0d291603b3c76eff35078b9fa2f838b22dce557515f9"
+    },
+    {
+      "file": "deadlift-angled.mp4",
+      "source_pack": "assets/studio3d/deadlift__barbell.s3d",
+      "source_pack_sha256": "56b38daa6268824919e095e26433414386cf8cc8f72a7024d68f3ef1fc0992d3",
+      "bytes": 50309,
+      "sha256": "f51fc4dd13757239ea92b75926cab521d340e013ad82ee591a5311b1e6fe4bc7"
+    },
+    {
+      "file": "deadlift-angled.webp",
+      "source_pack": "assets/studio3d/deadlift__barbell.s3d",
+      "source_pack_sha256": "56b38daa6268824919e095e26433414386cf8cc8f72a7024d68f3ef1fc0992d3",
+      "bytes": 3904,
+      "sha256": "9a05443a6103814dbf5dce6e3bbef3f725d93b80a4a822d4bc756dc368c202a7"
+    },
+    {
+      "file": "deadlift-front.mp4",
+      "source_pack": "assets/studio3d/deadlift__barbell@FRONT.s3d",
+      "source_pack_sha256": "a232e08273805581fc7d10e26dd31734239740d5d3837e23051d2086a3af1324",
+      "bytes": 52596,
+      "sha256": "d7d2a514dfb65af309789d350186d383444be8673999985bbfb534dbbad57507"
+    },
+    {
+      "file": "deadlift-front.webp",
+      "source_pack": "assets/studio3d/deadlift__barbell@FRONT.s3d",
+      "source_pack_sha256": "a232e08273805581fc7d10e26dd31734239740d5d3837e23051d2086a3af1324",
+      "bytes": 5134,
+      "sha256": "02fb4581f42d2a0ae394b2afa95cb86fb31e9ae4b1b8da44647b4e9c1d3d9abc"
+    },
+    {
+      "file": "push-up-angled.mp4",
+      "source_pack": "assets/studio3d/pushup__bodyweight.s3d",
+      "source_pack_sha256": "87626f03e14c5b4267a04ce04f8f17f686191f7645ea7392dd9f37f17ea9e3d1",
+      "bytes": 39419,
+      "sha256": "8b85678c231224d0a1336478e6b239fbd12c4eb78a550a0b5c4a5c0e7adb7a5c"
+    },
+    {
+      "file": "push-up-angled.webp",
+      "source_pack": "assets/studio3d/pushup__bodyweight.s3d",
+      "source_pack_sha256": "87626f03e14c5b4267a04ce04f8f17f686191f7645ea7392dd9f37f17ea9e3d1",
+      "bytes": 3902,
+      "sha256": "2ffce61f1aa70eb8e87e5ec680d27e9d47c301b30c3cda1c7b3953162e56d16e"
+    },
+    {
+      "file": "push-up-front.mp4",
+      "source_pack": "assets/studio3d/pushup__bodyweight@FRONT.s3d",
+      "source_pack_sha256": "c57254338e97d5e09f8176d2ba138733275e9735dce5c52b67f83120e2805b3a",
+      "bytes": 37001,
+      "sha256": "bce815956068a4d4454e1dd07355243acb190111bcf42a43f6d048397dc39451"
+    },
+    {
+      "file": "push-up-front.webp",
+      "source_pack": "assets/studio3d/pushup__bodyweight@FRONT.s3d",
+      "source_pack_sha256": "c57254338e97d5e09f8176d2ba138733275e9735dce5c52b67f83120e2805b3a",
+      "bytes": 3316,
+      "sha256": "23a3a62c15fba7318e57eecd08f0a9f0bf5906c4d9b23c56042278ff9ae457cf"
+    }
+  ]
+}

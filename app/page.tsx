@@ -30,11 +30,11 @@ const demo = [
     points: ["A six-day split: Push, Pull and Legs, twice through", "Programmes run in blocks. This is week 1 of 6, a build phase", "The movement library sits one tab away"],
   },
   {
-    id: "technique", tab: "Learn", src: "/assets/movement.webp",
-    alt: "The three phases of a Blackglass exercise guide: Brace, Reach and Return",
+    id: "technique", tab: "Learn", src: "/movements/back-squat-cover.webp",
+    alt: "Authored 3D back-squat preview with planted feet and the bar across the upper back",
     title: "Learn each movement in phases.",
-    text: "Each exercise guide breaks the movement into phases, so you can learn the pattern and control it.",
-    points: ["Three phases: brace, reach, return", "Every exercise has its own guide"],
+    text: "The app’s guides break the pattern into phases. Explore the new movement artwork here, at your own pace.",
+    points: ["Three phases: brace, reach, return", "Try squat, deadlift and push-up studies from two angles"],
   },
 ];
 
@@ -103,7 +103,7 @@ export default function Home() {
             <div className="section-head">
               <SectionHead index="01" title="How it works" meta={`${String(demo.length).padStart(2, "0")} views`} />
               <h2 id="how-title" className="display">From the plan to the last set.</h2>
-              <p className="body-2">Two screens from the current Android build and an illustration of the Learn phases. Tap through the flow.</p>
+              <p className="body-2">Two recorded Android screens and a preview of the new movement artwork. Tap through the flow.</p>
             </div>
             <div className="demo-ui" data-demo>
               <div className="demo-tabs" role="tablist" aria-label="How it works views">
@@ -121,17 +121,13 @@ export default function Home() {
                   data-demo-panel={d.id} data-inactive={i !== 0 ? "" : undefined} tabIndex={0}>
                   {/* No demo screen is fetched with the first paint: site.js warms them after load, or when the demo nears. */}
                   {d.id === "technique" ? (
-                    /* Learn: the app's phase control drawn as three chips (no screen image, no exercise name). Complete and static
-                       without JavaScript; site.js steps the volt marker while the panel is on screen. */
-                    <figure className="pane demo-pane phase-card">
+                    /* A still from the authored 88.2 movement pack, clearly separate from the real app screens. */
+                    <figure className="pane demo-pane movement-card">
                       <div className="pane-glass">
-                        <ol className="pc-list" aria-label={d.alt}>
-                          {["Brace", "Reach", "Return"].map((w, j) => (
-                            <li key={w} className="pc-chip" data-on={j === 0 ? "" : undefined} suppressHydrationWarning><i aria-hidden="true" /><span className="rl-label">0{j + 1}</span><span className="pc-t">{w}</span></li>
-                          ))}
-                        </ol>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- authored movement still, served as-is */}
+                        <img src={d.src} alt={d.alt} width="480" height="368" loading="lazy" decoding="async" />
                       </div>
-                      <figcaption className="label">Learn phase control · illustration</figcaption>
+                      <figcaption className="label">Back squat / New movement artwork</figcaption>
                     </figure>
                   ) : (
                     <Pane src={d.src} alt={d.alt} className={`demo-pane${d.id === "today" ? " crop-today" : d.id === "plan" ? " crop-plan" : ""}`} defer />
@@ -140,11 +136,12 @@ export default function Home() {
                     <h3 className="title">{d.title}</h3>
                     <p>{d.text}</p>
                     <ul className="ticks">{d.points.map((p) => <li key={p}>{p}</li>)}</ul>
+                    {d.id === "technique" && <TextLink href="/movements" track="cta_movement_home">Explore the Movement Studio</TextLink>}
                   </div>
                 </div>
               ))}
             </div>
-            <p className="footnote">Today and Train are real screens recorded on an Android phone; Learn illustrates the phase control. Programme and food figures are examples.</p>
+            <p className="footnote">Today and Train are real screens recorded on an Android phone. Learn shows authored movement artwork, not an Android screen recording. Programme and food figures are examples.</p>
           </div>
         </section>
 
