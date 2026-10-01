@@ -1,0 +1,15 @@
+# BG-<issue number>: <outcome>
+- User/problem:
+- Why now:
+- Source base SHA and release target:
+- Implementer / independent reviewer / integrator:
+- Owned files or area:
+- Dependencies and overlapping tasks:
+- Preserve:
+- Proposed change:
+- Explicitly out of scope:
+- Acceptance scenarios (including interruption/error/return):
+- Evidence required (source tests, rendered UI, device and performance):
+- Data/privacy/permission risks:
+- Rollback/checkpoint:
+- Completion and handoff condition:
