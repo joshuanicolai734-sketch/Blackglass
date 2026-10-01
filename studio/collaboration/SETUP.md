@@ -5,6 +5,8 @@ These are setup instructions, not confirmation that any external agent is connec
 ## GitHub first
 Open this repository and the reviewed collaboration branch/PR. Keep the existing default branch. Use Issues and draft Pull Requests as the shared task and review surfaces; a paid coordination service is unnecessary for the first trial.
 
+Read the [intended roles and workflow](README.md) before assigning work. Use currently authorised access within Josh's existing plan; do not buy usage credits, enable paid add-ons or assume another provider is included in Pro. If access or plan limits block a role, record the limitation and proposed next step rather than claiming the tools are connected or usage-free.
+
 If asked to connect an app, Josh should inspect the actual permissions and authorise only this repository where the provider supports it. Do not paste access tokens into chat or commit them. A tool unable to use the approved connection should stop and report its limitation.
 
 ## Claude Code

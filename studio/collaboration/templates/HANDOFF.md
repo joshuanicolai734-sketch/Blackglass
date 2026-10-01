@@ -1,11 +1,14 @@
-# BG-<issue number> handoff
+# BG-### handoff
+- GitHub issue URL / approved brief:
 - Branch / exact commit:
 - Outcome and changed paths:
 - Decision made and why:
+- Review findings accepted/deferred and why / retested commit:
 - Tests run with commands, results and environment:
 - Screenshots/recordings (synthetic, no private data):
 - Not tested / remaining defects:
 - Data/schema/auth implications:
 - Reproduction and rollback:
 - Next owner/action:
-- Implemented / verified / published status (separate):
+- Independent critique / Gamma final visual review / outstanding review gates:
+- Implemented / verified / merged / published status (separate):

@@ -25,3 +25,12 @@ For schema changes, edit `db/schema.ts`, run `pnpm db:generate`, and commit the 
 ## Parallel collaboration
 
 Before starting a shared task, read `studio/collaboration/README.md` and `studio/collaboration/CURRENT_STATE.md`. Use a scoped issue, separate branch/worktree and independent evidence-based review. Confirm current source and approved task direction before relying on historical release or palette descriptions above. Never copy private preview data/assets into this public repository. GitHub collaboration does not automatically connect external agents or deploy Sites.
+
+For substantial product, design or engineering work, also read:
+- [Blackglass product intent](studio/BLACKGLASS.md)
+- [Product principles](studio/PRODUCT_PRINCIPLES.md)
+- [Design guidance](studio/DESIGN_SYSTEM.md)
+- [Motion guidance](studio/MOTION_SYSTEM.md)
+- The approved task brief, linked from its issue
+
+The collaboration guide defines the intended roles: Gamma for creative direction and final visual review, Codex for production engineering, Claude for independent critique/QA, and Replit for isolated experiments. An assignment is not an account connection or permission to invoke another agent. Use a stable `BG-###` task ID and a separate GitHub issue URL. Preserve issue #7 as the read-only source-reconciliation prerequisite; `BG-001` Exercise Player V2 remains a planned implementation rehearsal.
