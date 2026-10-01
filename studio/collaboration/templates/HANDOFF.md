@@ -1,0 +1,11 @@
+# BG-<issue number> handoff
+- Branch / exact commit:
+- Outcome and changed paths:
+- Decision made and why:
+- Tests run with commands, results and environment:
+- Screenshots/recordings (synthetic, no private data):
+- Not tested / remaining defects:
+- Data/schema/auth implications:
+- Reproduction and rollback:
+- Next owner/action:
+- Implemented / verified / published status (separate):
