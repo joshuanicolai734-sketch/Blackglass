@@ -1,6 +1,6 @@
 # Current state and source boundaries
 
-Snapshot: 2 October 2026, 05:44–05:46 UTC. Reverify before editing. This is the single current-state map for the existing collaboration guide; older release notes remain historical evidence.
+Source snapshot: 2 October 2026, 05:44–05:46 UTC. Film artifact and hosted-review status refreshed at 06:30 UTC. Reverify before editing. This is the single current-state map for the existing collaboration guide; older release notes remain historical evidence.
 
 ## Start here
 
@@ -48,7 +48,14 @@ These identifiers let an authorised reviewer verify separately supplied files. T
 
 The separate owner-review website has a refined force → repeat → record motion sequence, a manually controlled Learn curl, 320/430-pixel layout work and a ten-player gallery. Source/browser checks were reported for that review source. Those results are not tests of this GitHub head; public-domain publication is unchanged by this documentation task.
 
-The existing 21-second film is preserved. A new refinement is active, aimed at more cohesive transformations, a stronger opening and music-driven timing, using the approved website motion as its visual anchor. No completed replacement film, approved soundtrack or publication is claimed. Review the new render when it exists before calling it finished.
+The original 21-second film and its source are preserved. A new 21-second **Force becomes record** edit is complete as a local review artifact, with a larger opening plane and continuous force → vortex → 10 reps → logged set → brand mark transformation. The preview-list invitation was checked at 320-pixel display width. All visuals remain editable native Tesseract elements: 125 layers and 196 animation entries. The original licensed music excerpt is retained, with five procedural sound cues; preserve its attribution with any authorised publication. The product graphic is explicitly a build 906 example, not a recording of the later recovery build.
+
+Supplied checks passed for full web-video decoding, isolated cue timing and rebuilding the editable archive; the rebuilt frame at 19.6 seconds matched the checked reference pixels. This update independently recomputed both artifact sizes and hashes. Private hosted review verified the correct 21-second 1080p source, play, pause/resume, replay, natural ending and offscreen pause. Both MP4 and editable-source downloads matched their exact sizes/hashes, and ZIP integrity passed. Native seeking was inconclusive in cloud browser control; human listening and physical-phone review remain pending. Public-site and social publication remain unchanged.
+
+- Web MP4: `Blackglass-Force-Record-1080-Web.mp4`, 3,324,197 bytes, SHA-256 `3671bf3e4551dcc5f8f86e1477c460a4ce180fa6435267df754481e07820a39d`
+- Editable source: `Blackglass-Force-Record-Editable-Source.zip`, 23,517,548 bytes, SHA-256 `96a6fc552e68b9aacbaae9b917e9c41bd109384c27aaafe6989d501cd99e96d1`
+
+These are identifiers for separately supplied review files, not public downloads or a transfer of source/assets into GitHub. The owner has approved beginning setup for 10 pm New Zealand collaboration research. Setup is in progress; no unattended or scheduled runs have been established.
 
 Keep the approved bold light/dark and sleek synthetic-body direction. Historical crimson-only or minimal-motion descriptions are not a sufficient new brief. Preserve usability, truthful availability, responsive controls, reduced-motion behavior and the relevant no-JavaScript fallback.
 
@@ -68,7 +75,7 @@ Separate owner-only workspace, media and strategy work remains outside this publ
 1. **BG-007 source reconciliation:** obtain a fresh read-only Replit inventory, confirm the intended source/target with the owner, and record the exact chosen base. The [setup guide](SETUP.md) gives the existing-project preservation sequence
 2. **Independent documentation review:** inspect PR #8's current head, exact diff, links and status claims. Keep it draft; prior approval of PR #6 is not approval to merge PR #8
 3. **Choose one implementation brief:** after source/target approval, a selective enquiry-receipt parity fix is a possible small task. `BG-001` Exercise Player V2 still needs its approved scope and assets. Neither is authorised by this status document
-4. **External review gates:** complete device/runtime and qualified-technique review of the recovery build; review the new film render when available. Preserve the held split-squat status
+4. **External review gates:** complete device/runtime and qualified-technique review of the recovery build; complete human listening, physical-phone and native-seeking review of the new film. Preserve the held split-squat status
 5. **Later product work:** the connected coaching backend/payment journey, device beta and future Play Store/iOS path remain open. Do not present them as implemented or publicly available
 
 ## Verification and publication limits
