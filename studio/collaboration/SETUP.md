@@ -24,12 +24,14 @@ Official reference: https://code.claude.com/docs/en/worktrees (checked 1 October
 
 The existing Replit experiment has reported local migration commits and later uncommitted refinements. Its current state has not been directly reverified. An old “ahead” count against a cached remote does not establish parity with today's GitHub.
 
+Proposed coordination owner: Gamma. Proposed independent reviewer: Claude, subject to availability and owner confirmation. Josh selects the source/target and exact base after reviewing the inventory. The owner has approved the read-only task's operating limits. One inventory request was sent on 2 October 2026 at 09:13 UTC; the connector timed out, no result was received, and its execution outcome is uncertain. Check that request's status before any retry. Do not duplicate it or infer a completed inventory.
+
 1. Open the existing project; do not re-import over it or create a replacement merely to make the sources look aligned
-2. Inspect `git status --short --branch`, `git rev-parse HEAD`, `git log -8 --oneline`, `git diff --stat`, `git diff --name-status` and `git ls-files --others --exclude-standard`; record the cached origin SHA separately without fetching
-3. Preserve all local commits, changed/untracked files and `.migration-backup`. Report only source metadata and filenames, never secret values, personal records or private contents
+2. Record the exact branch and full HEAD SHA with `git status --short --branch` and `git rev-parse HEAD`. List eight recent full commit SHAs and subjects with `git log -8 --format='%H %s'`. Record the cached origin ref name and full SHA separately without fetching
+3. Record unstaged and staged change summaries with `git diff --stat`, `git diff --name-status`, `git diff --cached --stat` and `git diff --cached --name-status`; list untracked paths with `git ls-files --others --exclude-standard`. Record whether `.migration-backup` and other migration backups exist, with path/file-count metadata only. Preserve all commits, changed/untracked files and backups. Return public-safe source metadata and filenames, never file contents, secret values or personal records
 4. During this inventory, do not fetch, pull, sync, reset, commit, push, delete/move files, provision infrastructure or publish
 5. Describe any Next/Vinext/Sites/D1 versus Vite/Express/PostgreSQL substitutions. An architectural port is not proof of compatibility with the public Site or GitHub source
-6. Return the inventory and proposed bounded experiment for a source/target decision. Future work needs its own agreed base, owned paths and review evidence
+6. Return a dated source/evidence/difference/next-action table with the exact inspected refs, inventory limits and proposed next task. The independent reviewer checks that evidence before Josh selects the source/target. Future work needs its own agreed base, owned paths and review evidence; this inventory does not satisfy the separate desktop/mobile journey-review gate
 
 ### New isolated project, only if explicitly chosen later
 
