@@ -1,0 +1,13 @@
+--- a/public/site.js
++++ b/public/site.js
+@@ -432,7 +432,9 @@
+         a.innerHTML = '<span>Send it by email instead</span><svg class="arrow" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>';
+         show(status === 409
+           ? 'We received a message from this email in the last two minutes. If this is something new, send it by email instead.'
+-          : 'We couldn’t confirm whether this was received. Your answers are still here. You can try again, or send it by email instead.', false, a);
++          : status === 429
++            ? 'Too many requests right now. Your answers are still here. Please try again later, or send it by email instead.'
++            : 'We couldn’t confirm whether this was received. Your answers are still here. You can try again, or send it by email instead.', false, a);
+       } finally {
+         busy = false;
+         button.removeAttribute('aria-disabled');
