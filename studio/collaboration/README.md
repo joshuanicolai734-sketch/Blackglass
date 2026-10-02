@@ -33,7 +33,7 @@ Create task material when needed: `studio/briefs/` for approved briefs, `studio/
 ## Working agreement
 - One issue, one accountable owner, one branch and one acceptance record
 - No direct concurrent edits to the same checkout. Replit gets its own workspace; local sessions get their own worktree
-- Pull the latest agreed base before beginning. If another task changes the same files, coordinate instead of force-pushing or replacing them
+- Inspect and preserve local work before fetching, pulling or syncing. Verify the agreed base in a separate branch/worktree; the existing Replit project first needs a read-only inventory. If another task changes the same files, coordinate instead of force-pushing or replacing them
 - Small PRs; no opportunistic dependency upgrades or broad refactors in a UX fix
 - Never use old exports to overwrite newer work. Never copy an entire Sites checkout over this repo
 - Keep experiments under a task-specific directory/branch until reviewed. No automatic merge, production publish, secret copying or external-agent invocation

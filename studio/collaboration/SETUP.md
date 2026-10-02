@@ -19,14 +19,23 @@ If asked to connect an app, Josh should inspect the actual permissions and autho
 Official reference: https://code.claude.com/docs/en/worktrees (checked 1 October 2026).
 
 ## Replit
-1. In Replit, import the existing GitHub repository using its supported provider-import flow. Choose the existing repository rather than create a competing source repository
-2. If a connection grant is required, review it yourself. Imported source does not include production data or authorise moving the live domain
-3. In the Git tool, fetch the agreed base and create a task-specific branch. Confirm the branch before asking Agent to edit
-4. Read the repository's installation/run instructions. This app uses Vinext/Cloudflare-compatible output and local D1 setup; do not let an automatic import rewrite it into a different stack just to obtain a preview
-5. Start with a small read-only critique or isolated prototype. Commit only intentional source changes and open a draft PR back here
-6. Replit preview is a development environment. Do not publish it as the canonical Blackglass site, provision paid infrastructure or move DNS without a separate decision
 
-Official references: https://docs.replit.com/build/import-from-providers and https://docs.replit.com/learn/projects-and-artifacts/version-control (checked 1 October 2026).
+### Existing Blackglass project: inventory first
+
+The existing Replit experiment has reported local migration commits and later uncommitted refinements. Its current state has not been directly reverified. An old “ahead” count against a cached remote does not establish parity with today's GitHub.
+
+1. Open the existing project; do not re-import over it or create a replacement merely to make the sources look aligned
+2. Inspect `git status --short --branch`, `git rev-parse HEAD`, `git log -8 --oneline`, `git diff --stat`, `git diff --name-status` and `git ls-files --others --exclude-standard`; record the cached origin SHA separately without fetching
+3. Preserve all local commits, changed/untracked files and `.migration-backup`. Report only source metadata and filenames, never secret values, personal records or private contents
+4. During this inventory, do not fetch, pull, sync, reset, commit, push, delete/move files, provision infrastructure or publish
+5. Describe any Next/Vinext/Sites/D1 versus Vite/Express/PostgreSQL substitutions. An architectural port is not proof of compatibility with the public Site or GitHub source
+6. Return the inventory and proposed bounded experiment for a source/target decision. Future work needs its own agreed base, owned paths and review evidence
+
+### New isolated project, only if explicitly chosen later
+
+Use Replit's supported GitHub provider-import flow in a separate project. Review any requested account grant yourself. Imported source does not include production data or permission to move the live domain. Follow this repository's install/run instructions and preserve the Vinext/Cloudflare-compatible architecture unless an approved task specifically covers a port. A development preview is not the canonical public site.
+
+Official references: https://docs.replit.com/build/import-from-providers and https://docs.replit.com/learn/projects-and-artifacts/version-control (previously checked 1 October 2026; this update does not reverify provider UI).
 
 ## Other agents
 Use the same issue, scoped branch and evidence handoff. A new agent integration is a new connection decision, not permission inherited from this guide. Keep one integrator per release.

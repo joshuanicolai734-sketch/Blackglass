@@ -1,10 +1,10 @@
 # Instructions for coding agents (Codex, Claude Code and others)
 
-Read `BLACKGLASS_HANDOFF.md` first, then `docs/MAINTAINING.md` and `docs/PUBLISHING.md`. `docs/DIRECTION.md` explains what the product is and why the site looks as it does.
+Read `BLACKGLASS_HANDOFF.md` and `studio/collaboration/CURRENT_STATE.md` first, then `docs/MAINTAINING.md` and `docs/PUBLISHING.md`. The dated current-state map separates this public checkout from newer external review work; historical release notes are not the current build brief. `docs/DIRECTION.md` explains what the product is and why the site looks as it does.
 
 ## Ground rules
 
-- **Branch:** work on `claude/blackglass-domain-migration-0pxc6q` (the default) or a branch made from it. Never force-push, and don't replace the source with an old ZIP snapshot.
+- **Branch:** verify the exact source, branch, commit and approved task before editing. The default is `claude/blackglass-domain-migration-0pxc6q`; use a scoped branch from the agreed base. Preserve existing local work. Never force-push or replace any source with an old ZIP snapshot.
 - **Deploying:** pushing to GitHub does not deploy. The live site is published from the ChatGPT Sites project (see the handoff).
 - **Settings:** app availability, links, prices, social accounts and campaign links live in `content/site.ts`, and questions and answers in `content/faq.ts`. Change them there, not in page files.
 - **Claims:**
