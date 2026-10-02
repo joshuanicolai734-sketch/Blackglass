@@ -1,7 +1,7 @@
 # BG-002: Phone visitors understand the offer and act within the first viewport
 
 - GitHub issue URL (independent of BG ID): not yet created. Coordination on [issue #7](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7)
-- Status / brief approval evidence: **proposed by Claude for Gamma, at Josh's request, 2 October 2026.** Josh's approval of the implementation scope is still required. The one code change already made (item E) is a reversible token adjustment Josh asked for
+- Status / brief approval evidence: **proposed by Claude for Gamma, at Josh's request, 2 October 2026.** Josh's approval of the implementation scope is still required. The one code change already made (part of item E) is a reversible default-token adjustment Josh asked for
 - User/problem: on a phone, the newer homepage's strongest line arrives late, the accent colours disagree across site, app and studies, floating controls cover CTAs, and the honesty labels are the hardest text to read. Evidence: `studio/reviews/BG-002-mobile-hook-and-cohesion.md`
 - Why now: preview-list sign-ups depend on the first viewport. The accent decision blocks further motion and wallpaper work
 - Source base SHA and release target: GitHub default `b87393d` for item E only. Items A–D target the owner-review website source, which isn't in this repository; name its exact revision before implementation (see BG-007)
@@ -37,7 +37,7 @@
 - A static settled frame under reduced motion.
 
 **E. Readable truth labels (finding 5).**
-- Done in this checkout: `--fs-label` is 12 px at every width.
+- Done in this checkout (older GitHub baseline): the default label token `--fs-label` is 12 px at every width. Deferred: the explicit 10 px Movement Studio exercise label and playback-status rules below 420 px (`app/site.css:676-680`) need an agreed scope before they change. Gamma reports v33 already uses a 12 px token via `performance.css`; preserve the newer source when integrating.
 - In the newer source and the app, apply the same 12 px floor with ≥4.5:1 contrast. Use sentence case where a label carries meaning.
 - Replace native form validation with an inline, on-system error, shown after an attempted log.
 
@@ -47,7 +47,7 @@
 - New claims about features, users or results
 
 ## Acceptance scenarios
-- 320, 360 and 430 CSS px: no horizontal scroll, full CTA label visible, H1 and CTA in the first viewport
+- 320, 360 and 430 CSS px on `/`, `/coaching`, `/get`, `/movements` and the open mobile menu: no horizontal scroll, full CTA label visible, H1 and CTA in the first viewport
 - Opening captured at start, mid, settled and reduced-motion states, with no overlapping type layers
 - Accent audit: every primary action on site and app uses the chosen token
 - App set logging: an empty weight shows an inline error after an attempted log, never before

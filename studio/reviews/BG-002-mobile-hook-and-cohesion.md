@@ -32,12 +32,17 @@ The recording and this repository are different sources (see `studio/collaborati
 
 ### 5. Truth labels and in-app feedback are hard to read
 - **Seen:** uppercase, wide-tracked mono labels carry the honesty claims ("Graphic example / not a capture", "Demonstration only. Nothing is saved.") and are the smallest text on screen. In the app, a native browser validation bubble overlaps the next set row.
-- **In this checkout:** `--fs-label` was 11 px on phones. BG-002's one code change raises it to 12 px at every width. At 320 and 360 CSS px no label clips (headless Chromium, `/` and `/coaching`).
+- **In this checkout (the older GitHub baseline):** BG-002's one code change raises the *default* label token `--fs-label` from 11 px to 12 px on phones; it was already 12 px from 900 px. It's not a universal label floor. Two explicit phone exceptions remain below 420 px, at `app/site.css:676-680`: Movement Studio exercise labels (`.ms-exercises .label`) and playback status (`.ms-state`) at 10 px. They're **deferred**, not changed here, until a scope is agreed.
+- **Newer v33 source:** Gamma reports, by source inspection, that v33 already sets the shared token to 12 px through `performance.css`. So for v33 this change reconciles the underlying token rather than enlarging labels. I haven't inspected v33 myself.
 
 ### Additional observation (this checkout, already present before BG-002)
-- At 320 CSS px the homepage is 331 px wide. The cause is the menu note's "Email Josh" link (`components/site/chrome.tsx`), which ends at about 324 px with 11 px labels and about 327 px with 12 px. The same width was measured both with and without the label change. Not fixed here, to keep the change bounded.
+- At 320 CSS px the homepage is 331 px wide. The overflow comes from the two offer cards (`app/page.tsx:172-186`, `.offer-card`), which extend to 331 px. I didn't isolate which child sets their width. The width is identical with 11 px and 12 px labels, and `/coaching`, `/get` and `/movements` stay at 320 px.
+- Correction: the first version of this review blamed the menu's "Email Josh" link. That was wrong: the closed menu is positioned off-canvas, and the same menu is on `/coaching`, which doesn't overflow. Not fixed here, to keep the change bounded.
 
 ## Verification of the BG-002 code change
-- `pnpm lint && pnpm exec tsc --noEmit && pnpm build`: passed
-- Production server rendered at 320 and 360 CSS px: labels compute to 12 px, and no `.label` element has hidden overflow
-- Not tested: physical phones, Samsung Browser, reduced motion, other routes
+- `pnpm lint && pnpm exec tsc --noEmit && pnpm build`: passed. GitHub CI `verify` also passed on `5a4d6e7`
+- Production server, headless Chromium, 320 and 360 CSS px. Routes `/`, `/coaching`, `/get` and `/movements`, plus the open mobile menu on `/`
+  - Default labels compute to 12 px. On `/movements` the deferred 10 px exceptions also render.
+  - No `.label` element has hidden overflow.
+  - Page widths match the 11 px baseline on every route. The only overflow is the existing 331 px homepage case above.
+- Not tested: physical phones, Samsung Browser, reduced motion, other routes. These are headless renders, not visual acceptance.
