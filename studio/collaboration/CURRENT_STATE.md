@@ -11,7 +11,7 @@ Evidence is dated by section below. A later documentation review does not refres
 
 ## Verified GitHub state
 
-Metadata rechecked: 2 October 2026, 09:10 UTC. PR #8 remained open and draft at `7c461c2a0cf0e1ecc6a81206511d351132b1023a`, with successful CI. This is the pre-correction head, not a claim about a later commit.
+GitHub refs rechecked: 2 October 2026, 09:28 UTC. The default head was `b87393d8a5ffff089ecc327ec0212e67161e1921`; PR #8 remained open and draft at `2db1d6bfc76ab4c49e893771b2e5c92ac1960181`. This is the pre-inventory-update head, not a claim about a later commit.
 
 - Public repository: [joshuanicolai734-sketch/Blackglass](https://github.com/joshuanicolai734-sketch/Blackglass)
 - Default branch: `claude/blackglass-domain-migration-0pxc6q`
@@ -23,7 +23,7 @@ Metadata rechecked: 2 October 2026, 09:10 UTC. PR #8 remained open and draft at 
 
 ## Source map: what this checkout does and does not contain
 
-Reconciliation evidence recorded: 2 October 2026, 05:44–05:46 UTC. The later documentation review did not repeat this source comparison or inspect Replit.
+Public Site/GitHub comparison evidence recorded: 2 October 2026, 05:44–05:46 UTC. That file comparison has not been repeated. The separate Replit-reported inventory below was compared with fresh GitHub refs at 09:28 UTC; its filesystem and diff were not independently inspected.
 
 | Surface | Current evidence | Boundary |
 | --- | --- | --- |
@@ -31,9 +31,39 @@ Reconciliation evidence recorded: 2 October 2026, 05:44–05:46 UTC. The later d
 | Public Site | Latest reconciled source: `7daacb89a396bc3bda44ca8ea17a5f1675011d9d`, associated with public version 33. The recovered checkout's exact HEAD and clean state were rechecked for this update | Different history and functionality from GitHub. This documentation update does not publish or independently recheck the live domain/database |
 | External Android recovery | Owner-review checkpoint version code `926` / version name `94.1-press-study-dev`; package/source identifiers below | Independently built and checked at its own source. Its source and media have not been transferred into this public repository |
 | Owner-only website review | Separate newer review source with homepage/motion and exercise-gallery refinements | Private source/assets are not a public sync source. Status below is a handoff of supplied review evidence, not verification of this GitHub checkout |
-| Existing Replit experiment | Previously reported migration commits plus later uncommitted refinements; current local state unverified | Preserve the existing project and `.migration-backup`; obtain a read-only inventory before any sync, port or integration |
+| Existing Replit experiment | Owner-supplied read-only report: local HEAD `12fc014b1d12669952120d2cf7c6c6304fa8f46d`, cached origin `b87393d8a5ffff089ecc327ec0212e67161e1921`, no staged/unstaged/untracked files reported | Local-only report, not independent filesystem verification. Preserve and isolate the migration and its backups before any sync; actual diff and source parity remain unreviewed |
 
 The public Site reconciliation identified newer enquiry-receipt validation, movement loading/seeking state, visual/motion work and owner-workspace functionality that are absent or different in GitHub. Do not overwrite these with this older runtime baseline. Keep matching player code, media, phase labels and tests together in any later selectively reviewed transfer. The source-level enquiry test distinguished a confirmed JSON receipt from HTTP-only success; it was not a live-service or end-to-end test.
+
+## Replit-reported inventory and reconciliation path
+
+Provenance: owner-supplied read-only Replit report received on 2 October 2026, compared here with fresh GitHub branch refs at 09:28 UTC. Replit did not refresh its remote during the inventory. The local filesystem, commit objects, backup contents and actual diff have not been independently reviewed.
+
+| Source | Evidence | Difference or limit | Next safe action |
+| --- | --- | --- | --- |
+| GitHub default | Connector-verified `b87393d8a5ffff089ecc327ec0212e67161e1921` | Matches the reported cached origin SHA; this alone does not prove local ancestry or an ahead count | Preserve it as the public reference; do not replace it with the port |
+| Replit checkout | Reported branch `claude/blackglass-domain-migration-0pxc6q`; HEAD `12fc014b1d12669952120d2cf7c6c6304fa8f46d` | Eight local-only commits reported; staged, unstaged and untracked files all reported absent | Preserve the exact current state on a clearly named isolated migration branch and verify a restorable checkpoint before any sync |
+| Replit runtime | Reported frontend `artifacts/blackglass/src` uses Vite/React at the root; API `artifacts/api-server/src` uses Express under `/api`; mockup sandbox is separate | This is an architectural port, not evidence of Vinext/Sites/D1 or public-site parity | Review route, auth, enquiry, database, generated-client and build differences separately |
+| Migration backup | `.migration-backup` reported present with the original import, not the running app | Existence is not proof that it restores the current migration HEAD | Retain the original backup; independently verify a separate current-source checkpoint |
+
+Reported local-only commits, newest first. Only the HEAD was supplied as a full SHA; the remaining identifiers and change categories below are abbreviated report metadata, not inspected commit contents:
+
+- `12fc014`: inbox cursor logic, tests and project context
+- `d7b9011`: backend API and generated schemas
+- `3e8bf56`: Replit configuration
+- `5706b9a`: project context
+- `4c0f8a2`: Replit documentation
+- `4bad2ef`: API/client port
+- `182d913`: backup marker
+- `50520f4`: migration scaffold
+
+Safe proposed sequence, not actions already performed:
+1. Preserve the current migration HEAD and any later work in an isolated local migration branch/checkpoint before fetching, pulling or syncing. Retain `.migration-backup`; do not mistake the original import for a verified backup of the current app
+2. Obtain full commit identities and a read-only changed-path/diff review against the freshly verified GitHub reference; account separately for newer public Site functionality. Use only approved source access and public-safe evidence, without production data or secrets
+3. Have the independent reviewer assess the architectural substitutions, retained behavior, data/auth boundaries and tests. Josh then chooses the intended source/target and exact base
+4. If integration is later approved, use a separate bounded task branch and selective, reviewed changes. Do not push these local migration commits, wholesale-copy the port, sync over the existing project, merge or deploy as part of this evidence update
+
+A clean reported working tree and a matching cached-origin SHA do not establish compatibility, mergeability, successful runtime behavior or complete BG-007 reconciliation.
 
 ## External Android owner-review checkpoint
 
@@ -82,13 +112,15 @@ Separate owner-only workspace, media and strategy work remains outside this publ
 
 Collaboration evidence checked on 2 October 2026 at 09:16 UTC: owner-supplied Claude configuration evidence from 08:56 UTC showed a daily 22:00 GMT+13 pilot schedule for this repository. [Claude's first pilot handoff](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5948795078), observed at 09:10 UTC, reviewed PR #8 head `7c461c2a0cf0e1ecc6a81206511d351132b1023a`. A configured recurring pilot and one delivered review are established; future execution is not guaranteed.
 
-Owner-supplied Replit configuration evidence shows an active daily 22:30 GMT+13 routine and zero runs at the time of that screenshot; the owner approved its operating limits. A separate read-only project-inventory request was sent at 09:13 UTC. The connector timed out and no inventory result was received. Submission/execution outcome is uncertain; do not repeat the request until its status is checked. The configured routine is not evidence of a completed run or source reconciliation.
+Owner-supplied Replit configuration evidence shows an active daily 22:30 GMT+13 routine and zero runs at the time of that screenshot; the owner approved its operating limits. A separate read-only project-inventory request was sent at 09:13 UTC. The connector timed out without returning an inventory. Its submission/execution outcome remains uncertain; do not repeat the request until its status is checked. The owner later supplied the separate report recorded below; receipt of that report does not verify the timed-out request's outcome. The configured routine is not evidence of a completed run or source reconciliation.
 
-The pilot is a limited documentation review, not full-diff approval or completion of BG-007. The existing source-level enquiry false-success finding is useful evidence, but a reproducible desktop/mobile website-to-app-access journey review remains outstanding. Replit has not been freshly inspected, and source/target selection remains open.
+The pilot is a limited documentation review, not full-diff approval or completion of BG-007. The existing source-level enquiry false-success finding is useful evidence, but a reproducible desktop/mobile website-to-app-access journey review remains outstanding. A fresh Replit report has now been supplied by the owner; the filesystem, full commit graph and actual source diff have not been independently inspected. Source/target selection remains open.
+
+Gamma's bounded follow-up review is separately configured daily at 22:15 in `Pacific/Auckland`, starting 3 October 2026. It checks issue #7, PR #8, new Claude handoffs, the exact head and existing CI; it may post one PR response when new evidence warrants it. It does not run builds, invoke agents/Replit, modify code, merge or publish. Configuration is not a guarantee of future execution.
 
 ## Next bounded work
 
-1. **BG-007 source reconciliation:** Gamma coordinates the proposed read-only Replit inventory; Claude is the proposed independent reviewer, subject to availability and owner confirmation. Josh decides the source/target and exact base after the evidence is reviewed. The read-only inventory request has been sent under the owner's approved operating limits, but the connector timed out without returning a result. Check the existing request's status before any retry; do not infer completion. The [setup guide](SETUP.md) specifies exact commits, staged/unstaged changes, untracked paths and backup metadata. The source/evidence/difference/next-action handoff and the separate browser-journey review are still required
+1. **BG-007 source reconciliation:** Gamma coordinates review of the supplied Replit inventory and the missing full commit history/diff; Claude is the proposed independent reviewer, subject to availability and owner confirmation. Preserve/isolate the migration and verify its backup before any sync. Josh decides the source/target and exact base after the evidence is reviewed. The [setup guide](SETUP.md) specifies the remaining read-only metadata and safe reconciliation sequence. Keep the timed-out request distinct from the owner-supplied report and do not duplicate it. Full source comparison and the separate browser-journey review remain required
 2. **Independent documentation review:** use Claude's pilot findings as one input; independently inspect the current full diff, links and status claims. The pilot did not review every changed file or validate external artifacts. Keep PR #8 draft; prior approval of PR #6 is not approval to merge PR #8
 3. **Choose one implementation brief:** after source/target approval, a selective enquiry-receipt parity fix is a possible small task. Its brief must name the exact source, owned paths, synthetic receipt/error/recovery acceptance cases and a separate reviewer before implementation. `BG-001` Exercise Player V2 still needs its approved scope and assets. Neither is authorised by this status document
 4. **External review gates:** complete device/runtime and qualified-technique review of the recovery build; complete human listening, physical-phone and native-seeking review of the new film. Preserve the held split-squat status

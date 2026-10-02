@@ -22,9 +22,9 @@ Official reference: https://code.claude.com/docs/en/worktrees (checked 1 October
 
 ### Existing Blackglass project: inventory first
 
-The existing Replit experiment has reported local migration commits and later uncommitted refinements. Its current state has not been directly reverified. An old “ahead” count against a cached remote does not establish parity with today's GitHub.
+The owner supplied a fresh read-only Replit report on 2 October 2026: local HEAD `12fc014b1d12669952120d2cf7c6c6304fa8f46d`, cached origin `b87393d8a5ffff089ecc327ec0212e67161e1921`, and no staged, unstaged or untracked files reported. The cached origin matches the GitHub default ref independently checked at 09:28 UTC. These are reported local facts, not independent filesystem or full-diff verification. See the [current-state reconciliation map](CURRENT_STATE.md#replit-reported-inventory-and-reconciliation-path).
 
-Proposed coordination owner: Gamma. Proposed independent reviewer: Claude, subject to availability and owner confirmation. Josh selects the source/target and exact base after reviewing the inventory. The owner has approved the read-only task's operating limits. One inventory request was sent on 2 October 2026 at 09:13 UTC; the connector timed out, no result was received, and its execution outcome is uncertain. Check that request's status before any retry. Do not duplicate it or infer a completed inventory.
+Proposed coordination owner: Gamma. Proposed independent reviewer: Claude, subject to availability and owner confirmation. Josh selects the source/target and exact base after reviewing the inventory. The owner has approved the read-only task's operating limits. One connector inventory request was sent on 2 October 2026 at 09:13 UTC and timed out without returning a result. Its execution outcome remains uncertain. The owner's later report is separate evidence; do not use it to infer that request's success or repeat the request without checking status.
 
 1. Open the existing project; do not re-import over it or create a replacement merely to make the sources look aligned
 2. Record the exact branch and full HEAD SHA with `git status --short --branch` and `git rev-parse HEAD`. List eight recent full commit SHAs and subjects with `git log -8 --format='%H %s'`. Record the cached origin ref name and full SHA separately without fetching
@@ -32,6 +32,10 @@ Proposed coordination owner: Gamma. Proposed independent reviewer: Claude, subje
 4. During this inventory, do not fetch, pull, sync, reset, commit, push, delete/move files, provision infrastructure or publish
 5. Describe any Next/Vinext/Sites/D1 versus Vite/Express/PostgreSQL substitutions. An architectural port is not proof of compatibility with the public Site or GitHub source
 6. Return a dated source/evidence/difference/next-action table with the exact inspected refs, inventory limits and proposed next task. The independent reviewer checks that evidence before Josh selects the source/target. Future work needs its own agreed base, owned paths and review evidence; this inventory does not satisfy the separate desktop/mobile journey-review gate
+
+### Before any later sync or integration
+
+Preserve the reported migration HEAD on a clearly named local migration branch and verify a restorable current-source checkpoint, while retaining `.migration-backup`. These preservation steps are proposed, not claimed complete. Then review full commit identities and the actual diff against the verified GitHub reference, including the Vite/React and Express substitutions and newer public Site behavior. Only after that evidence is reviewed should Josh choose the integration source/target. Use a separate, bounded task branch for any later approved implementation; do not push the eight reported migration commits, replace the default source or deploy as part of this inventory handoff.
 
 ### New isolated project, only if explicitly chosen later
 
