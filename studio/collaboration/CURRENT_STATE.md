@@ -11,7 +11,7 @@ Evidence is dated by section below. A later documentation review does not refres
 
 ## Verified GitHub state
 
-GitHub refs rechecked: 2 October 2026, 09:28 UTC. The default head was `b87393d8a5ffff089ecc327ec0212e67161e1921`; PR #8 remained open and draft at `2db1d6bfc76ab4c49e893771b2e5c92ac1960181`. This is the pre-inventory-update head, not a claim about a later commit.
+GitHub refs rechecked: 2 October 2026, 16:19 UTC. The default head was `b87393d8a5ffff089ecc327ec0212e67161e1921`; PR #8 remained open and draft at `0b53c8d67df6fe060f20bbcf3d46a18439ce315a`. This is the pre-comparison-update head, not a claim about a later commit.
 
 - Public repository: [joshuanicolai734-sketch/Blackglass](https://github.com/joshuanicolai734-sketch/Blackglass)
 - Default branch: `claude/blackglass-domain-migration-0pxc6q`
@@ -23,7 +23,7 @@ GitHub refs rechecked: 2 October 2026, 09:28 UTC. The default head was `b87393d8
 
 ## Source map: what this checkout does and does not contain
 
-Public Site/GitHub comparison evidence recorded: 2 October 2026, 05:44–05:46 UTC. That file comparison has not been repeated. The separate Replit-reported inventory below was compared with fresh GitHub refs at 09:28 UTC; its filesystem and diff were not independently inspected.
+Public Site/GitHub comparison evidence recorded: 2 October 2026, 05:44–05:46 UTC. That file comparison has not been repeated. The Replit source-comparison report was received at 15:48 UTC and its native-source claims were cross-checked against GitHub below. Replit's filesystem and port-side diff were not independently inspected by Gamma.
 
 | Surface | Current evidence | Boundary |
 | --- | --- | --- |
@@ -31,39 +31,46 @@ Public Site/GitHub comparison evidence recorded: 2 October 2026, 05:44–05:46 U
 | Public Site | Latest reconciled source: `7daacb89a396bc3bda44ca8ea17a5f1675011d9d`, associated with public version 33. The recovered checkout's exact HEAD and clean state were rechecked for this update | Different history and functionality from GitHub. This documentation update does not publish or independently recheck the live domain/database |
 | External Android recovery | Owner-review checkpoint version code `926` / version name `94.1-press-study-dev`; package/source identifiers below | Independently built and checked at its own source. Its source and media have not been transferred into this public repository |
 | Owner-only website review | Separate newer review source with homepage/motion and exercise-gallery refinements | Private source/assets are not a public sync source. Status below is a handoff of supplied review evidence, not verification of this GitHub checkout |
-| Existing Replit experiment | Owner-supplied read-only report: local HEAD `12fc014b1d12669952120d2cf7c6c6304fa8f46d`, cached origin `b87393d8a5ffff089ecc327ec0212e67161e1921`, no staged/unstaged/untracked files reported | Local-only report, not independent filesystem verification. Preserve and isolate the migration and its backups before any sync; actual diff and source parity remain unreviewed |
+| Existing Replit experiment | [Source comparison received](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5955993208): local `12fc014b1d12669952120d2cf7c6c6304fa8f46d`, cached upstream `b87393d8a5ffff089ecc327ec0212e67161e1921`; 8 local-only / 34 upstream-only commits reported | Source-only Replit evidence, with native-side cross-checks below. The port is not the canonical public source; integration, runtime parity and current-source backups are not established |
 
 The public Site reconciliation identified newer enquiry-receipt validation, movement loading/seeking state, visual/motion work and owner-workspace functionality that are absent or different in GitHub. Do not overwrite these with this older runtime baseline. Keep matching player code, media, phase labels and tests together in any later selectively reviewed transfer. The source-level enquiry test distinguished a confirmed JSON receipt from HTTP-only success; it was not a live-service or end-to-end test.
 
-## Replit-reported inventory and reconciliation path
+## Replit source comparison and baseline decision
 
-Provenance: owner-supplied read-only Replit report received on 2 October 2026, compared here with fresh GitHub branch refs at 09:28 UTC. Replit did not refresh its remote during the inventory. The local filesystem, commit objects, backup contents and actual diff have not been independently reviewed.
+[Replit's completed source-comparison report](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5955993208) was received on 2 October 2026 at 15:48 UTC. It used existing local Git objects, without a fresh remote fetch, build, runtime test or production access.
 
-| Source | Evidence | Difference or limit | Next safe action |
-| --- | --- | --- | --- |
-| GitHub default | Connector-verified `b87393d8a5ffff089ecc327ec0212e67161e1921` | Matches the reported cached origin SHA; this alone does not prove local ancestry or an ahead count | Preserve it as the public reference; do not replace it with the port |
-| Replit checkout | Reported branch `claude/blackglass-domain-migration-0pxc6q`; HEAD `12fc014b1d12669952120d2cf7c6c6304fa8f46d` | Eight local-only commits reported; staged, unstaged and untracked files all reported absent | Preserve the exact current state on a clearly named isolated migration branch and verify a restorable checkpoint before any sync |
-| Replit runtime | Reported frontend `artifacts/blackglass/src` uses Vite/React at the root; API `artifacts/api-server/src` uses Express under `/api`; mockup sandbox is separate | This is an architectural port, not evidence of Vinext/Sites/D1 or public-site parity | Review route, auth, enquiry, database, generated-client and build differences separately |
-| Migration backup | `.migration-backup` reported present with the original import, not the running app | Existence is not proof that it restores the current migration HEAD | Retain the original backup; independently verify a separate current-source checkpoint |
+- Reported local HEAD: `12fc014b1d12669952120d2cf7c6c6304fa8f46d`; branch `claude/blackglass-domain-migration-0pxc6q`
+- Cached upstream: `b87393d8a5ffff089ecc327ec0212e67161e1921`, matching GitHub's freshly checked default head
+- Reported merge base: `62039cb4996acb4b860410d38e910bb72bf4fe25`; 8 local-only / 34 upstream-only commits
+- Gamma independently confirmed through GitHub that this merge base is an ancestor of `b87393d8…`, exactly 34 commits behind it, and contains 240 tracked files. Gamma did not inspect Replit's local commit objects, so the local count and port-side findings remain attributed to Replit
+- Earlier supplied inventory reported no staged, unstaged or untracked files. It described the running Vite/React frontend at `artifacts/blackglass/src`, Express API at `artifacts/api-server/src` under `/api`, and a separate mockup sandbox. A clean reported worktree is not runtime or mergeability evidence
 
-Reported local-only commits, newest first. Only the HEAD was supplied as a full SHA; the remaining identifiers and change categories below are abbreviated report metadata, not inspected commit contents:
+### Findings and independent checks
 
-- `12fc014`: inbox cursor logic, tests and project context
-- `d7b9011`: backend API and generated schemas
-- `3e8bf56`: Replit configuration
-- `5706b9a`: project context
-- `4c0f8a2`: Replit documentation
-- `4bad2ef`: API/client port
-- `182d913`: backup marker
-- `50520f4`: migration scaffold
+| Area | Source-comparison finding | Gamma's native-side check / consequence |
+| --- | --- | --- |
+| Enquiry and retry behavior | Port is JSON-only; native supports JSON, URL-encoded and multipart forms, 303 receipts/retry pages and a short-lived retry cookie | Confirmed in [native route](../../app/api/enquiries/route.ts) and retry pages: 8,192-byte bounded reads, file-part rejection, 120-second HttpOnly retry cookie, route-scoped duplicate protection, and non-fatal activity counting. Preserve all native paths |
+| Browser feedback | Port adds a friendly 429 message; native has newer busy/completion behavior | GitHub browser source still checks HTTP success alone. The freshly restored public source validates JSON `{ok:true}` and bounds headers/body receipt time to 15 seconds; its error display lacks a distinct 429 message. Preserve the public implementation and add only that feedback case |
+| Owner authentication | Port uses Clerk; native uses ChatGPT identity plus an owner allowlist | Confirmed server-side native checks in [admin page](../../app/admin/page.tsx) and [mutation route](../../app/api/admin/enquiries/route.ts). Keep native authentication and its owner checks |
+| Rate limits and ingress | Port reports exact-origin CORS, proxy assumptions and per-process attempt counters | Replit-only evidence; process-local counters are not durable/shared limits. No native ingress or security-setting change is included |
+| Inbox | Port reports global/filtered counts, 50-row timestamp/UUID keyset pages and matching client behavior | Confirmed in GitHub and the restored public source: the query loads the latest 100 rows and calculates displayed new/won counts from that subset; the public source also includes its newer owner workspace. Pagination is useful follow-on work, but its backend contract and UI must be adapted together to D1/SQLite |
+| Generated contracts | Port reports matching OpenAPI, Zod and client changes | No independent generation or port-runtime verification. Do not transfer generated bindings or PostgreSQL precision assumptions wholesale |
 
-Safe proposed sequence, not actions already performed:
-1. Preserve the current migration HEAD and any later work in an isolated local migration branch/checkpoint before fetching, pulling or syncing. Retain `.migration-backup`; do not mistake the original import for a verified backup of the current app
-2. Obtain full commit identities and a read-only changed-path/diff review against the freshly verified GitHub reference; account separately for newer public Site functionality. Use only approved source access and public-safe evidence, without production data or secrets
-3. Have the independent reviewer assess the architectural substitutions, retained behavior, data/auth boundaries and tests. Josh then chooses the intended source/target and exact base
-4. If integration is later approved, use a separate bounded task branch and selective, reviewed changes. Do not push these local migration commits, wholesale-copy the port, sync over the existing project, merge or deploy as part of this evidence update
+### Backup evidence
 
-A clean reported working tree and a matching cached-origin SHA do not establish compatibility, mergeability, successful runtime behavior or complete BG-007 reconciliation.
+Replit reports all 240 merge-base paths byte-identical inside a 242-file tracked `.migration-backup`. Against cached upstream it reports 202 identical shared paths, 37 changed shared paths, 37 upstream paths absent from the backup and 3 backup-only paths. Gamma verified the merge-base file count, not those backup bytes. This backs up the older import, not the latest native source or the current Replit HEAD.
+
+Earlier reported local-only commit identifiers, newest first: `12fc014` (inbox cursor/tests/context), `d7b9011` (API/generated schemas), `3e8bf56` (Replit configuration), `5706b9a` (project context), `4c0f8a2` (Replit documentation), `4bad2ef` (API/client port), `182d913` (backup marker), `50520f4` (migration scaffold). These abbreviated categories are report metadata, not independently reviewed commit contents.
+
+### Baseline recommendation and next implementation
+
+**Retain the native public Sites/Vinext/D1 application as the implementation baseline.** On 2 October 2026 at 15:58 UTC, the public version 33 source was restored and independently verified clean at `7daacb89a396bc3bda44ca8ea17a5f1675011d9d`; the coordinator confirmed version 33 remains the active public version. Use this verified base for the authorised first enquiry-error change, and preserve any subsequent public work. GitHub default `b87393d8…` is a comparison reference, not a substitute for newer public behavior. The private review source and Replit port must not replace the public baseline.
+
+Preserve both exact histories with named checkpoint refs in their own environments, verify restorable current-source checkpoints, and isolate the Replit migration on its own branch **before any sync**. These preservation steps have not been performed by this documentation update.
+
+The [authorised first implementation brief](../briefs/NATIVE_RECONCILIATION_NEXT_STEP.md) selects a small change: a distinct 429 message in the existing native error-display path, with regression coverage. The missing case is verified in the restored public source. It preserves confirmed receipt handling, plain forms, retry pages, owner auth and existing data. Native-compatible inbox counts/pagination is a separate follow-on; Clerk migration and process-local rate-limit copying are excluded.
+
+The public checkpoint is now restored and its receipt/error, retry, owner-auth and inbox source were freshly checked without editing it. The comparison is useful and received; it does not establish integrated runtime behavior, production migration state, a new deployment, or completion of BG-007's separate desktop/mobile journey gate.
 
 ## External Android owner-review checkpoint
 
@@ -112,17 +119,19 @@ Separate owner-only workspace, media and strategy work remains outside this publ
 
 Collaboration evidence checked on 2 October 2026 at 09:16 UTC: owner-supplied Claude configuration evidence from 08:56 UTC showed a daily 22:00 GMT+13 pilot schedule for this repository. [Claude's first pilot handoff](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5948795078), observed at 09:10 UTC, reviewed PR #8 head `7c461c2a0cf0e1ecc6a81206511d351132b1023a`. A configured recurring pilot and one delivered review are established; future execution is not guaranteed.
 
-Owner-supplied Replit configuration evidence shows an active daily 22:30 GMT+13 routine and zero runs at the time of that screenshot; the owner approved its operating limits. A separate read-only project-inventory request was sent at 09:13 UTC. The connector timed out without returning an inventory. Its submission/execution outcome remains uncertain; do not repeat the request until its status is checked. The owner later supplied the separate report recorded below; receipt of that report does not verify the timed-out request's outcome. The configured routine is not evidence of a completed run or source reconciliation.
+Owner-supplied Replit configuration evidence shows an active daily 22:30 GMT+13 routine and zero runs at the time of that screenshot; the owner approved its operating limits. Earlier connector inventory/comparison requests timed out without returning a result, and their specific execution outcomes remain uncertain. A separate owner-supplied inventory and the linked completed source-comparison comment have now been received. Use that evidence instead of duplicating requests; it does not verify any particular timed-out request's outcome. Routine configuration alone is not evidence of runtime integration.
 
-The pilot is a limited documentation review, not full-diff approval or completion of BG-007. The existing source-level enquiry false-success finding is useful evidence, but a reproducible desktop/mobile website-to-app-access journey review remains outstanding. A fresh Replit report has now been supplied by the owner; the filesystem, full commit graph and actual source diff have not been independently inspected. Source/target selection remains open.
+The pilot is a limited documentation review, not full-diff approval or completion of BG-007. The existing source-level enquiry false-success finding is useful evidence, but a reproducible desktop/mobile website-to-app-access journey review remains outstanding. Replit's source comparison is now received and its native-side claims have been cross-checked. Gamma has not independently inspected the port filesystem/diff. The native baseline is now restored and verified, and the owner authorised the bounded enquiry-error task. Remaining journey and runtime evidence is still required; no implementation completion is claimed.
+
+On 2 October 2026, the owner also authorised occasional, explicitly assigned Claude file edits through GitHub. Each assignment must name its exact base, owned paths, acceptance checks and handoff; use an isolated branch/worktree and a draft PR, then have Gamma independently review the diff and evidence before any merge decision. This is bounded task permission, not an account-permission change, an automatic routine edit or evidence that a Claude run has started.
 
 Gamma's bounded follow-up review is separately configured daily at 22:15 in `Pacific/Auckland`, starting 3 October 2026. It checks issue #7, PR #8, new Claude handoffs, the exact head and existing CI; it may post one PR response when new evidence warrants it. It does not run builds, invoke agents/Replit, modify code, merge or publish. Configuration is not a guarantee of future execution.
 
 ## Next bounded work
 
-1. **BG-007 source reconciliation:** Gamma coordinates review of the supplied Replit inventory and the missing full commit history/diff; Claude is the proposed independent reviewer, subject to availability and owner confirmation. Preserve/isolate the migration and verify its backup before any sync. Josh decides the source/target and exact base after the evidence is reviewed. The [setup guide](SETUP.md) specifies the remaining read-only metadata and safe reconciliation sequence. Keep the timed-out request distinct from the owner-supplied report and do not duplicate it. Full source comparison and the separate browser-journey review remain required
+1. **BG-007 source reconciliation:** use the received comparison and the recommended native baseline above. Gamma coordinates the verified public baseline and history-preservation plan; Claude is authorised for the bounded independent review, subject to availability; an assignment does not establish a completed run. The [next implementation brief](../briefs/NATIVE_RECONCILIATION_NEXT_STEP.md) defines the first selective change, explicit exclusions and acceptance evidence. No bulk merge, Replit push or sync is needed to act on this recommendation. The separate desktop/mobile journey gate and final implementation verification remain outstanding
 2. **Independent documentation review:** use Claude's pilot findings as one input; independently inspect the current full diff, links and status claims. The pilot did not review every changed file or validate external artifacts. Keep PR #8 draft; prior approval of PR #6 is not approval to merge PR #8
-3. **Choose one implementation brief:** after source/target approval, a selective enquiry-receipt parity fix is a possible small task. Its brief must name the exact source, owned paths, synthetic receipt/error/recovery acceptance cases and a separate reviewer before implementation. `BG-001` Exercise Player V2 still needs its approved scope and assets. Neither is authorised by this status document
+3. **Complete the authorised enquiry-error task:** use the linked brief's exact public base, owned paths and synthetic receipt/error/recovery checks. Implementation and independent testing are underway in isolated copies; no canonical runtime edit or release is claimed here. Review the final exact diff and test evidence through GitHub. `BG-001` Exercise Player V2 still needs its separately approved scope and assets
 4. **External review gates:** complete device/runtime and qualified-technique review of the recovery build; complete human listening, physical-phone and native-seeking review of the new film. Preserve the held split-squat status
 5. **Later product work:** the connected coaching backend/payment journey, device beta and future Play Store/iOS path remain open. Do not present them as implemented or publicly available
 
