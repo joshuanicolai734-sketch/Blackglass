@@ -11,7 +11,7 @@ Read `BLACKGLASS_HANDOFF.md` and `studio/collaboration/CURRENT_STATE.md` first, 
   - The Android app is in development with no public download, and there is no iPhone app. Don't imply otherwise until `content/site.ts → app` has a real link.
   - Only describe features visible in `public/assets/` screens.
   - Don't invent testimonials, results, user numbers, qualifications or social handles.
-- **Design:** use the tokens and components in `app/site.css` and `components/site/`. Crimson (`#F43F46`) is the signal for primary actions, small markers and restrained poster forms. Motion must honour reduced motion and work without JavaScript.
+- **Design:** start with the selected source's tokens and components; `app/site.css` and `components/site/` describe this GitHub baseline. Its crimson (`#F43F46`) signal is historical source context, not a requirement to revert newer lime/pink/cyan work. Follow the approved task brief and [design guidance](studio/DESIGN_SYSTEM.md): bold light/dark contrast, clean future-fitness direction, precise typography and authored motion. Preserve reduced-motion behavior and relevant no-JavaScript fallbacks. New design proposals are not implementation approval.
 - **Privacy:** don't copy enquiry data from the live database into tools or commits. Site measurement stays cookie-free daily counts (`db/events.ts`).
 
 ## Before committing

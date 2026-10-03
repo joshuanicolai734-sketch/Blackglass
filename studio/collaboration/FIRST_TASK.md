@@ -2,9 +2,12 @@
 
 ## Task crosswalk
 - `BG-007` — read-only source reconciliation and journey review: [existing issue #7](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7). `BG-7` is its legacy issue-derived alias; keep the issue and its scope unchanged
+- `BG-002` — mobile hook and cohesion: [draft PR #9](https://github.com/joshuanicolai734-sketch/Blackglass/pull/9), coordinated through [issue #7](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7); review and proposed brief exist, broader implementation approval is not implied
 - `BG-001` — Exercise Player V2: planned first implementation rehearsal. No new issue, approved implementation brief or completed work is claimed here
 
 BG IDs are stable project identifiers, independent of GitHub issue numbers. Link the actual issue URL separately, preserve existing aliases, and do not reuse an allocated ID. The numerical order does not replace dependencies: `BG-007` source reconciliation is a prerequisite for `BG-001` implementation. Add future IDs and their canonical issue links to this crosswalk as they are assigned.
+
+PR #10's enquiry-feedback candidate and PR #11's check-in correction currently use their PR links; no new stable IDs are allocated by this correction. The coordinator should check existing allocations before assigning IDs or creating dedicated implementation issues. See the [owned-path map](CURRENT_STATE.md#open-work-and-owned-paths) before starting related work.
 
 ## Current prerequisite: BG-007
 
