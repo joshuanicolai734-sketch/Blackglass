@@ -4,6 +4,19 @@
 - Reviewer: Claude (independent critic), at Josh's request, 2 October 2026
 - Status: findings only. Josh has not approved an implementation brief; see the proposed brief in `studio/briefs/BG-002-mobile-hook-and-cohesion.md`
 
+## Status on 3 October 2026
+
+Claude checked the live public site (v33) in headless Chromium, with all `/api/*` calls intercepted. Staging items are as reported by Gamma, not checked by Claude. Evidence: [website audit](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5960225658), [journey review](https://github.com/joshuanicolai734-sketch/Blackglass/issues/7#issuecomment-5967090047), [PR #11 review](https://github.com/joshuanicolai734-sketch/Blackglass/pull/11#issuecomment-5967085635).
+
+| Finding | Live v33 (seen) | Staged or proposed |
+| --- | --- | --- |
+| 1. Hook | Mostly addressed: the H1 is "One session. Then the next." on a full-bleed hero, fully visible about 0.3 s after load. Still open: inconsistent CTA labels and styles, small desktop hero CTA | CTA label and style unification proposed to Gamma |
+| 2. Accent | Open: lime is the primary action colour, while `AGENTS.md` still names crimson | Needs Josh's decision (brief item B) |
+| 3. Floating controls | Not reproduced: the mobile sticky bar hides while a form field is focused. The recording's chevron and pencil overlays didn't appear (still unverified on Samsung Browser) | none |
+| 4. Opening motion | Not reproduced on live: no splash, and the H1 is visible at about 0.3 s with and without reduced motion. The overlap came from the owner-review build in the recording | none |
+| 5. Labels and feedback | Partly open: 10–11 px labels on `/movements` and `/links` | Targeted 12 px labels and 44 px clip controls are staged privately |
+| 320 px overflow (this repo) | Not seen on live at 360 px | Fixed in draft PR #11 |
+
 ## Evidence and limits
 
 | Source | What it covers | What it does not |
