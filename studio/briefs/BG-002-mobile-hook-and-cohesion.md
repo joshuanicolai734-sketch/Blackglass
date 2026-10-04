@@ -20,11 +20,11 @@
 - At 360×640 CSS px, the first viewport holds: H1, one primary CTA and the "Android app in development" line.
 - Try "Walk in. Leave with a record." as a headline variant.
 
-**B. One accent system (finding 2).**
-- Josh chooses one primary-action colour and one secondary signal. Gamma recommends; Claude has no preference beyond consistency.
-- Record the choice in the design guidance and `AGENTS.md` so they agree.
-- Map the site CTA, in-app primary button, launcher icons, film end card and wallpapers to it.
-- Cobalt and lavender are off-system unless deliberately adopted.
+**B. One accent system (finding 2). Decided 4 October 2026: lime.**
+- Josh chose lime as the primary-action and signal colour. On the live v33 site it is `--c-volt: #DFFF00`, used through `--signal`, and as `--action` in dark chapters.
+- Crimson `#F43F46` is retired as the action signal. `AGENTS.md`, `studio/DESIGN_SYSTEM.md` and this repo's `app/tokens.css` still name crimson; PR #8 owns the first two, so update their wording there or after it merges. This repo's baseline tokens change only as part of the agreed source reconciliation (BG-007), not as a separate palette edit.
+- Map the site CTA, in-app primary button (currently lavender), launcher icons (currently a crimson corner), film end card and wallpapers to lime.
+- Cobalt and lavender are off-system unless deliberately adopted as secondary colours. On the live site, `--cadence-lilac` is one such colour; Gamma to say whether it stays.
 
 **C. Clear floating controls (finding 3).**
 - First confirm in a second mobile browser which overlays belong to the site.
@@ -40,6 +40,10 @@
 - Done in this checkout (older GitHub baseline): the default label token `--fs-label` is 12 px at every width. Deferred: the explicit 10 px Movement Studio exercise label and playback-status rules below 420 px (`app/site.css:676-680`) need an agreed scope before they change. Gamma reports v33 already uses a 12 px token via `performance.css`; preserve the newer source when integrating.
 - In the newer source and the app, apply the same 12 px floor with ≥4.5:1 contrast. Use sentence case where a label carries meaning.
 - Replace native form validation with an inline, on-system error, shown after an attempted log.
+
+## Owner decisions recorded here
+- **4 October 2026, accent:** lime (item B).
+- **4 October 2026, coaching format:** coaching is offered both in person (Josh is based in Dunedin) and online. The live `/coaching` page says "based in Dunedin" and "available now, with any phone", but doesn't state either format. Gamma to add one plain line, for example "In person in Dunedin, or online anywhere in New Zealand", once Josh confirms the online area. Keep it in `content/site.ts`, not page files.
 
 ## Explicitly out of scope
 - Publishing, Sites deployment, Android distribution, database changes

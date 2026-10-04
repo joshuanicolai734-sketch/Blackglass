@@ -11,7 +11,7 @@ Claude checked the live public site (v33) in headless Chromium, with all `/api/*
 | Finding | Live v33 (seen) | Staged or proposed |
 | --- | --- | --- |
 | 1. Hook | Mostly addressed: the H1 is "One session. Then the next." on a full-bleed hero, fully visible about 0.3 s after load. Still open: inconsistent CTA labels and styles, small desktop hero CTA | CTA label and style unification proposed to Gamma |
-| 2. Accent | Open: lime is the primary action colour, while `AGENTS.md` still names crimson | Needs Josh's decision (brief item B) |
+| 2. Accent | Decided 4 Oct: Josh chose lime (`#DFFF00`, live token `--c-volt`). Still open: `AGENTS.md` and design guidance name crimson; the in-app primary button is lavender | Update the guidance wording (PR #8) and map app, icons and studies to lime (brief item B) |
 | 3. Floating controls | Not reproduced: the mobile sticky bar hides while a form field is focused. The recording's chevron and pencil overlays didn't appear (still unverified on Samsung Browser) | none |
 | 4. Opening motion | Partly reproduced (corrected 3 Oct): with normal motion, the first visit of each browser session plays a skippable intro (loading line, wordmark, right-to-left wipe). The hero is readable about 1.3–1.4 s after first paint. One mid-wipe frame shows the fading wordmark beside slices of hero text, and "Skip intro" stays over the page for about 0.1 s. No intro with reduced motion. Lighthouse mobile LCP is 3.7–3.9 s, with the intro the likely main cause (not proven) | Make the H1 paint in the first frame, or overlay the intro on already-painted content |
 | 5. Labels and feedback | Partly open: 10–11 px labels on `/movements` and `/links` | Targeted 12 px labels and 44 px clip controls are staged privately |
