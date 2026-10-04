@@ -18,7 +18,9 @@ If asked to connect an app, Josh should inspect the actual permissions and autho
 
 Official reference: https://code.claude.com/docs/en/worktrees (checked 1 October 2026).
 
-## Replit
+## Replit (inactive; historical reference)
+
+Josh removed Replit from the collaboration on 4 October 2026. Its ChatGPT connection has been removed; GitHub access revocation and the state of provider-side routines remain unverified. Do not reconnect, invoke, assign work to or create projects in Replit. Preserve its existing commits and backups. The following earlier inventory and migration guidance is historical, not an active task or authorisation.
 
 ### Existing Blackglass project: inventory first
 
