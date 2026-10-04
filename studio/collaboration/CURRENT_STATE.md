@@ -2,6 +2,23 @@
 
 Evidence is dated by section below. A later documentation review does not refresh source, artifact or runtime evidence. Reverify before editing. This is the single current-state map for the existing collaboration guide; older release notes remain historical evidence.
 
+<a id="start-here"></a>
+<a id="verified-github-state"></a>
+<a id="open-work-and-owned-paths"></a>
+<a id="source-map-what-this-checkout-does-and-does-not-contain"></a>
+<a id="replit-source-comparison-and-baseline-decision"></a>
+<a id="findings-and-independent-checks"></a>
+<a id="backup-evidence"></a>
+<a id="baseline-recommendation-and-next-implementation"></a>
+<a id="external-android-owner-review-checkpoint"></a>
+<a id="newer-source-candidates-not-a-new-apk"></a>
+<a id="website-and-film-direction"></a>
+<a id="what-not-to-overwrite"></a>
+<a id="collaboration-pilot-status"></a>
+<a id="additional-reported-routines-and-queued-assignments"></a>
+<a id="next-bounded-work"></a>
+<a id="verification-and-publication-limits"></a>
+
 ## Current overview — 4 October 2026
 
 Use this overview for current navigation. This concise map replaces the lengthy status narrative. Earlier review claims are not current assignments.
