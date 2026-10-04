@@ -1,6 +1,6 @@
 # Blackglass Agent Studio
 
-A small coordination space for Josh, Gamma, Codex, Claude, Replit and other explicitly authorised contributors. GitHub holds shared tasks and reviewed source. It is not an automatic agent-to-agent connection or a new hosting platform.
+A small coordination space for Josh, Gamma, Codex, Claude and other explicitly authorised contributors. GitHub holds shared tasks and reviewed source. It is not an automatic agent-to-agent connection or a new hosting platform.
 
 ## Start here
 1. Read root `AGENTS.md`, `BLACKGLASS_HANDOFF.md` and this guide.
@@ -15,7 +15,7 @@ A small coordination space for Josh, Gamma, Codex, Claude, Replit and other expl
 - Gamma: creative direction, approved experience briefs, product coherence and final visual review
 - Codex: production implementation, architecture, responsive behaviour, performance, accessibility and repeatable validation
 - Claude: independent critic/QA, primarily PR review against the brief; findings first, with no automatic rewrite or redesign
-- Replit: isolated experiments and prototypes in a separate workspace/branch; no automatic production integration or hosting cutover
+- Replit: inactive from 4 October 2026 at Josh's request. No new assignments or reconnection. Preserve historical work; GitHub access revocation remains pending
 - Coordinator/integrator: explicitly assign these responsibilities per task; keep scope and dependencies clear, combine reviewed work and verify the release boundary
 
 These are intended assignments, not evidence of account access or completed work. Use only authorised, available contributors; name any substitute and preserve independent review. Two agents agreeing is not proof. A reviewer must inspect the result and source, not merely echo the implementer.
@@ -32,8 +32,8 @@ Create task material when needed: `studio/briefs/` for approved briefs, `studio/
 
 ## Working agreement
 - One issue, one accountable owner, one branch and one acceptance record
-- No direct concurrent edits to the same checkout. Replit gets its own workspace; local sessions get their own worktree
-- Inspect and preserve local work before fetching, pulling or syncing. Verify the agreed base in a separate branch/worktree; the existing Replit project first needs a read-only inventory. If another task changes the same files, coordinate instead of force-pushing or replacing them
+- No direct concurrent edits to the same checkout. local sessions get their own worktree
+- Inspect and preserve local work before fetching, pulling or syncing. Verify the agreed base in a separate branch/worktree; historical Replit work must be preserved, without reconnecting or assigning new work. If another task changes the same files, coordinate instead of force-pushing or replacing them
 - Small PRs; no opportunistic dependency upgrades or broad refactors in a UX fix
 - Never use old exports to overwrite newer work. Never copy an entire Sites checkout over this repo
 - Keep experiments under a task-specific directory/branch until reviewed. No automatic merge, production publish, secret copying or external-agent invocation
@@ -44,4 +44,4 @@ Create task material when needed: `studio/briefs/` for approved briefs, `studio/
 This repository is public. Do not commit customer enquiries, personal training/financial records, progress photos, private strategy, authentication/signing keys, database exports, private preview assets or raw user conversations. Use synthetic fixtures. Private strategic research stays outside this repository until a deliberately redacted brief is approved.
 
 ## Tools and first task
-See [SETUP.md](SETUP.md) for the smallest manual connection flow. Start with the non-mutating source-reconciliation task in [FIRST_TASK.md](FIRST_TASK.md), not a simultaneous redesign. This setup does not claim Claude or Replit has been connected or has run a task.
+See [SETUP.md](SETUP.md) for the smallest manual connection flow. Start with the non-mutating source-reconciliation task in [FIRST_TASK.md](FIRST_TASK.md), not a simultaneous redesign. Setup guidance is not evidence of current access or execution. Replit's instructions below are retained only as historical reference.
