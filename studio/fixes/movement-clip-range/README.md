@@ -28,6 +28,7 @@ The fix is two small changes in the v33 source. **Neither touches the React play
    - When the browser asks for a byte range of `/movements/<clip>.mp4`, it fetches the whole clip once and answers with a correct `206 Partial Content`. The clips are 98–168 KB, and the host already sends the whole file anyway.
    - It handles open-ended, suffix and out-of-range (`416`) requests.
    - It stores nothing in Cache Storage. Freshness stays with normal HTTP caching (ETag revalidation).
+   - **Version identity:** each answer repeats the clip's `ETag`/`Last-Modified`. A copy held in memory is refetched after 30 s; against the live host that's a `304` revalidation, not a re-download. An `If-Range` that no longer matches (stale or weak tag, different date) ignores the range and returns the whole current file as `200`, per RFC 9110 §13.1.5. Bytes from two versions of a clip are never spliced together.
    - If the fetch fails, it falls back to the network unchanged.
 2. **Append `site-js-append.js` to `public/site.js`.** It registers the worker on `/movements` pages only. A clip that finished loading before the worker took control (first visit) is reloaded once, only while paused.
 
@@ -52,8 +53,21 @@ All runs used headless Chromium with every `/api/` request intercepted (0 reache
   | `bytes=85011-` | 416 |
   | Malformed | 200, whole clip |
 
+- **Version identity and `If-Range`** (local host that ignores Range but sends a strong ETag and answers `If-None-Match` with `304`, like live):
+
+  | Step | Response |
+  | --- | --- |
+  | `bytes=0-99` | 206, `ETag` E1, `bytes 0-99/85011` |
+  | `If-Range: E1` | 206 |
+  | `If-Range` stale tag / `W/` E1 / other date | 200, whole clip |
+  | New clip deployed at the same URL, then `If-Range: E1` immediately | 206 from E1 (consistent old copy) |
+  | Same, 31 s later | 200, whole new clip (44,523 B), `ETag` E2 |
+  | Range with no `If-Range`, 31 s later | 206, `bytes 0-99/44523`, E2 |
+
+- **First-visit recovery under a slow network:** the clip response was delayed 2.5 s, Play was pressed at once, and the slider was dragged to 60 % on Pixel 7 emulation. Result: playing, controlled by the worker, `seekable [0, 4]`, the scrub landed at 2.40 s, no error.
 - **Scope:** the home page is not controlled by the worker. The direct clip link (`/movements/push-up-front.mp4`) still opens with `200 video/mp4`.
 - **On the real live origin**, with the worker injected by test-browser routing and nothing deployed: it registers and controls `/movements`. For the live 146,583-byte clip it returns `206` for `0-99`, `1000-` and `-200`, while the direct network answer is still `200`. The live page has no Content-Security-Policy header and no Trusted Types policy, so registration isn't blocked.
+- **Live validators (curl):** clips carry a strong `ETag` and `Cache-Control: public, max-age=0, must-revalidate`; a matching `If-None-Match` returns `304`. The host ignores `If-Range` too (`Range: bytes=0-99` with a matching `If-Range` still returns `200`, full body), so the worker is what answers it.
 
 ## Not verified
 
