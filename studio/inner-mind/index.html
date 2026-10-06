@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Through Black Glass</title>
+<meta name="description" content="A film and field guide to AI agents, the neural network inside a language model, and what science still cannot explain about it.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@500;700&amp;family=Inter+Tight:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="mind.css">
+</head>
+<body>
+<a class="skip" href="#film">Skip to the film</a>
+
+<header class="top">
+  <div class="wrap">
+    <p class="label top-id"><b>Blackglass Studio</b><span>Experiment 01</span></p>
+    <nav class="top-nav label" aria-label="Sections">
+      <a class="link" href="#film"><span>Film</span></a>
+      <a class="link" href="#s01"><span>Field guide</span></a>
+      <a class="link" href="#s10"><span>Mysteries</span></a>
+      <a class="link" href="#sources"><span>Sources</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <p class="label">A field guide in motion · October 2026</p>
+    <div class="hero-grid">
+      <h1 id="hero-h"><span>Through</span><span>black <span class="ember">glass</span></span></h1>
+      <p class="hero-lede">A language model is glass in one sense: <strong>every number inside it can be printed and checked.</strong> It is black in another: <strong>from those numbers, no one can yet read most of what it is doing.</strong> This is a film and a field guide to an AI agent, the network inside it, and the questions science hasn’t closed.</p>
+    </div>
+    <dl class="hero-specs">
+      <div><dt class="label">Weights in GPT-3 (2020). Each one can be read.</dt><dd>175,000,000,000</dd></div>
+      <div><dt class="label">Attention heads in GPT-3: 96 layers of 96</dt><dd>9,216</dd></div>
+      <div><dt class="label">Prompts Anthropic’s 2025 tracing method explained, by its authors’ count</dt><dd>About 1 in 4</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="film-sec" id="film" aria-labelledby="film-h" tabindex="-1">
+  <div class="wrap">
+    <p class="sh label"><span id="film-h">The film</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">10 chapters · about 2 minutes</span></p>
+    <figure class="film" data-film>
+      <div class="film-frame">
+        <div class="film-stage">
+          <canvas role="img" aria-label="An animated film in ten chapters, from an AI agent working in a loop down to the network inside the model and the open questions about it. Each chapter is described in the caption below and in the field guide."></canvas>
+          <div class="film-hud">
+            <p class="label film-chapter" aria-hidden="true"><span class="sq"></span><span data-film-n>01</span><span>/</span><span data-film-name>Agent</span></p>
+            <button class="btn btn-ghost film-play" type="button" data-film-play aria-label="Play the film">Play</button>
+          </div>
+          <noscript><p class="film-noscript">The film needs JavaScript. Each chapter is described in the field guide below.</p></noscript>
+        </div>
+      </div>
+      <div class="film-chapters" role="toolbar" aria-label="Chapters" data-film-chapters></div>
+      <div class="film-track" data-film-track role="slider" tabindex="0" aria-label="Film position" aria-valuemin="0" aria-valuemax="125" aria-valuenow="0" aria-valuetext="0 seconds, chapter 1, Agent">
+        <span class="ln"></span><span class="fill" data-film-fill></span><span class="head" data-film-head></span>
+      </div>
+      <figcaption class="film-cap">
+        <h2 class="film-title" data-film-title>A model in a loop</h2>
+        <div class="film-meta">
+          <p class="film-text" data-film-text>The agent reads its transcript, writes what comes next and, when that is a tool call, gets the result pasted back in. Sub-agents run the same loop with contexts of their own.</p>
+          <p class="label num"><span data-film-time>00:00</span> / <span data-film-total>02:05</span></p>
+          <a class="link" href="#s01" data-film-link><span>Read chapter 01</span><svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
+        </div>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="sec" id="s01" aria-labelledby="s01-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">01</span><span class="sh-dash" aria-hidden="true"></span><span>Agent</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">A model in a loop</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s01-h">An agent is a model in a loop</h2>
+        <p class="lead">Ask an AI agent to fix a bug and it seems to work like a person. It looks around, tries something, checks the result and tries again. Underneath, one operation repeats.</p>
+        <p>The model is handed a transcript: its instructions, the task, and everything that has happened so far. It writes what should come next. When that text asks for a tool, such as running a command, opening a file or searching the web, the program around the model carries out the request and pastes the result into the transcript. Then the model is called again on the longer transcript. That loop is the architecture of most agents.</p>
+        <p>The plan, the tool calls and the final answer are all text the model writes. Within a task, the agent’s memory is mostly the transcript itself, held in a context window that can run to hundreds of thousands of tokens. When the window fills, agents summarise older material or write notes to files they can read back later. Larger jobs are split up. An orchestrating agent hands parts of the work to sub-agents, each with a fresh context, and reads back their summaries.</p>
+        <p>Models are trained for this work too, with reinforcement learning on long tasks whose results can be checked, such as code that has to pass its tests. Still, nothing in the loop is a separate planner or a stored goal. Planning, persistence and recovery from mistakes all have to come out of a network predicting text. That is why the inside of the network matters.</p>
+        <div class="note"><span class="sq" aria-hidden="true"></span><p><span class="label">Open</span>How far ahead a model plans within a single step, and how reliably it holds a goal across hundreds of steps, are active research questions.</p></div>
+      </div>
+
+      <figure class="fig" data-fig="agent">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Agent trace</p>
+          <p class="label num" data-agent-step>Step 4 of 13</p>
+        </div>
+        <div class="agent-body">
+          <canvas class="agent-loop" role="img" aria-label="The agent loop: read, think, act, observe. The marked stage matches the newest step of the trace."></canvas>
+          <ol class="agent-log" data-agent-log aria-live="polite" aria-label="Transcript"></ol>
+        </div>
+        <div class="ctx">
+          <div class="ctx-bar" data-agent-ctx aria-hidden="true"></div>
+          <div class="ctx-legend">
+            <p class="label">Context: <span class="num" data-agent-tokens>0</span> tokens</p>
+            <p class="label">Grey: model text · Red: tool calls · Bone: tool results</p>
+          </div>
+        </div>
+        <div class="ctrls">
+          <button class="btn btn-primary" type="button" data-agent-next>Next step</button>
+          <button class="btn btn-ghost" type="button" data-agent-run>Run to the end</button>
+          <button class="btn btn-ghost" type="button" data-agent-reset>Reset</button>
+        </div>
+        <figcaption>An illustrative trace of a coding agent, not a recording. Every step is the same call to the model: given everything above, write what comes next. Notice how much of the context the tool results take up.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="sec" id="s02" aria-labelledby="s02-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">02</span><span class="sh-dash" aria-hidden="true"></span><span>Tokens</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">Text becomes numbers</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s02-h">Text becomes numbers</h2>
+        <p class="lead">A language model never sees letters. Text is first cut into tokens: whole common words, pieces of rarer ones, punctuation and spaces.</p>
+        <p>In English a token averages about three-quarters of a word. “ the”, with its leading space, is one token. A rare name, a long technical word or a word from a less common language may take several. The vocabulary is fixed before training, usually by byte-pair encoding: start from single bytes and repeatedly merge whichever pair appears most often in a large sample of text, until the vocabulary reaches its target size.</p>
+        <p>Each token then becomes a plain integer, its row number in that vocabulary. Everything the model does starts from those integers.</p>
+        <p>The cuts explain some well-known blind spots. A model that receives “ strawberry” as one or two opaque chunks has no direct view of the letters inside, which is part of why models long struggled to count its r’s.</p>
+        <dl class="facts label">
+          <div><dt>GPT-2 vocabulary (2019)</dt><dd>50,257 tokens</dd></div>
+          <div><dt>Llama 3 vocabulary (2024)</dt><dd>128,256 tokens</dd></div>
+          <div><dt>English words per token</dt><dd>About 0.75</dd></div>
+        </dl>
+      </div>
+
+      <figure class="fig" data-fig="tokenizer">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Toy tokenizer</p>
+          <p class="label num" data-tok-stats>–</p>
+        </div>
+        <div class="ctrl-group">
+          <p class="label" id="tok-ex-l">Examples</p>
+          <div class="seg" role="group" aria-labelledby="tok-ex-l" data-tok-examples>
+            <button type="button" aria-pressed="true" data-text="The capital of the state containing Dallas is">Dallas</button>
+            <button type="button" aria-pressed="false" data-text="How many r's are in strawberry?">Strawberry</button>
+            <button type="button" aria-pressed="false" data-text="Tokenisation is unbelievably uneven.">Uneven</button>
+            <button type="button" aria-pressed="false" data-text="Kia ora, Ōtepoti!">Te reo</button>
+          </div>
+        </div>
+        <label class="label" for="tok-input">Type anything</label>
+        <input class="field" id="tok-input" type="text" value="The capital of the state containing Dallas is" maxlength="160" spellcheck="false" autocomplete="off">
+        <div class="toks" data-tok-out aria-live="polite"></div>
+        <figcaption>A toy vocabulary of about 500 pieces, made by hand for this page, cut greedily from the longest match. Real tokenizers learn 50,000 to 200,000 pieces from data, so their cuts differ. A red dot marks the space a token begins with; the number under each piece is its toy ID.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="sec" id="s03" aria-labelledby="s03-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">03</span><span class="sh-dash" aria-hidden="true"></span><span>Meaning</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">A space of directions</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s03-h">Each token becomes a point in a vast space</h2>
+        <p class="lead">A token’s number picks out one row of a large table, the embedding matrix. That row is a list of numbers, and the list works like a set of coordinates.</p>
+        <p>GPT-3 uses 12,288 numbers per token, so every token is a point in a space with 12,288 dimensions. Nobody assigns the coordinates. They start random and are adjusted throughout training, and they end up organised by use: words that appear in similar contexts land near each other.</p>
+        <p>Some relationships become directions. The step from a country to its capital, or from a word to its plural, points roughly the same way wherever it starts. Word-embedding models such as word2vec showed this clearly (Mikolov et al., 2013). The broader claim, that models represent concepts as directions, is called the linear representation hypothesis. It accounts for much of what interpretability has found, but not everything: days of the week and months of the year turn out to be arranged in circles (Engels et al., 2024).</p>
+        <p>Word order enters separately. Many current models rotate the vectors used inside attention by an angle that depends on each token’s position, so “dog bites man” and “man bites dog” produce different results.</p>
+        <dl class="facts label">
+          <div><dt>Numbers per token in GPT-3</dt><dd>12,288</dd></div>
+          <div><dt>Dimensions the drawing can show</dt><dd>3</dd></div>
+        </dl>
+      </div>
+
+      <figure class="fig" data-plate="2">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Film chapter 03</p>
+          <button class="btn btn-ghost" type="button" data-plate-play aria-pressed="false">Play chapter</button>
+        </div>
+        <canvas class="plate-canvas" role="img" aria-label="A rotating cloud of words in clusters: places, civics, function words and others. Arrows from Texas to Austin, California to Sacramento, France to Paris and Japan to Tokyo point the same way."></canvas>
+        <figcaption>Positions are drawn by hand to show the idea. A real space of thousands of dimensions can’t be pictured faithfully in three.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="sec" id="s04" aria-labelledby="s04-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">04</span><span class="sh-dash" aria-hidden="true"></span><span>Attention</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">Tokens consult each other</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s04-h">Attention lets tokens consult each other</h2>
+        <p class="lead">On its own, the token “ is” means almost nothing. Attention moves information between positions, so each token can take in what came before it.</p>
+        <p>At every position, each attention head makes three vectors from the token’s current state: a query, which says what it is looking for; a key, which says what it contains; and a value, which is what it will pass on. The query is compared with the key of every earlier position. A softmax turns those scores into weights that add up to one, and the token receives a weighted blend of the earlier values. A head can only look backwards, which is what lets a model generate text one token at a time.</p>
+        <p>Each layer runs many heads side by side, and each learns its own kind of question. The design comes from the 2017 transformer paper (Vaswani et al.). GPT-3 runs 96 heads in each of its 96 layers, 9,216 in all.</p>
+        <p>A few kinds of head are understood completely. A previous-token head copies information forward by one place. An induction head finds an earlier occurrence of the current token and looks at whatever followed it: having once read “Golden Gate”, the next time it sees “Golden” it predicts “Gate”. Induction heads form abruptly during training, at the same point that models get much better at learning from examples in their prompt (Olsson et al., 2022). Most heads in a large model have no tidy description.</p>
+      </div>
+
+      <figure class="fig" data-fig="attention">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Attention explorer</p>
+          <p class="label">Idealised heads</p>
+        </div>
+        <div class="ctrls">
+          <div class="ctrl-group">
+            <p class="label" id="att-head-l">Head</p>
+            <div class="seg" role="group" aria-labelledby="att-head-l" data-att-heads>
+              <button type="button" aria-pressed="false" data-head="prev">Previous token</button>
+              <button type="button" aria-pressed="false" data-head="dup">Duplicate</button>
+              <button type="button" aria-pressed="true" data-head="ind">Induction</button>
+              <button type="button" aria-pressed="false" data-head="sink">First token</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <p class="label" id="att-ex-l">Text</p>
+            <div class="seg" role="group" aria-labelledby="att-ex-l" data-att-examples>
+              <button type="button" aria-pressed="true" data-ex="0">Bridge</button>
+              <button type="button" aria-pressed="false" data-ex="1">Mary and John</button>
+              <button type="button" aria-pressed="false" data-ex="2">Dallas</button>
+            </div>
+          </div>
+        </div>
+        <label class="label" for="att-input">Or type your own</label>
+        <input class="field" id="att-input" type="text" maxlength="200" spellcheck="false" autocomplete="off">
+        <div class="att-tokens" data-att-tokens role="group" aria-label="Tokens. Choose one to see where the head looks from there."></div>
+        <div class="att-lower">
+          <canvas class="att-matrix" role="img" aria-label="Attention weights. Each row is a token looking back at the columns before it; the chosen token’s row is marked."></canvas>
+          <p class="readout" data-att-note aria-live="polite"></p>
+        </div>
+        <figcaption>Four head types found in real models, applied here by rule to whole words. Learned heads are messier and work on subword tokens. Red shading shows how much attention the chosen token pays to each earlier one; the grid shows every token at once.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="sec" id="s05" aria-labelledby="s05-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">05</span><span class="sh-dash" aria-hidden="true"></span><span>Stream</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">Layer by layer</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s05-h">Dozens of layers write into one running sum</h2>
+        <p class="lead">A transformer is a tall stack of layers: 96 in GPT-3, and from dozens to more than a hundred in large models today. Each token position carries a vector up through the whole stack.</p>
+        <p>Researchers call this the residual stream. A layer doesn’t replace the vector. It reads from it, computes something and adds the result back in, so the stream works like a shared notebook that every attention head and every MLP block can read and write. Because everything is added into the same space, the stream carries many pieces of information at once, written by different layers in overlapping directions.</p>
+        <p>In 2025 Anthropic researchers traced how Claude 3.5 Haiku completes “Fact: the capital of the state containing Dallas is”. Features representing Dallas activated features representing Texas. Texas, together with features signalling that a capital was wanted, pushed the output towards Austin. A second route ran from Dallas straight to Austin as a shortcut. When the researchers replaced the Texas features with California features, the model answered Sacramento (Lindsey et al., 2025).</p>
+        <p>That intervention is the important step. A description of a circuit is only trusted if changing the circuit changes the behaviour the way the description predicts.</p>
+      </div>
+
+      <figure class="fig" data-plate="4">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Film chapter 05</p>
+          <button class="btn btn-ghost" type="button" data-plate-play aria-pressed="false">Play chapter</button>
+        </div>
+        <canvas class="plate-canvas" role="img" aria-label="Eight token positions rise through the layers. Features light up in order: Dallas, capital, state, Texas, say a capital, say Austin, with a dashed shortcut from Dallas to Austin. Then Texas is swapped for California and the output becomes Sacramento."></canvas>
+        <figcaption>Simplified from the published attribution graph, which has many more nodes. Layer positions are schematic.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="sec" id="s06" aria-labelledby="s06-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">06</span><span class="sh-dash" aria-hidden="true"></span><span>Neurons</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">A weighted sum and a bend</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s06-h">A neuron is a weighted sum and a bend</h2>
+        <p class="lead">Between the attention layers sit MLP blocks. In a standard transformer they hold about two-thirds of the weights.</p>
+        <p>An MLP block widens each token’s vector to about four times its size, applies a simple non-linear function to every element, and narrows it back. Each element of the wide middle layer is an artificial neuron. It multiplies its inputs by learned weights, adds them up with a bias, and passes the total through a curve that bends near zero, such as ReLU or GELU.</p>
+        <p>The bend is what gives a network its power. Without it, any stack of layers collapses into a single matrix multiplication and can only separate data with straight lines. With it, a large enough network can approximate essentially any continuous function, as Cybenko and others proved in 1989. The proof says nothing about how to find the right weights, or how many neurons the job will take.</p>
+        <p>MLP blocks seem to act partly as memory. Particular neurons respond to particular input patterns and push up particular next tokens (Geva et al., 2021), and editing a few middle-layer weights can change a stored fact, such as the city the Eiffel Tower is in (Meng et al., 2022). Later work found that where a fact appears to be stored is a poor guide to where it is best edited (Hase et al., 2023). The tidy picture of facts filed in drawers is incomplete.</p>
+        <dl class="facts label">
+          <div><dt>Neurons per MLP layer in GPT-3</dt><dd>49,152</dd></div>
+          <div><dt>MLP neurons in GPT-3 in all</dt><dd>About 4.7 million</dd></div>
+        </dl>
+      </div>
+
+      <figure class="fig" data-fig="neuron">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>One neuron</p>
+          <p class="label">Two inputs</p>
+        </div>
+        <canvas class="neuron-canvas" tabindex="0" role="img" aria-label="Left: the neuron’s two inputs, their weights, the sum and the bend. Right: the neuron’s output for every possible input. Drag the red square, or focus here and use the arrow keys, to move the input."></canvas>
+        <p class="readout" data-neuron-readout aria-live="polite"></p>
+        <div class="ctrls-stack">
+          <div class="range"><label class="label" for="nw1">Weight 1</label><input id="nw1" type="range" min="-2" max="2" step="0.05" value="1.4"><output for="nw1" data-out="nw1">1.40</output></div>
+          <div class="range"><label class="label" for="nw2">Weight 2</label><input id="nw2" type="range" min="-2" max="2" step="0.05" value="-0.9"><output for="nw2" data-out="nw2">-0.90</output></div>
+          <div class="range"><label class="label" for="nb">Bias</label><input id="nb" type="range" min="-2" max="2" step="0.05" value="0.3"><output for="nb" data-out="nb">0.30</output></div>
+        </div>
+        <div class="ctrl-group">
+          <p class="label" id="neuron-act-l">The bend</p>
+          <div class="seg" role="group" aria-labelledby="neuron-act-l" data-neuron-act>
+            <button type="button" aria-pressed="false" data-act="relu">ReLU</button>
+            <button type="button" aria-pressed="true" data-act="gelu">GELU</button>
+            <button type="button" aria-pressed="false" data-act="tanh">Tanh</button>
+            <button type="button" aria-pressed="false" data-act="none">None</button>
+          </div>
+        </div>
+        <figcaption>The map shades the neuron’s output for every pair of inputs: bone where it is positive, dark red where it is negative. The dashed line is where the weighted sum is zero. Choose “None” to see that, without a bend, the neuron can only ever produce a straight ramp.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="sec" id="s07" aria-labelledby="s07-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">07</span><span class="sh-dash" aria-hidden="true"></span><span>Prediction</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">One token at a time</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s07-h">It writes one token at a time</h2>
+        <p class="lead">At the top of the stack, the vector at the last position is compared with every token in the vocabulary. The result is one score per token.</p>
+        <p>A softmax turns the scores into probabilities. One token is drawn at random according to them, added to the text, and the whole stack runs again to choose the next. A long answer is thousands of these draws, each one conditioned on all the text before it.</p>
+        <p>Temperature shapes the draw. Dividing the scores by a temperature below 1 sharpens the distribution towards the favourite. A temperature above 1 flattens it and gives the long tail of unlikely tokens a real chance. Many systems also cut the tail off before drawing, keeping only the most likely tokens that together reach a set probability (top-p sampling).</p>
+        <p>Writing one token at a time doesn’t mean thinking only one token ahead. When Claude 3.5 Haiku writes a rhyming couplet, features for candidate rhyme words become active before it starts the second line, and the line is written towards them. When researchers suppressed the planned word “rabbit”, the model ended the line on “habit” instead (Lindsey et al., 2025).</p>
+      </div>
+
+      <figure class="fig" data-fig="sampler">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Next-token draw</p>
+          <p class="label">Scores illustrative</p>
+        </div>
+        <p class="prompt-line">The capital of the state containing Dallas is<span class="cont" data-samp-cont></span><span class="caret" aria-hidden="true"></span></p>
+        <ol class="bars" data-samp-bars aria-label="Probability of each candidate next token"></ol>
+        <div class="range"><label class="label" for="temp">Temperature</label><input id="temp" type="range" min="0.1" max="2" step="0.05" value="1"><output for="temp" data-out="temp">1.00</output></div>
+        <div class="ctrls">
+          <button class="btn btn-primary" type="button" data-samp-one>Draw a token</button>
+          <button class="btn btn-ghost" type="button" data-samp-many>Draw 20</button>
+          <button class="btn btn-ghost" type="button" data-samp-clear>Clear</button>
+        </div>
+        <div class="draws" data-samp-draws aria-live="polite" aria-label="Tokens drawn, newest first"></div>
+        <figcaption>The nine candidates and their scores are invented for illustration; the rest of a 100,000-token vocabulary is lumped together in the last row. Push the temperature past 1.5 and the long tail starts to win.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="sec" id="s08" aria-labelledby="s08-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">08</span><span class="sh-dash" aria-hidden="true"></span><span>Training</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">Nobody wrote the rules</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s08-h">Nobody wrote the rules</h2>
+        <p class="lead">Everything described so far was learned. Training starts from random weights.</p>
+        <p>The model reads a stretch of text, predicts each next token, and is scored on how much probability it gave to the token that actually came next. Backpropagation, an application of the chain rule from calculus (Rumelhart, Hinton and Williams, 1986), works out for every weight how a small change would have improved that score. Every weight then moves a tiny step in the helpful direction. This is gradient descent. A large run repeats it hundreds of thousands of times over trillions of tokens: GPT-3 trained on about 300 billion tokens in 2020, and Llama 3 on more than 15 trillion in 2024.</p>
+        <p>Assistant behaviour comes from further training: on examples of good answers, on preference ratings from people and from other models, and with reinforcement learning on tasks whose outcomes can be checked.</p>
+        <p>Engineers choose the architecture, the data and the objective. They don’t choose how the finished network solves any particular problem. Those solutions are found by the optimisation rather than designed, so they have to be studied afterwards, the way a biologist studies an organism.</p>
+        <dl class="facts label">
+          <div><dt>Weights in the network beside this text</dt><dd data-pg-weights>67</dd></div>
+          <div><dt>Weights in GPT-3</dt><dd>175,000,000,000</dd></div>
+        </dl>
+      </div>
+
+      <figure class="fig" data-fig="playground">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Live network</p>
+          <p class="label num play-stats"><span>Step <span data-pg-step>0</span></span><span>Loss <span data-pg-loss>–</span></span><span>Accuracy <span data-pg-acc>–</span></span></p>
+        </div>
+        <div class="play-body">
+          <canvas class="play-net" role="img" aria-label="The network: two inputs, two hidden layers and one output. Each hidden neuron shows its own response map. Line thickness shows each weight’s size: bone for positive, dark red for negative."></canvas>
+          <canvas class="play-map" role="img" aria-label="Training points in two classes, bone and red, over the network’s current prediction for every point of the plane. A hairline marks the boundary."></canvas>
+        </div>
+        <canvas class="play-loss" role="img" aria-label="Training loss so far, on a logarithmic scale."></canvas>
+        <div class="ctrls">
+          <button class="btn btn-primary" type="button" data-pg-run aria-pressed="false">Train</button>
+          <button class="btn btn-ghost" type="button" data-pg-one>One step</button>
+          <button class="btn btn-ghost" type="button" data-pg-reset>New random weights</button>
+        </div>
+        <div class="ctrls">
+          <div class="ctrl-group">
+            <p class="label" id="pg-data-l">Data</p>
+            <div class="seg" role="group" aria-labelledby="pg-data-l" data-pg-data>
+              <button type="button" aria-pressed="true" data-v="circle">Circle</button>
+              <button type="button" aria-pressed="false" data-v="xor">XOR</button>
+              <button type="button" aria-pressed="false" data-v="spiral">Spiral</button>
+              <button type="button" aria-pressed="false" data-v="moons">Moons</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <p class="label" id="pg-n-l">Neurons per layer</p>
+            <div class="seg" role="group" aria-labelledby="pg-n-l" data-pg-n>
+              <button type="button" aria-pressed="false" data-v="2">2</button>
+              <button type="button" aria-pressed="false" data-v="4">4</button>
+              <button type="button" aria-pressed="true" data-v="6">6</button>
+              <button type="button" aria-pressed="false" data-v="8">8</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <p class="label" id="pg-lr-l">Learning rate</p>
+            <div class="seg" role="group" aria-labelledby="pg-lr-l" data-pg-lr>
+              <button type="button" aria-pressed="false" data-v="0.003">0.003</button>
+              <button type="button" aria-pressed="true" data-v="0.01">0.01</button>
+              <button type="button" aria-pressed="false" data-v="0.03">0.03</button>
+              <button type="button" aria-pressed="false" data-v="0.1">0.1</button>
+            </div>
+          </div>
+        </div>
+        <figcaption>A real network, trained in this page by backpropagation and the Adam optimiser. Nothing is scripted: press Train and watch the boundary form. Try Spiral with two neurons per layer, then with eight.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="sec" id="s09" aria-labelledby="s09-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">09</span><span class="sh-dash" aria-hidden="true"></span><span>Superposition</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">More ideas than neurons</span></p>
+    <div class="sec-grid">
+      <div class="prose">
+        <h2 class="display" id="s09-h">There are more ideas than neurons</h2>
+        <p class="lead">If each neuron stood for one idea, reading a model would be easy: label the neurons. Most neurons don’t work that way.</p>
+        <p>Neurons in language models are usually polysemantic. One neuron in a small model studied by Anthropic responded to academic citations, English dialogue, HTTP requests and Korean text (Bricken et al., 2023). The leading explanation is superposition. A model needs to represent far more features than it has neurons, and most features are rare, so it stores them as directions that are almost, but not quite, at right angles, and tolerates a little interference. In toy models trained to do this, the features settle into regular shapes, such as five features arranged as a pentagon in two dimensions (Elhage et al., 2022).</p>
+        <p>To pull features back out, researchers train a second network, a sparse autoencoder, that rewrites the model’s activity as a combination of many more directions, only a few active at once. Applied to Claude 3 Sonnet, it produced up to 34 million features (Templeton et al., 2024). Many are readable: the Golden Gate Bridge, errors in code, inner conflict, sycophantic praise. Turning up the Golden Gate Bridge feature made the model claim to be the bridge.</p>
+        <p>Whether features are the model’s real units of thought is unresolved. Autoencoders never reconstruct the activity perfectly, and what they miss may hold much of the computation. In 2025 Google DeepMind’s interpretability team reported that autoencoder features did worse than simple linear probes at detecting harmful intent, and shifted its effort elsewhere.</p>
+      </div>
+
+      <figure class="fig" data-fig="superposition">
+        <div class="fig-head">
+          <p class="label"><span class="sq" aria-hidden="true"></span>Superposition</p>
+          <p class="label num" data-sp-meta>5 features · 2 neurons</p>
+        </div>
+        <canvas class="sp-canvas" role="img" aria-label="Left: feature directions packed into a plane whose axes are two neurons; the red arrow is the neurons’ combined activity. Right: each feature read back from the two neurons, marked right or wrong."></canvas>
+        <div class="sp-feats" data-sp-feats role="group" aria-label="Switch features on and off"></div>
+        <div class="ctrls">
+          <div class="ctrl-group">
+            <p class="label" id="sp-n-l">Features</p>
+            <div class="seg" role="group" aria-labelledby="sp-n-l" data-sp-n>
+              <button type="button" aria-pressed="false" data-v="3">3</button>
+              <button type="button" aria-pressed="false" data-v="4">4</button>
+              <button type="button" aria-pressed="true" data-v="5">5</button>
+              <button type="button" aria-pressed="false" data-v="6">6</button>
+              <button type="button" aria-pressed="false" data-v="7">7</button>
+            </div>
+          </div>
+          <button class="btn btn-ghost" type="button" data-sp-clear>All off</button>
+        </div>
+        <p class="readout" data-sp-note aria-live="polite"></p>
+        <figcaption>After Elhage et al. (2022): features stored as directions in two neurons and read back by projecting onto each direction, minus a small threshold. One feature at a time reads back cleanly; neighbouring pairs mostly do too. Switch on two features that aren’t neighbours and the readout goes wrong. Feature names are illustrative.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="sec" id="s10" aria-labelledby="s10-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">10</span><span class="sh-dash" aria-hidden="true"></span><span>The dark</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">What is still unknown</span></p>
+    <div class="dark-intro">
+      <div class="dark-mon">
+        <p class="monument" aria-hidden="true">302</p>
+        <p class="label">Neurons in the roundworm <i>C. elegans</i>. Its complete wiring diagram was published in 1986, and its behaviour still can’t be fully explained from it.</p>
+      </div>
+      <div class="prose">
+        <h2 class="display" id="s10-h">What no one can yet explain</h2>
+        <p class="lead">None of this is magic. Every step of the computation is ordinary arithmetic, performed exactly, and anyone with the weights can repeat it. The difficulty is understanding.</p>
+        <p>A worm with 302 neurons and a known wiring diagram still keeps secrets. A frontier language model has billions of weights. Interpretability research is moving fast, and in January 2026 MIT Technology Review named it one of the year’s ten breakthrough technologies. Its practitioners are also the first to state its limits. Anthropic’s circuit-tracing method gave a satisfying explanation for about a quarter of the prompts its authors tried, and even then captured only part of the computation (Ameisen et al., 2025). These are the largest open questions.</p>
+      </div>
+    </div>
+
+    <ul class="cards">
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="features" aria-label="Animate the drawing: Five feature arrows in a circle above a long row of autoencoder features, one lit at a time."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>What is a feature?</h3>
+        <p>Sparse autoencoders turn a model’s activity into millions of readable features, but they never reconstruct it exactly. Autoencoders trained on the same model and data, differing only in their random start, find different sets of features (Paulo and Belrose, 2025).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Does a model have a true set of features, and how much computation hides in what autoencoders miss?</p>
+        <p class="label src">Templeton et al. 2024 · Paulo &amp; Belrose 2025</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="scale" aria-label="Animate the drawing: Loss against compute on logarithmic axes: the points fall along a straight line."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Why does scale work?</h3>
+        <p>Make a model bigger and give it more data and computing power, and its loss falls along a smooth power law across many orders of magnitude (Kaplan et al., 2020; Hoffmann et al., 2022). The trend is reliable enough to plan billion-dollar training runs around.</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Why a power law, and why these exponents? Several theories compete, and none is settled.</p>
+        <p class="label src">Kaplan et al. 2020 · Hoffmann et al. 2022</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="emergence" aria-label="Animate the drawing: Accuracy against model size: a solid line stays flat, then jumps; a dashed line beneath rises smoothly."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Emergence</h3>
+        <p>Some abilities, such as multi-step arithmetic, seem absent in smaller models and then appear suddenly at a certain scale (Wei et al., 2022). Others argue that the jumps come partly from all-or-nothing scoring, and that the underlying progress is smooth (Schaeffer et al., 2023).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Which abilities will the next, larger model gain? No one can reliably say in advance.</p>
+        <p class="label src">Wei et al. 2022 · Schaeffer et al. 2023</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="generalise" aria-label="Animate the drawing: Test error against model size: it falls, peaks where the model can just fit every training example, then falls again."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Why does it generalise?</h3>
+        <p>Classical statistics says a model with more parameters than examples should memorise its data and fail on anything new. Networks can memorise: they will learn completely random labels (Zhang et al., 2017). Yet on real data they generalise, and test error can fall, rise and fall again as they grow (Belkin et al., 2019; Nakkiran et al., 2019).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>What in the data, the architecture or the training steers networks towards solutions that generalise?</p>
+        <p class="label src">Zhang et al. 2017 · Belkin et al. 2019 · Nakkiran et al. 2019</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="grokking" aria-label="Animate the drawing: Training accuracy reaches 100% early. Test accuracy stays near zero for a long time, then jumps to 100%."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Grokking</h3>
+        <p>Small networks trained on modular arithmetic first memorise their examples, with no skill on new ones. Then, long afterwards, test accuracy jumps to perfect (Power et al., 2022). Reverse-engineering one such network showed it had learned to add using rotations and trigonometric identities (Nanda et al., 2023).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Do large models pass through hidden transitions like this, and could we see them coming?</p>
+        <p class="label src">Power et al. 2022 · Nanda et al. 2023</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="icl" aria-label="Animate the drawing: A token sequence where A is followed by B. When A appears again, an arc reaches back to B, predicting that B comes next."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Learning from the prompt</h3>
+        <p>Show a model a few examples of a new pattern and it continues the pattern, with no change to its weights. Induction heads explain part of this (Olsson et al., 2022). One theory holds that attention can carry out something like a step of gradient descent within a single pass (von Oswald et al., 2023).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>How far does learning in context reach, and is it one mechanism or many?</p>
+        <p class="label src">Olsson et al. 2022 · von Oswald et al. 2023</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="faithful" aria-label="Animate the drawing: 36 plus 59. Two internal paths, one estimating the size of the answer and one computing its last digit, meet at 95. The model’s own explanation, carrying the one, is drawn apart and connects to nothing."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Does it say what it does?</h3>
+        <p>Asked to add 36 and 59, Claude 3.5 Haiku runs two paths at once: one estimates the rough size of the answer, the other works out the last digit exactly. Asked how it did it, the model describes carrying the one (Lindsey et al., 2025). Given hints, Claude 3.7 Sonnet often used them without saying so, mentioning them only about a quarter of the time (Chen et al., 2025).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>When can a model’s written reasoning be trusted as a record of what it computed?</p>
+        <p class="label src">Lindsey et al. 2025 · Chen et al. 2025</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="hallucinate" aria-label="Animate the drawing: A default can’t-answer path is switched off by a known-name signal. In the third case the signal misfires on a name that only seems familiar, and the model answers anyway."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Where do falsehoods come from?</h3>
+        <p>Models invent facts fluently. One mechanism has been traced: a default circuit that says it can’t answer, switched off by features that recognise a known entity. When a name seems familiar without being known, the switch can misfire and the model makes something up (Lindsey et al., 2025).</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Is this the main source of invented facts, or one of many?</p>
+        <p class="label src">Lindsey et al. 2025</p>
+      </li>
+      <li class="card snap">
+        <span class="brk" aria-hidden="true"><i></i></span>
+        <div class="glyph-pane"><button class="glyph" type="button" data-glyph="introspect" aria-label="Animate the drawing: A field of activity with a concept injected into it, trial after trial. On about one trial in five, a bracket marks that the model noticed."><canvas aria-hidden="true"></canvas></button></div>
+        <h3>Can it know itself?</h3>
+        <p>Researchers injected a concept directly into a model’s activity and asked whether it noticed anything unusual. Claude Opus 4.1 sometimes detected the concept and named it, but only about 20% of the time, even with the best method (Lindsey, 2025). Most of what models say about their own inner states can’t yet be checked.</p>
+        <p class="open"><span class="label"><span class="sq" aria-hidden="true"></span>Open</span>Can a model ever be a reliable witness to its own computation?</p>
+        <p class="label src">Lindsey 2025</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="paper ledger-sec" id="ledger" aria-labelledby="ledger-h">
+  <div class="wrap">
+    <p class="sh label"><span class="sh-i">11</span><span class="sh-dash" aria-hidden="true"></span><span>The ledger</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">As of October 2026</span></p>
+    <h2 class="display" id="ledger-h" style="margin-bottom: clamp(28px, 4vw, 48px)">Known, partly known, open</h2>
+    <div class="ledger">
+      <div class="k-known">
+        <h3 class="label"><span class="mk" aria-hidden="true"></span>Known exactly</h3>
+        <ul>
+          <li><strong>The architecture.</strong> Every operation fits in a few hundred lines of code.</li>
+          <li><strong>The arithmetic.</strong> Every forward pass can be repeated and inspected, number by number.</li>
+          <li><strong>The objective.</strong> What training rewards, and the algorithm that pursues it.</li>
+          <li><strong>The trend.</strong> Loss falls smoothly and predictably as models, data and compute grow.</li>
+          <li><strong>Some mechanisms.</strong> Induction heads; the indirect-object circuit in GPT-2 small, 26 heads in 7 classes (Wang et al., 2022); modular addition by rotation.</li>
+        </ul>
+      </div>
+      <div class="k-partly">
+        <h3 class="label"><span class="mk" aria-hidden="true"></span>Partly understood</h3>
+        <ul>
+          <li><strong>Representation.</strong> Concepts as directions, mostly, packed in superposition.</li>
+          <li><strong>Memory.</strong> Facts are stored and recalled largely through MLP blocks.</li>
+          <li><strong>Learning in context.</strong> Part of it runs through induction heads.</li>
+          <li><strong>Reasoning and planning.</strong> Seen step by step in traced examples.</li>
+          <li><strong>Readable by design.</strong> Models trained with most weights fixed at zero have circuits small enough to draw, at some cost in capability (Gao et al., 2025).</li>
+        </ul>
+      </div>
+      <div class="k-open">
+        <h3 class="label"><span class="mk" aria-hidden="true"></span>Open</h3>
+        <ul>
+          <li>A complete account of how any frontier model produces any long answer.</li>
+          <li>Why scaling follows power laws, with these exponents.</li>
+          <li>Which abilities the next, larger model will have.</li>
+          <li>Whether a model’s written reasoning reflects its computation.</li>
+          <li>How to verify a model’s goals or values from its weights.</li>
+          <li>Whether understanding can keep pace with the models it studies.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="sources" aria-labelledby="sources-h">
+  <div class="wrap">
+    <p class="sh label"><span id="sources-h">Sources</span><span class="sh-rule" aria-hidden="true"></span><span class="sh-meta">Newest first</span></p>
+    <ul class="sources">
+      <li><span class="label">2026</span><span>MIT Technology Review. <a href="https://www.technologyreview.com/2026/01/12/1130003/mechanistic-interpretability-ai-research-models-2026-breakthrough-technologies/" target="_blank" rel="noopener">Mechanistic interpretability: 10 Breakthrough Technologies 2026</a>.</span></li>
+      <li><span class="label">2025</span><span>Lindsey et al. <a href="https://transformer-circuits.pub/2025/attribution-graphs/biology.html" target="_blank" rel="noopener">On the Biology of a Large Language Model</a>. Anthropic.</span></li>
+      <li><span class="label">2025</span><span>Ameisen et al. <a href="https://transformer-circuits.pub/2025/attribution-graphs/methods.html" target="_blank" rel="noopener">Circuit Tracing: Revealing Computational Graphs in Language Models</a>. Anthropic.</span></li>
+      <li><span class="label">2025</span><span>Lindsey. <a href="https://arxiv.org/abs/2601.01828" target="_blank" rel="noopener">Emergent Introspective Awareness in Large Language Models</a>. Anthropic.</span></li>
+      <li><span class="label">2025</span><span>Chen et al. <a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener">Reasoning Models Don’t Always Say What They Think</a>. Anthropic.</span></li>
+      <li><span class="label">2025</span><span>Gao et al. <a href="https://arxiv.org/abs/2511.13653" target="_blank" rel="noopener">Weight-sparse transformers have interpretable circuits</a>. OpenAI.</span></li>
+      <li><span class="label">2025</span><span>Paulo and Belrose. <a href="https://arxiv.org/abs/2501.16615" target="_blank" rel="noopener">Sparse Autoencoders Trained on the Same Data Learn Different Features</a>.</span></li>
+      <li><span class="label">2025</span><span>Sharkey et al. <a href="https://arxiv.org/abs/2501.16496" target="_blank" rel="noopener">Open Problems in Mechanistic Interpretability</a>.</span></li>
+      <li><span class="label">2025</span><span>Smith, Rajamanoharan et al. <a href="https://www.alignmentforum.org/posts/4uXCAJNuPKtKBsi28" target="_blank" rel="noopener">Negative Results for SAEs on Downstream Tasks</a>. Google DeepMind.</span></li>
+      <li><span class="label">2024</span><span>Templeton et al. <a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html" target="_blank" rel="noopener">Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet</a>. Anthropic.</span></li>
+      <li><span class="label">2024</span><span>Engels et al. <a href="https://arxiv.org/abs/2405.14860" target="_blank" rel="noopener">Not All Language Model Features Are Linear</a>.</span></li>
+      <li><span class="label">2024</span><span>Llama Team, Meta. <a href="https://arxiv.org/abs/2407.21783" target="_blank" rel="noopener">The Llama 3 Herd of Models</a>.</span></li>
+      <li><span class="label">2023</span><span>Bricken et al. <a href="https://transformer-circuits.pub/2023/monosemantic-features/index.html" target="_blank" rel="noopener">Towards Monosemanticity: Decomposing Language Models with Dictionary Learning</a>. Anthropic.</span></li>
+      <li><span class="label">2023</span><span>Nanda et al. <a href="https://arxiv.org/abs/2301.05217" target="_blank" rel="noopener">Progress Measures for Grokking via Mechanistic Interpretability</a>.</span></li>
+      <li><span class="label">2023</span><span>Schaeffer et al. <a href="https://arxiv.org/abs/2304.15004" target="_blank" rel="noopener">Are Emergent Abilities of Large Language Models a Mirage?</a></span></li>
+      <li><span class="label">2023</span><span>von Oswald et al. <a href="https://arxiv.org/abs/2212.07677" target="_blank" rel="noopener">Transformers Learn In-Context by Gradient Descent</a>.</span></li>
+      <li><span class="label">2023</span><span>Hase et al. <a href="https://arxiv.org/abs/2301.04213" target="_blank" rel="noopener">Does Localization Inform Editing?</a></span></li>
+      <li><span class="label">2023</span><span>Xiao et al. <a href="https://arxiv.org/abs/2309.17453" target="_blank" rel="noopener">Efficient Streaming Language Models with Attention Sinks</a>.</span></li>
+      <li><span class="label">2022</span><span>Olsson et al. <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html" target="_blank" rel="noopener">In-context Learning and Induction Heads</a>. Anthropic.</span></li>
+      <li><span class="label">2022</span><span>Elhage et al. <a href="https://transformer-circuits.pub/2022/toy_model/index.html" target="_blank" rel="noopener">Toy Models of Superposition</a>. Anthropic.</span></li>
+      <li><span class="label">2022</span><span>Wang et al. <a href="https://arxiv.org/abs/2211.00593" target="_blank" rel="noopener">Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small</a>.</span></li>
+      <li><span class="label">2022</span><span>Power et al. <a href="https://arxiv.org/abs/2201.02177" target="_blank" rel="noopener">Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets</a>.</span></li>
+      <li><span class="label">2022</span><span>Wei et al. <a href="https://arxiv.org/abs/2206.07682" target="_blank" rel="noopener">Emergent Abilities of Large Language Models</a>.</span></li>
+      <li><span class="label">2022</span><span>Meng et al. <a href="https://arxiv.org/abs/2202.05262" target="_blank" rel="noopener">Locating and Editing Factual Associations in GPT</a>.</span></li>
+      <li><span class="label">2022</span><span>Hoffmann et al. <a href="https://arxiv.org/abs/2203.15556" target="_blank" rel="noopener">Training Compute-Optimal Large Language Models</a>.</span></li>
+      <li><span class="label">2021</span><span>Geva et al. <a href="https://arxiv.org/abs/2012.14913" target="_blank" rel="noopener">Transformer Feed-Forward Layers Are Key-Value Memories</a>.</span></li>
+      <li><span class="label">2020</span><span>Kaplan et al. <a href="https://arxiv.org/abs/2001.08361" target="_blank" rel="noopener">Scaling Laws for Neural Language Models</a>.</span></li>
+      <li><span class="label">2020</span><span>Brown et al. <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Language Models are Few-Shot Learners</a> (GPT-3).</span></li>
+      <li><span class="label">2019</span><span>Nakkiran et al. <a href="https://arxiv.org/abs/1912.02292" target="_blank" rel="noopener">Deep Double Descent</a>.</span></li>
+      <li><span class="label">2019</span><span>Belkin et al. <a href="https://arxiv.org/abs/1812.11118" target="_blank" rel="noopener">Reconciling Modern Machine Learning Practice and the Bias–Variance Trade-off</a>.</span></li>
+      <li><span class="label">2017</span><span>Vaswani et al. <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>.</span></li>
+      <li><span class="label">2017</span><span>Zhang et al. <a href="https://arxiv.org/abs/1611.03530" target="_blank" rel="noopener">Understanding Deep Learning Requires Rethinking Generalization</a>.</span></li>
+      <li><span class="label">2013</span><span>Mikolov et al. <a href="https://arxiv.org/abs/1301.3781" target="_blank" rel="noopener">Efficient Estimation of Word Representations in Vector Space</a>.</span></li>
+      <li><span class="label">1989</span><span>Cybenko. <a href="https://doi.org/10.1007/BF02551274" target="_blank" rel="noopener">Approximation by Superpositions of a Sigmoidal Function</a>.</span></li>
+      <li><span class="label">1986</span><span>Rumelhart, Hinton and Williams. <a href="https://doi.org/10.1038/323533a0" target="_blank" rel="noopener">Learning Representations by Back-propagating Errors</a>. Nature.</span></li>
+      <li><span class="label">1986</span><span>White et al. <a href="https://doi.org/10.1098/rstb.1986.0056" target="_blank" rel="noopener">The Structure of the Nervous System of the Nematode Caenorhabditis elegans</a>.</span></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="label">Through Black Glass · Blackglass Studio · Experiment 01</p>
+    <p>Every drawing here is an explanatory model, not a recording of a real network’s activity. Where a drawing follows a published result, the source is named and the drawing is simplified. Token IDs, scores and the agent trace are invented for illustration and marked as such. The live network in chapter 08 is real and trains in your browser.</p>
+  </div>
+</footer>
+
+<script src="core.js"></script>
+<script src="film.js"></script>
+<script src="figures.js"></script>
+</body>
+</html>
