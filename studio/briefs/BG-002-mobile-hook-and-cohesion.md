@@ -44,6 +44,7 @@
 ## Owner decisions recorded here
 - **4 October 2026, accent:** lime (item B).
 - **4 October 2026, coaching format:** coaching is offered both in person (Josh is based in Dunedin) and online. The live `/coaching` page says "based in Dunedin" and "available now, with any phone", but doesn't state either format. Gamma to add one plain line, for example "In person in Dunedin, or online anywhere in New Zealand", once Josh confirms the online area. Keep it in `content/site.ts`, not page files.
+- **7 October 2026, online area:** Josh confirmed online coaching is available anywhere in New Zealand. The line is now "In person in Dunedin, or online anywhere in New Zealand" (`content/site.ts → coaching.format`, PR #9).
 
 ## Explicitly out of scope
 - Publishing, Sites deployment, Android distribution, database changes

@@ -48,8 +48,8 @@ export const coaching = {
   weekly: 59,
   weeks: 12,
   currency: "NZ$",
-  /** Josh's decision, 4 Oct 2026. The online area isn't confirmed yet, so don't name a region. */
-  format: "In person in Dunedin, or online",
+  /** Josh's decisions: both formats (4 Oct 2026); online is anywhere in New Zealand (7 Oct 2026). */
+  format: "In person in Dunedin, or online anywhere in New Zealand",
   get total() { return this.weekly * this.weeks; },
 };
 
