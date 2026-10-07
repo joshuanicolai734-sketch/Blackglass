@@ -643,9 +643,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-frame video { display: block; width: 100%; height: auto; aspect-ratio: 768 / 588; background: var(--c-glass); }
 .ms-transport { display: none; margin-top: 16px; }
 .ms-studio[data-enhanced] .ms-transport { display: block; }
-.ms-play-row { display: flex; align-items: center; gap: 8px; }
+.ms-play-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ms-studio .ms-play { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 100px; background: var(--action); color: var(--on-action); border-color: var(--action); }
-.ms-state { margin-left: auto; letter-spacing: .04em; white-space: nowrap; }
+/* Sized for the longest state ("Loading"), so the row wraps the same way whatever it says and never jumps on Play. */
+.ms-state { min-width: 7.5ch; margin-left: auto; letter-spacing: .04em; white-space: nowrap; text-align: right; }
 .ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
 .ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
 .ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
@@ -675,9 +676,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
 }
 @media (max-width: 419.98px) {
-  .ms-exercises .label { font-size: .625rem; letter-spacing: .04em; }
+  /* 12px like every label; the tighter tracking keeps "01 / Squat" on one line at 320px. */
+  .ms-exercises .label { letter-spacing: .04em; }
   .ms-exercises .title { font-size: 1.0625rem; }
-  .ms-state { font-size: .625rem; }
   .ms-studio .ms-play { min-width: 88px; }
 }
 @media (min-width: 900px) {
