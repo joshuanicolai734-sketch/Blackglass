@@ -14,7 +14,7 @@ const inWords = (n: number) => NUMBERS[n] ?? String(n);
 
 export const metadata: Metadata = {
   title: "Strength and physique coaching with Josh",
-  description: `${coaching.weeks} weeks of strength and physique coaching with Josh, based in Dunedin: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
+  description: `${coaching.weeks} weeks of strength and physique coaching with Josh, in person in Dunedin or online: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
   alternates: { canonical: "/coaching" },
   openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
 };
@@ -48,6 +48,7 @@ export default function Coaching() {
                 <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span></p>
               </div>
               <ul className="includes">
+                <li>{coaching.format}</li>
                 <li>A training plan built around your goal, available days and equipment</li>
                 <li>One check-in with {site.founder} each week</li>
                 <li>Adjustments as you progress, instead of starting over</li>
