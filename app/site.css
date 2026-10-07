@@ -125,7 +125,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 /* ---- Header ---- */
 .hdr { position: sticky; top: 0; z-index: 70; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
 .hdr::before { content: ""; position: absolute; left: var(--gutter); bottom: -1px; width: 42px; height: 2px; background: var(--c-volt); }
-.hdr-brand { display: block; margin-right: auto; }
+.hdr-brand { display: flex; align-items: center; min-height: 24px; margin-right: auto; } /* WCAG 2.5.8: a 24px target around the 22px mark */
 .hdr-brand img { height: 22px; width: auto; }
 .hdr-mark { display: none; }
 @media (max-width: 419.98px) { .hdr-lockup { display: none; } .hdr-mark { display: block; height: 28px !important; } }
@@ -343,7 +343,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 
 /* Inner page heroes */
 .crumbs { margin: 0 0 28px; }
-.crumbs a { color: var(--fg-3); text-decoration: none; }
+.crumbs a { display: inline-flex; align-items: center; min-height: 24px; color: var(--fg-3); text-decoration: none; }
 .crumbs a:hover { color: var(--fg); }
 .spec .actions { margin-top: 8px; }
 .page-hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 88px); border-bottom: var(--hair) solid var(--rule); }
@@ -568,8 +568,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .links-inner > p { text-align: center; color: var(--fg-2); margin-bottom: 32px; }
 .link-list { display: grid; gap: 10px; }
 .link-list .btn { width: 100%; min-height: 68px; white-space: normal; }
-.link-list .btn small { display: block; margin-top: 8px; opacity: .8; }
+.link-list .btn small { display: block; margin-top: 8px; font-size: var(--fs-label); opacity: .8; }
 .links-foot { margin-top: 32px; text-align: center; line-height: 2; }
+.links-foot a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* Prose (privacy) */
 .prose { max-width: 70ch; }

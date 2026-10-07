@@ -39,7 +39,7 @@ export default function Links() {
         <p>Strength training, technique and food in one Android app. Built in Dunedin.</p>
         <div className="link-list">
           <Item primary href="/get" track="links_get" title={appCta}
-            note={hasDownload ? "Android · download and install" : "Free · in development · no iPhone app"} />
+            note={clauses(hasDownload ? ["Android", "download and install"] : ["Free", "in development", "no iPhone app"])} />
           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
             note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "any phone"])} />}
