@@ -2,7 +2,9 @@
 /*
  * Acceptance check for the 7 Oct v33 port (PR #9 753ef84 coaching + mobile items).
  *
- *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium]
+ *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip]
+ *
+ * --clip adds C7, the clip-range service worker checks (only once that worker is staged).
  *
  * Needs Playwright (`npm i playwright` or the repo's dev install). Read-only: it loads pages with GETs,
  * stubs navigator.sendBeacon and aborts every /api/ request, so nothing is counted or submitted.
@@ -103,6 +105,37 @@ for (const w of [320, 360]) {
     return out;
   });
   add(`C6 play row fits @${w}`, !!m && Object.values(m).every((v) => v <= 0), m ? JSON.stringify(m) + ' (px over)' : '.ms-state not found');
+  await ctx.close();
+}
+
+// 7 (only with --clip). The clip-range service worker from studio/fixes/movement-clip-range/.
+if (args.includes('--clip')) {
+  const { ctx, page } = await open('/movements', 360);
+  const sw = await page.evaluate(async () => {
+    const r = await fetch('/movement-clips-sw.js', { cache: 'no-store' });
+    return { status: r.status, type: r.headers.get('content-type') || '' };
+  });
+  add('C7 worker file served as JavaScript', sw.status === 200 && /javascript/.test(sw.type), `${sw.status} ${sw.type}`);
+  const controlled = await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 15000 }).then(() => true, () => false);
+  add('C7 worker controls /movements', controlled, controlled ? 'controller present' : 'no controller after 15 s');
+  if (controlled) {
+    const range = await page.evaluate(async () => {
+      const src = [...document.querySelectorAll('.ms-studio video')].map((v) => v.currentSrc || v.getAttribute('src')).find(Boolean)
+        || [...document.querySelectorAll('.ms-studio a[href$=".mp4"]')].map((a) => a.href)[0];
+      if (!src) return null;
+      const r = await fetch(new URL(src, location.href).pathname, { headers: { Range: 'bytes=0-99' } });
+      return { path: new URL(src, location.href).pathname, status: r.status, len: (await r.arrayBuffer()).byteLength, cr: r.headers.get('content-range') };
+    });
+    add('C7 clip range answered with 206', !!range && range.status === 206 && range.len === 100, range ? `${range.path}: ${range.status} ${range.cr} len=${range.len}` : 'no clip found');
+    await page.locator('.ms-studio input[type=range]:visible').first().fill('60').catch(() => {});
+    await page.waitForTimeout(3000);
+    const seek = await page.evaluate(() => {
+      const vs = [...document.querySelectorAll('.ms-studio video')].filter((v) => v.seekable.length && v.seekable.end(v.seekable.length - 1) > 0.5);
+      const err = /couldn.t load/i.test(document.querySelector('.ms-studio')?.innerText || '');
+      return { seekable: vs.length, t: vs.map((v) => +v.currentTime.toFixed(2)), err };
+    });
+    add('C7 slider seeks (60 %)', seek.seekable > 0 && seek.t.some((t) => t > 1) && !seek.err, JSON.stringify(seek));
+  }
   await ctx.close();
 }
 
