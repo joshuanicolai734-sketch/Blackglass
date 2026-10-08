@@ -39,8 +39,10 @@ Patches are against base `b87393d` (the GitHub baseline). The preview has a diff
 
 ```sh
 npm i playwright   # or use an existing install
-node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chromium] [--storage-state state.json]
+node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chromium] [--storage-state state.json] [--sanitized]
 ```
+
+`--sanitized` prints only check IDs, PASS/FAIL and the totals, and hides error details that would quote the preview's address. Use it for anything posted publicly.
 
 **Owner-only preview:** the pages need your sign-in. To save a signed-in browser session, run `npx playwright open --save-storage=state.json https://<preview-host>`, sign in, and close the window. Then pass `--storage-state state.json`.
 
@@ -80,8 +82,16 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 
 ## Then
 
-1. Post the preview's Sites version or commit and the script output on issue #7, and Claude will retest the same build.
-2. Publishing needs a separate approval from Josh. That one publish would also take the 2 Oct staged work (the 429 fix and mobile-clarity changes) live.
+1. **Post on issue #7 only the preview's Sites version or commit and the `--sanitized` output**, plus a note of anything you kept from the preview instead of the patch. Never post:
+   - the preview's URL
+   - sign-in state (`state.json`)
+   - screenshots of the private preview
+   - private assets
+
+   This repository is public.
+2. Josh does the phone check above. Claude reviews the sanitized results against this README.
+3. Publishing needs a separate approval from Josh. That one publish would also take the 2 Oct staged work (the 429 fix and mobile-clarity changes) live.
+4. **After publishing**, Claude runs the same script against the public domain (`node verify-staging.mjs https://blackglass.co.nz --clip`) as the independent check of the deployed build. Expect 107/107. If an item fails there, roll back that item alone; see Rollback.
 
 ## Rollback
 

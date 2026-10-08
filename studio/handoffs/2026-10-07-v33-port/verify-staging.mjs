@@ -2,11 +2,13 @@
 /*
  * Acceptance check for the 7 Oct v33 port (PR #9 coaching + mobile items, PR #13, and with --clip the clip worker).
  *
- *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip] [--storage-state <file>]
+ *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip] [--storage-state <file>] [--sanitized]
  *
  * --clip adds C7, the clip-range service worker checks (only once that worker is staged).
  * --storage-state loads a Playwright storage state (a signed-in browser session) for an owner-only preview.
  *   That file holds a sign-in cookie: keep it local, never commit or post it.
+ * --sanitized prints only check IDs, PASS/FAIL and the totals: no measurements or page text. Use it for any output
+ *   posted publicly from a private preview (and never post the preview's URL).
  *
  * Needs Playwright (`npm i playwright` or the repo's dev install). Read-only: it loads pages with GETs,
  * stubs navigator.sendBeacon and aborts every /api/ request, so nothing is counted or submitted.
@@ -18,7 +20,14 @@ const args = process.argv.slice(2);
 const base = (args.find((a) => /^https?:\/\//.test(a)) || '').replace(/\/$/, '');
 const exe = args.includes('--chromium') ? args[args.indexOf('--chromium') + 1] : undefined;
 const storageState = args.includes('--storage-state') ? args[args.indexOf('--storage-state') + 1] : undefined;
-if (!base) { console.error('usage: node verify-staging.mjs https://<host> [--chromium <path>] [--clip] [--storage-state <file>]'); process.exit(2); }
+const sanitized = args.includes('--sanitized');
+if (sanitized) {
+  // Playwright errors quote the URL they failed on; keep the preview's address out of anything meant for posting.
+  const hide = () => { console.error('Could not run (details hidden by --sanitized; rerun privately without it to see why).'); process.exit(2); };
+  process.on('uncaughtException', hide);
+  process.on('unhandledRejection', hide);
+}
+if (!base) { console.error('usage: node verify-staging.mjs https://<host> [--chromium <path>] [--clip] [--storage-state <file>] [--sanitized]'); process.exit(2); }
 
 const FORMAT = 'In person in Dunedin, or online anywhere in New Zealand';
 const PAGES = ['/', '/coaching', '/get', '/movements', '/links', '/privacy', '/get/joined', '/coaching/sent'];
@@ -151,6 +160,6 @@ if (args.includes('--clip')) {
 
 await browser.close();
 const failed = results.filter((r) => !r.ok);
-for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.id}  —  ${r.detail}`);
+for (const r of results) console.log(sanitized ? `${r.ok ? 'PASS' : 'FAIL'}  ${r.id}` : `${r.ok ? 'PASS' : 'FAIL'}  ${r.id}  —  ${r.detail}`);
 console.log(`\n${results.length - failed.length}/${results.length} passed. /api/ requests aborted: ${apiAborted} (none reached the server).`);
 process.exit(failed.length ? 1 : 0);

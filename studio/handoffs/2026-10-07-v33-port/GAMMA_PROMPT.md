@@ -13,7 +13,7 @@ Everything you need is in this folder: https://github.com/joshuanicolai734-sketc
 
 - **Build on the existing owner-only preview** you staged on 2 Oct (the 429 fix and mobile-clarity changes), not on a fresh copy of live v33. Where the preview already covers an item, keep your version if the check passes.
 - **Exact coaching wording:** "In person in Dunedin, or online anywhere in New Zealand".
-- **Check:** run `verify-staging.mjs --clip` against the preview. It's read-only, and the README explains how to sign it in. It should report 107/107. Also check `/admin` by hand.
-- **Report back on GitHub issue #7:** the preview's Sites version or commit, the script output, and anything you kept from your own version instead of the patch.
+- **Check:** run `verify-staging.mjs --clip --sanitized` against the preview. It's read-only, and the README explains how to sign it in. It should report 107/107. Also check `/admin` by hand.
+- **Report back on GitHub issue #7:** the preview's Sites version or commit, the `--sanitized` output, and anything you kept from your own version instead of the patch. Don't post the preview URL, sign-in state or screenshots; the repository is public.
 
-When it's ready, I'll test the slider on my iPhone and Android phone myself. I'll decide on publishing after Claude retests the same build.
+When it's ready, I'll test the slider on my iPhone and Android phone myself. I'll decide on publishing after Claude reviews your sanitized results. Claude will check the public site again after any publish.
