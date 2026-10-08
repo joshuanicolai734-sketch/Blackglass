@@ -33,7 +33,7 @@ index 9097242..7d5b086 100644
            {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
              note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "any phone"])} />}
 diff --git a/app/site.css b/app/site.css
-index 020788b..0030c29 100644
+index 020788b..03721c2 100644
 --- a/app/site.css
 +++ b/app/site.css
 @@ -125,7 +125,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
@@ -78,7 +78,16 @@ index 020788b..0030c29 100644
  .ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
  .ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
  .ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
-@@ -674,9 +676,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+@@ -665,6 +667,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+ .ms-studio[data-enhanced] .ms-static-phase { display: none; }
+ .ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
+ .ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
++/* The clip links stand alone (no-JS view and the media-error state), so they get full 44px targets. */
++.ms-fallback a { display: inline-flex; align-items: center; min-height: 44px; }
+ .ms-error { margin: 20px 0 0; color: var(--c-danger); }
+ .movement-next .display { max-width: 24em; }
+ .movement-next .body-2 { margin-top: 20px; }
+@@ -674,9 +678,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
    .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
  }
  @media (max-width: 419.98px) {

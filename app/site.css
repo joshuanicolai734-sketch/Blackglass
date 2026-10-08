@@ -667,6 +667,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-studio[data-enhanced] .ms-static-phase { display: none; }
 .ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
 .ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
+/* The clip links stand alone (no-JS view and the media-error state), so they get full 44px targets. */
+.ms-fallback a { display: inline-flex; align-items: center; min-height: 44px; }
 .ms-error { margin: 20px 0 0; color: var(--c-danger); }
 .movement-next .display { max-width: 24em; }
 .movement-next .body-2 { margin-top: 20px; }

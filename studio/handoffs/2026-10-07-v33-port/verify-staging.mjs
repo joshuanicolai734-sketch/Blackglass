@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 /*
- * Acceptance check for the 7 Oct v33 port (PR #9 753ef84 coaching + mobile items).
+ * Acceptance check for the 7 Oct v33 port (PR #9 coaching + mobile items, PR #13, and with --clip the clip worker).
  *
- *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip]
+ *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip] [--storage-state <file>]
  *
  * --clip adds C7, the clip-range service worker checks (only once that worker is staged).
+ * --storage-state loads a Playwright storage state (a signed-in browser session) for an owner-only preview.
+ *   That file holds a sign-in cookie: keep it local, never commit or post it.
  *
  * Needs Playwright (`npm i playwright` or the repo's dev install). Read-only: it loads pages with GETs,
  * stubs navigator.sendBeacon and aborts every /api/ request, so nothing is counted or submitted.
@@ -15,7 +17,8 @@ import { chromium } from 'playwright';
 const args = process.argv.slice(2);
 const base = (args.find((a) => /^https?:\/\//.test(a)) || '').replace(/\/$/, '');
 const exe = args.includes('--chromium') ? args[args.indexOf('--chromium') + 1] : undefined;
-if (!base) { console.error('usage: node verify-staging.mjs https://<host> [--chromium <path>]'); process.exit(2); }
+const storageState = args.includes('--storage-state') ? args[args.indexOf('--storage-state') + 1] : undefined;
+if (!base) { console.error('usage: node verify-staging.mjs https://<host> [--chromium <path>] [--clip] [--storage-state <file>]'); process.exit(2); }
 
 const FORMAT = 'In person in Dunedin, or online anywhere in New Zealand';
 const PAGES = ['/', '/coaching', '/get', '/movements', '/links', '/privacy', '/get/joined', '/coaching/sent'];
@@ -25,9 +28,9 @@ const add = (id, ok, detail) => results.push({ id, ok, detail });
 let apiAborted = 0;
 
 const browser = await chromium.launch(exe ? { executablePath: exe } : {});
-async function open(path, width) {
-  const ctx = await browser.newContext({ viewport: { width, height: 800 } });
-  await ctx.addInitScript(() => { navigator.sendBeacon = () => true; });
+async function open(path, width, js = true) {
+  const ctx = await browser.newContext({ viewport: { width, height: 800 }, javaScriptEnabled: js, ...(storageState ? { storageState } : {}) });
+  if (js) await ctx.addInitScript(() => { navigator.sendBeacon = () => true; });
   await ctx.route(/\/api\//, (r) => { apiAborted++; return r.abort(); });
   const page = await ctx.newPage();
   const res = await page.goto(base + path, { waitUntil: 'networkidle', timeout: 45000 });
@@ -69,19 +72,24 @@ for (const w of [320, 360]) {
   await ctx.close();
 }
 
-// 3–5. Per page and width: text >= 12px, targets >= 24px (WCAG 2.5.8; inline links inside sentences are exempt,
-// navigation links never are), no horizontal overflow.
-for (const path of PAGES) for (const w of WIDTHS) {
-  const { ctx, page, status } = await open(path, w);
-  if (status !== 200) { add(`page ${path} @${w}`, false, `HTTP ${status}`); await ctx.close(); continue; }
+// 3–5. Per page and width: text >= 12px, targets >= 24px (WCAG 2.5.8: a link is exempt only when it sits inline in
+// real sentence text; navigation, breadcrumb and footer links never are), no horizontal overflow. Run with
+// JavaScript at 320/360/1280, and once more at 360 with JavaScript off, where fallback controls appear.
+async function pageChecks(path, w, js) {
+  const tag = js ? `@${w}` : `@${w} no-JS`;
+  const { ctx, page, status } = await open(path, w, js);
+  if (status !== 200) { add(`page ${path} ${tag}`, false, `HTTP ${status}`); await ctx.close(); return; }
   const m = await page.evaluate(() => {
     const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && !e.closest('[aria-hidden="true"]'); };
     const small = [...document.querySelectorAll('body *')].filter((e) => vis(e) && [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) < 12)
       .map((e) => `${parseFloat(getComputedStyle(e).fontSize).toFixed(1)}px "${e.textContent.trim().slice(0, 30)}"`);
+    // Words in the parent that are not themselves links or buttons: "Open A / Open B" is a list of links, not a sentence.
+    const otherWords = (p) => [...p.childNodes].map((n) => (n.nodeType === 3 ? n.textContent : n.matches?.('a, button') ? '' : n.textContent)).join(' ')
+      .split(/\s+/).filter((w) => /[A-Za-z\u00C0-\u024F]{2,}/.test(w)).length;
     const inSentence = (e) => {
       if (e.closest('nav, header, footer .ftr-base, .crumbs, .links-foot')) return false;
       if (getComputedStyle(e).display !== 'inline') return false;
-      const p = e.parentElement; return !!p && p.textContent.trim().length > e.textContent.trim().length + 3;
+      const p = e.parentElement; return !!p && otherWords(p) >= 2;
     };
     const taps = [...document.querySelectorAll('a[href], button, select, summary, input:not([type=hidden])')]
       .filter((e) => vis(e) && !e.closest('.trap'))
@@ -89,11 +97,13 @@ for (const path of PAGES) for (const w of WIDTHS) {
       .map((e) => { const r = e.getBoundingClientRect(); return `${e.tagName.toLowerCase()} ${Math.round(r.width)}x${Math.round(r.height)} "${(e.getAttribute('aria-label') || e.textContent).trim().slice(0, 30)}"`; });
     return { small: [...new Set(small)], taps: [...new Set(taps)], sw: document.documentElement.scrollWidth, vw: innerWidth };
   });
-  add(`C3 text >= 12px ${path} @${w}`, m.small.length === 0, m.small.slice(0, 6).join('; ') || 'ok');
-  add(`C4 targets >= 24px ${path} @${w}`, m.taps.length === 0, m.taps.slice(0, 6).join('; ') || 'ok');
-  add(`C5 no overflow ${path} @${w}`, m.sw <= m.vw, `scrollWidth ${m.sw} / viewport ${m.vw}`);
+  add(`C3 text >= 12px ${path} ${tag}`, m.small.length === 0, m.small.slice(0, 6).join('; ') || 'ok');
+  add(`C4 targets >= 24px ${path} ${tag}`, m.taps.length === 0, m.taps.slice(0, 6).join('; ') || 'ok');
+  add(`C5 no overflow ${path} ${tag}`, m.sw <= m.vw, `scrollWidth ${m.sw} / viewport ${m.vw}`);
   await ctx.close();
 }
+for (const path of PAGES) for (const w of WIDTHS) await pageChecks(path, w, true);
+for (const path of PAGES) await pageChecks(path, 360, false);
 
 // 6. Movement Studio play row fits with the longest state words.
 for (const w of [320, 360]) {
