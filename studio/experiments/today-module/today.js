@@ -54,6 +54,20 @@
 
   function say(msg) { status.textContent = msg; }
 
+  // The rail fills by row position, not by set count, so its lime end never passes a row with no sets done.
+  function drawRail() {
+    var box = railFill.ownerSVGElement.getBoundingClientRect(), pct = 0;
+    if (box.height > 0) {
+      for (var i = 0; i < MOVES.length; i++) {
+        var n = doneIn(i); if (!n) break;
+        var r = moveEls[i].getBoundingClientRect();
+        pct = ((r.top - box.top) + r.height * (n / MOVES[i].sets)) / box.height * 100;
+      }
+    }
+    railFill.style.strokeDashoffset = String(100 - Math.max(0, Math.min(100, pct)));
+  }
+  window.addEventListener("resize", drawRail);
+
   function render(announce) {
     var w = where(state.done);
     root.dataset.state = state.phase;
@@ -73,13 +87,12 @@
       else el.removeAttribute("aria-current");
     });
     justIndex = -1;
-    railFill.style.strokeDashoffset = String(100 - (100 * state.done) / TOTAL);
+    drawRail();
 
     primary.hidden = false;
     pause.hidden = state.phase !== "active";
     reset.hidden = state.phase === "idle";
-    replay.hidden = false;
-    pause.setAttribute("aria-pressed", "false");
+    replay.hidden = reduce.matches; // the intro never plays under reduced motion, so the control is absent
 
     if (state.phase === "idle") {
       primary.textContent = "Start session";
@@ -136,17 +149,21 @@
   });
 
   // Intro assembly. Plays once on load, on request, and never under reduced motion.
+  var assembleTimer = 0;
   function assemble() {
     if (reduce.matches) return;
+    clearTimeout(assembleTimer);
     moveEls.forEach(function (el, i) { el.style.setProperty("--i", i); });
     root.classList.remove("assemble"); root.classList.add("assembling");
     void root.offsetWidth;
     requestAnimationFrame(function () {
       root.classList.add("assemble");
-      setTimeout(function () { root.classList.remove("assembling", "assemble"); }, 1400); // lockout: back to static
+      assembleTimer = setTimeout(function () { root.classList.remove("assembling", "assemble"); }, 1400); // lockout: back to static
     });
   }
   replay.addEventListener("click", assemble);
+  var onMotion = function () { replay.hidden = reduce.matches; };
+  if (reduce.addEventListener) reduce.addEventListener("change", onMotion); else if (reduce.addListener) reduce.addListener(onMotion);
 
   // Stop work when offscreen: the intro only starts when the module is in view.
   render();

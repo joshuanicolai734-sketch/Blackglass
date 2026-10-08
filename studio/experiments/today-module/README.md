@@ -49,3 +49,9 @@ Environment: headless Chromium (`/opt/pw-browsers/chromium`), Playwright core an
 - Repository checks: `pnpm install --frozen-lockfile && pnpm lint && pnpm exec tsc --noEmit && pnpm build` pass (0 errors, 0 warnings).
 
 Not tested: any physical phone or touch hardware, Safari or Firefox, a screen reader, low-end device performance, the offscreen-pause behaviour beyond "the intro starts only when the module is in view" (there is no looping animation to stop), and the v33 source.
+
+## Round 2 (critic findings on `d017111`)
+- One column at every width. The rail fill now follows row positions (`drawRail()`), so after 6 sets it ends at the bottom of movement 02, not inside 03.
+- "Replay the intro" is hidden under reduced motion and follows the media query live. Replay clears its cleanup timer, and the actions ignore pointer input while the intro runs.
+- No-JS copy is neutral; the reserved two-line "Next" height applies below 600 px only; the pane rule is an inset shadow (the outline was clipped); the dead `aria-pressed` rule and attribute are gone.
+- Evidence: `evidence/round2/`.

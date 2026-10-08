@@ -30,7 +30,7 @@ button{font:inherit;color:inherit}
 .proto-note{margin:0 0 20px;padding:10px 12px;border:1px solid var(--rule);font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.06em;color:var(--c-bone-2)}
 .proto-note span{margin-right:8px;padding:2px 6px;background:var(--c-bone);color:var(--c-glass);text-transform:uppercase;letter-spacing:.12em}
 
-.today{position:relative;background:var(--c-pane);padding:clamp(20px,5vw,32px);clip-path:var(--chamfer);outline:1px solid var(--rule)}
+.today{position:relative;background:var(--c-pane);padding:clamp(20px,5vw,32px);clip-path:var(--chamfer);box-shadow:inset 0 0 0 1px var(--rule)}
 .today-head h1{margin:6px 0 8px;font-weight:700;font-size:clamp(2.25rem,9vw,3.5rem);line-height:1;letter-spacing:-.02em}
 .meta{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--c-bone-2)}
 
@@ -57,7 +57,7 @@ button{font:inherit;color:inherit}
 
 /* Next action. */
 .next{padding:16px 0 4px;border-top:1px solid var(--rule-strong)}
-.next-line{min-height:2.3em;margin:4px 0 2px;font-weight:700;font-size:clamp(1.5rem,6vw,2rem);line-height:1.15;letter-spacing:-.01em}
+.next-line{margin:4px 0 2px;font-weight:700;font-size:clamp(1.5rem,6vw,2rem);line-height:1.15;letter-spacing:-.01em}
 .next-sub{margin:0;color:var(--c-bone-2)}
 
 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
@@ -66,7 +66,6 @@ button{font:inherit;color:inherit}
 .btn.primary{flex:1 1 220px;background:var(--c-lime);border-color:var(--c-lime);color:var(--c-glass)}
 .btn.quiet:hover{border-color:var(--c-bone)}
 .btn:active{transform:translateY(1px)}
-.btn[aria-pressed="true"]{background:var(--c-bone);color:var(--c-glass);border-color:var(--c-bone)}
 .btn[aria-disabled="true"]{cursor:progress}
 .btn.primary[aria-disabled="true"]{background:var(--c-bone);border-color:var(--c-bone)}
 :focus-visible{outline:3px solid var(--c-lime);outline-offset:3px}
@@ -85,6 +84,7 @@ button{font:inherit;color:inherit}
 .today[data-state="paused"] .rail-fill{opacity:.45}
 
 /* Intro assembly, JS only: lines draw, then rows resolve, then the action lands. Plays once, then everything is still. */
+.js .today.assembling .actions{pointer-events:none}
 .js .today.assembling .structure .rail-base{stroke-dasharray:100;stroke-dashoffset:100}
 .js .today.assembling .move,.js .today.assembling .today-head,.js .today.assembling .next,.js .today.assembling .actions{opacity:0;transform:translateX(-10px)}
 .today.assemble .rail-base{stroke-dashoffset:0;transition:stroke-dashoffset 600ms var(--ease-expo)}
@@ -100,10 +100,9 @@ button{font:inherit;color:inherit}
   .js .today.assembling .structure .rail-base{stroke-dasharray:none;stroke-dashoffset:0}
 }
 @media (max-width:359px){.tick{width:20px}.btn{padding:0 16px}}
+@media (max-width:599px){.next-line{min-height:2.3em}} /* reserve two lines only where the title can wrap */
 @media (min-width:900px){
-  .stage{max-width:880px;padding-top:48px}
+  /* One column at every width: the rail is only truthful when rows stack in order. */
+  .stage{max-width:720px;padding-top:48px}
   .structure{margin-block:36px 28px}
-  .moves{grid-template-columns:1fr 1fr;column-gap:32px}
-  .move:nth-child(2){border-top:0;padding-top:0}
-  .move:nth-child(3){padding-top:14px}
 }
