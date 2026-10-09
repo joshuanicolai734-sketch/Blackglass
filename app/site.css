@@ -755,6 +755,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .sticky-cta .btn-ghost { flex: 0 0 auto; }
 html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
+/* Short screens (landscape phones, 400% zoom at 320x256): the sticky header already carries the same action, so the bar
+   stays away instead of leaving the page a strip between two copies of it. */
+@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
 
 /* Reduced motion: nothing moves, draws or scales; state changes are colour and opacity only. */
 @media (prefers-reduced-motion: reduce) {

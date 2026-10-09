@@ -93,6 +93,12 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 3. Publishing needs a separate approval from Josh. That one publish would also take the 2 Oct staged work (the 429 fix and mobile-clarity changes) live.
 4. **After publishing**, Claude runs the same script against the public domain (`node verify-staging.mjs https://blackglass.co.nz --clip`) as the independent check of the deployed build. Expect 107/107. If an item fails there, roll back that item alone; see Rollback.
 
+## Not covered by the approvals (port only if Josh says so)
+
+| # | Change | Where | Evidence |
+| --- | --- | --- | --- |
+| 9 | Short screens hide the phone action bar: `@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }` | `app/site.css` (PR #9, the commit after `51ec5ed`; not in `pr9-runtime.patch`) | On live and the baseline, at 320×256 (a desktop at 400% zoom) the sticky header plus the bar cover 52–57% of the screen, and 38–43% on landscape phones. Both show the same action, because the header already has "Enquire" or "Preview list" and the menu. With the change, short screens show only the header (18–25%). Portrait phones are unchanged: the bar still shows at 390×844. Regression check on the baseline: 102/103 (only the known PR #11 overflow). |
+
 ## Rollback
 
 Each item is independent: revert its hunk. Item 1 is a single string in `content/site.ts`. Item 7 has its own `rollback-sw.js`.
