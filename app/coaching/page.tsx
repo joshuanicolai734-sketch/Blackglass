@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Strength and physique coaching with Josh",
   description: `${coaching.weeks} weeks of strength and physique coaching with Josh, in person in Dunedin or online anywhere in New Zealand: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
   alternates: { canonical: "/coaching" },
-  openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
+  openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${coaching.format}. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
 };
 
 export default function Coaching() {
@@ -25,6 +25,15 @@ export default function Coaching() {
     { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
     { "@type": "ListItem", position: 2, name: "Coaching", item: `${site.url}/coaching` },
   ] };
+  // What search engines can read about the offer: only facts the page itself states (price, length, where it runs).
+  const service = {
+    "@context": "https://schema.org", "@type": "Service", "@id": `${site.url}/coaching#service`,
+    name: coaching.offerName, serviceType: "Strength and physique coaching", url: `${site.url}/coaching`,
+    provider: { "@type": "Organization", "@id": `${site.url}/#org`, name: site.name },
+    areaServed: [{ "@type": "City", name: "Dunedin" }, { "@type": "Country", name: "New Zealand" }],
+    description: `${coaching.weeks} weeks of coaching: a plan built around your week, weekly check-ins and adjustments. ${coaching.format}.`,
+    offers: { "@type": "Offer", url: `${site.url}/coaching`, priceSpecification: { "@type": "UnitPriceSpecification", price: coaching.weekly, priceCurrency: coaching.currencyCode, unitText: "week" } },
+  };
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
@@ -107,6 +116,7 @@ export default function Coaching() {
       </main>
       <Footer />
       <JsonLd data={crumbs} />
+      <JsonLd data={service} />
     </>
   );
 }
