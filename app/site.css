@@ -125,7 +125,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 /* ---- Header ---- */
 .hdr { position: sticky; top: 0; z-index: 70; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
 .hdr::before { content: ""; position: absolute; left: var(--gutter); bottom: -1px; width: 42px; height: 2px; background: var(--c-volt); }
-.hdr-brand { display: block; margin-right: auto; }
+.hdr-brand { display: flex; align-items: center; min-height: 24px; margin-right: auto; } /* WCAG 2.5.8: a 24px target around the 22px mark */
 .hdr-brand img { height: 22px; width: auto; }
 .hdr-mark { display: none; }
 @media (max-width: 419.98px) { .hdr-lockup { display: none; } .hdr-mark { display: block; height: 28px !important; } }
@@ -343,7 +343,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 
 /* Inner page heroes */
 .crumbs { margin: 0 0 28px; }
-.crumbs a { color: var(--fg-3); text-decoration: none; }
+.crumbs a { display: inline-flex; align-items: center; min-height: 24px; color: var(--fg-3); text-decoration: none; }
 .crumbs a:hover { color: var(--fg); }
 .spec .actions { margin-top: 8px; }
 .page-hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 88px); border-bottom: var(--hair) solid var(--rule); }
@@ -568,8 +568,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .links-inner > p { text-align: center; color: var(--fg-2); margin-bottom: 32px; }
 .link-list { display: grid; gap: 10px; }
 .link-list .btn { width: 100%; min-height: 68px; white-space: normal; }
-.link-list .btn small { display: block; margin-top: 8px; opacity: .8; }
+.link-list .btn small { display: block; margin-top: 8px; font-size: var(--fs-label); opacity: .8; }
 .links-foot { margin-top: 32px; text-align: center; line-height: 2; }
+.links-foot a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* Prose (privacy) */
 .prose { max-width: 70ch; }
@@ -642,9 +643,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-frame video { display: block; width: 100%; height: auto; aspect-ratio: 768 / 588; background: var(--c-glass); }
 .ms-transport { display: none; margin-top: 16px; }
 .ms-studio[data-enhanced] .ms-transport { display: block; }
-.ms-play-row { display: flex; align-items: center; gap: 8px; }
+.ms-play-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ms-studio .ms-play { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 100px; background: var(--action); color: var(--on-action); border-color: var(--action); }
-.ms-state { margin-left: auto; letter-spacing: .04em; white-space: nowrap; }
+/* Sized for the longest state ("Loading"), so the row wraps the same way whatever it says and never jumps on Play. */
+.ms-state { min-width: 7.5ch; margin-left: auto; letter-spacing: .04em; white-space: nowrap; text-align: right; }
 .ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
 .ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
 .ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
@@ -665,6 +667,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-studio[data-enhanced] .ms-static-phase { display: none; }
 .ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
 .ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
+/* The clip links stand alone (no-JS view and the media-error state), so they get full 44px targets. */
+.ms-fallback a { display: inline-flex; align-items: center; min-height: 44px; }
 .ms-error { margin: 20px 0 0; color: var(--c-danger); }
 .movement-next .display { max-width: 24em; }
 .movement-next .body-2 { margin-top: 20px; }
@@ -674,9 +678,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
 }
 @media (max-width: 419.98px) {
-  .ms-exercises .label { font-size: .625rem; letter-spacing: .04em; }
+  /* 12px like every label; the tighter tracking keeps "01 / Squat" on one line at 320px. */
+  .ms-exercises .label { letter-spacing: .04em; }
   .ms-exercises .title { font-size: 1.0625rem; }
-  .ms-state { font-size: .625rem; }
   .ms-studio .ms-play { min-width: 88px; }
 }
 @media (min-width: 900px) {
@@ -751,6 +755,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .sticky-cta .btn-ghost { flex: 0 0 auto; }
 html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
+/* Short screens (landscape phones, 400% zoom at 320x256): the sticky header already carries the same action, so the bar
+   stays away instead of leaving the page a strip between two copies of it. */
+@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
 
 /* Reduced motion: nothing moves, draws or scales; state changes are colour and opacity only. */
 @media (prefers-reduced-motion: reduce) {

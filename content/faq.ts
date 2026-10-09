@@ -61,12 +61,16 @@ export const coachingFaq: Faq[] = [
     a: `${price} each week for ${coaching.weeks} weeks, ${coaching.currency}${coaching.total} in total. It includes an initial training plan built around your week, one check-in each week, and training adjustments as you progress. Josh confirms the full service and payment terms in writing before you commit.`,
   },
   {
+    q: "Do I need to be in Dunedin?",
+    a: `No. Coaching runs ${coaching.format.charAt(0).toLowerCase()}${coaching.format.slice(1)}.`,
+  },
+  {
     q: "Do I need the app to start coaching?",
     a: "No. The Android app is in development and isn't part of the paid coaching offer. Josh will confirm the tools used for coaching before you start.",
   },
   {
     q: "Can I get a programme without weekly coaching?",
-    a: "Yes. Choose \"A personal training programme\" in the enquiry form. Its scope and price are agreed separately.",
+    a: "Yes. Choose \"Programme only\" in the enquiry form. Its scope and price are agreed separately.",
   },
 ];
 

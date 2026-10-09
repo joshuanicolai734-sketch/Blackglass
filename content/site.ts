@@ -48,6 +48,9 @@ export const coaching = {
   weekly: 59,
   weeks: 12,
   currency: "NZ$",
+  currencyCode: "NZD", // ISO 4217, for structured data
+  /** Josh's decisions: both formats (4 Oct 2026); online is anywhere in New Zealand (7 Oct 2026). */
+  format: "In person in Dunedin, or online anywhere in New Zealand",
   get total() { return this.weekly * this.weeks; },
 };
 
