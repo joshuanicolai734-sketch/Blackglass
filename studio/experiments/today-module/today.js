@@ -150,15 +150,17 @@
 
   // Intro assembly. Plays once on load, on request, and never under reduced motion.
   var assembleTimer = 0;
+  var actionsEl = root.querySelector(".actions");
+  function setHeld(on) { if (actionsEl) actionsEl.inert = on; } // invisible actions must not take focus either
   function assemble() {
     if (reduce.matches) return;
     clearTimeout(assembleTimer);
     moveEls.forEach(function (el, i) { el.style.setProperty("--i", i); });
-    root.classList.remove("assemble"); root.classList.add("assembling");
+    root.classList.remove("assemble"); root.classList.add("assembling"); setHeld(true);
     void root.offsetWidth;
     requestAnimationFrame(function () {
       root.classList.add("assemble");
-      assembleTimer = setTimeout(function () { root.classList.remove("assembling", "assemble"); }, 1400); // lockout: back to static
+      assembleTimer = setTimeout(function () { root.classList.remove("assembling", "assemble"); setHeld(false); }, 1400); // lockout: back to static
     });
   }
   replay.addEventListener("click", assemble);
@@ -168,7 +170,7 @@
   // Stop work when offscreen: the intro only starts when the module is in view.
   render();
   if ("IntersectionObserver" in window && !reduce.matches) {
-    root.classList.add("assembling"); // hold the rows hidden for the moment before the intro starts
+    root.classList.add("assembling"); setHeld(true); // hold the rows hidden for the moment before the intro starts
     var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { io.disconnect(); assemble(); } }, { threshold: 0.2 });
     io.observe(root);
   }
