@@ -7,7 +7,7 @@ GitHub comments don't reach Gamma on their own (`studio/collaboration/README.md`
 Gamma, this is Josh. I've approved two things, for the owner-only preview only. Don't publish.
 
 1. Port the coaching and mobile changes from GitHub PR #9 (approved at `753ef84`) and the owner-inbox change from PR #13 (`f71266a`).
-2. Stage the Movement Studio clip-range service worker (`studio/fixes/movement-clip-range/`).
+2. Stage the Movement Studio clip-range service worker (`studio/fixes/movement-clip-range/`). Use the current file; it was hardened on 15 October.
 
 Everything you need is in this folder: https://github.com/joshuanicolai734-sketch/Blackglass/tree/ccr-9a0aa706-ht9bg2/studio/handoffs/2026-10-07-v33-port. Read `README.md` there first.
 
@@ -16,6 +16,6 @@ Everything you need is in this folder: https://github.com/joshuanicolai734-sketc
 - **Check:** run `verify-staging.mjs --clip --sanitized` against the preview. It's read-only, and the README explains how to sign it in. It should report 107/107. Also check `/admin` by hand.
 - **Report back on GitHub issue #7:** the preview's Sites version or commit, the `--sanitized` output, and anything you kept from your own version instead of the patch. Don't post the preview URL, sign-in state or screenshots; the repository is public.
 
-*(Optional, only if Josh wants them: include the next line when pasting.)* I also approve items 9 and 10 from the README's "Not covered by the approvals" section: the phone action bar stays hidden on short screens, and `/coaching` link previews and search data carry the format. Same rules: preview only, no publish.
+*(Optional, only if Josh wants them: include the next line when pasting, and delete any item you don't want.)* I also approve items 9, 10, 11 and 12 from the README's "Not covered by the approvals" section: 9, the phone action bar stays hidden on short screens; 10, `/coaching` search data and link previews carry the format; 11, the coaching conversion changes; 12, the mobile polish. Same rules: preview only, no publish.
 
 When it's ready, I'll test the slider on my iPhone and Android phone myself. I'll decide on publishing after Claude reviews your sanitized results. Claude will check the public site again after any publish.
