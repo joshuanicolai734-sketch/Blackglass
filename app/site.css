@@ -192,7 +192,6 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .next-steps li { position: relative; padding-left: 40px; color: var(--fg-2); counter-increment: ns; }
 .next-steps li::before { content: "0" counter(ns); position: absolute; left: 0; top: .3em; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: var(--tr-label); color: var(--fg-3); }
 .next-steps-label { margin-top: 40px; }
-.form-steps { margin: 28px 0 0; }
 /* Result and retry pages (static routes a no-JavaScript submit lands on). */
 .result-msg { max-width: 40rem; margin: 8px 0 32px; }
 .result-next { max-width: 40rem; margin: 0 0 32px; }

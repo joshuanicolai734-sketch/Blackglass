@@ -12,6 +12,9 @@ export const site = {
   founder: "Josh",
 };
 
+/** Open Graph fields every page shares. A page's own `openGraph` replaces the layout's entirely, so pages spread this in. */
+export const ogBase = { siteName: site.name, locale: "en_NZ", type: "website" as const };
+
 export const contact = {
   email: "joshuanicolai@live.com",
   phone: "+64273279614",
@@ -48,9 +51,11 @@ export const coaching = {
   weekly: 59,
   weeks: 12,
   currency: "NZ$",
-  currencyCode: "NZD", // ISO 4217, for structured data
-  /** Josh's decisions: both formats (4 Oct 2026); online is anywhere in New Zealand (7 Oct 2026). */
+  /** Josh's decisions: both formats (4 Oct 2026); online is anywhere in New Zealand (7 Oct 2026).
+   *  `/coaching`'s search data (Service areaServed) names the same two places: update it if this changes. */
   format: "In person in Dunedin, or online anywhere in New Zealand",
+  /** The format mid-sentence ("…, in person in Dunedin, or online…"). */
+  get formatInline() { return this.format.charAt(0).toLowerCase() + this.format.slice(1); },
   get total() { return this.weekly * this.weeks; },
 };
 

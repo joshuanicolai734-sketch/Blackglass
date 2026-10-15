@@ -62,7 +62,7 @@ export const coachingFaq: Faq[] = [
   },
   {
     q: "Do I need to be in Dunedin?",
-    a: `No. Coaching runs ${coaching.format.charAt(0).toLowerCase()}${coaching.format.slice(1)}.`,
+    a: `No. Coaching runs ${coaching.formatInline}.`,
   },
   {
     q: "Do I need the app to start coaching?",

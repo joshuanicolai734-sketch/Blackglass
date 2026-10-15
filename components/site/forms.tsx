@@ -120,10 +120,8 @@ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null
       <div className="field"><label htmlFor="e-route">What are you looking for?</label>
         <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"}><option value="coaching">{coaching.weeks}-week coaching</option><option value="programme">Programme only</option></select></div>
       <div className="field"><label htmlFor="e-goal">What do you want to change?</label>
-        <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby={bad("goal") ? "e-goal-hint enquire-error" : "e-goal-hint"} autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
+        <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby={bad("goal") ? "e-goal-hint enquire-error" : "e-goal-hint"} autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">A sentence or two is enough. Say whether you&rsquo;d like in person (Dunedin) or online. Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
       <div className="trap" aria-hidden="true"><label htmlFor="e-website">Leave blank</label><input id="e-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
-      {/* Reassurance at the click: what happens next, from facts already on this page. */}
-      <NextSteps className="form-steps" />
       <button className="btn btn-primary" type="submit"><span>Send my enquiry</span><Arrow /></button>
       <p className="form-note">No payment is taken here, and enquiring doesn&rsquo;t commit you to anything. {site.founder} uses these details only to reply. <a href="/privacy">Privacy</a></p>
       <div className="msg" data-form-msg role="status" aria-live="polite" hidden />

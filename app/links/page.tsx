@@ -4,14 +4,14 @@ import type { ReactNode } from "react";
 import { appCta, hasDownload } from "@/components/site/chrome";
 import { Arrow } from "@/components/site/ui";
 import { paths } from "@/content/brand";
-import { coaching, contact, site, socialLinks } from "@/content/site";
+import { coaching, contact, ogBase, site, socialLinks } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Links",
   description: "Join the Blackglass preview list, see how the app works, and coaching with Josh.",
   alternates: { canonical: "/links" },
   robots: { index: false, follow: true },
-  openGraph: { title: "Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
+  openGraph: { ...ogBase, title: "Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
 };
 
 function Item({ href, title, note, primary, track }: { href: string; title: string; note: ReactNode; primary?: boolean; track: string }) {
@@ -42,7 +42,7 @@ export default function Links() {
             note={clauses(hasDownload ? ["Android", "download and install"] : ["Free", "in development", "no iPhone app"])} />
           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
-            note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "any phone"])} />}
+            note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "Dunedin or online", "any phone"])} />}
           {socialLinks.map((s) => (
             <Item key={s.key} href={s.href} track={`links_${s.key}`} title={s.label} note="Follow Blackglass" />
           ))}
