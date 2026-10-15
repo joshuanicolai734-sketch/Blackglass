@@ -29,7 +29,7 @@ The fix is two small changes in the v33 source. **Neither touches the React play
    - It handles open-ended, suffix and out-of-range (`416`) requests.
    - It stores nothing in Cache Storage. Freshness stays with normal HTTP caching (ETag revalidation).
    - **Version identity:** each answer repeats the clip's `ETag`/`Last-Modified`. A copy held in memory is refetched after 30 s; against the live host that's a `304` revalidation, not a re-download. An `If-Range` that no longer matches (stale or weak tag, different date) ignores the range and returns the whole current file as `200`, per RFC 9110 §13.1.5. Bytes from two versions of a clip are never spliced together.
-   - If the fetch fails, it falls back to the network unchanged.
+   - If the first fetch of a clip fails, it falls back to the network unchanged. If a 30-second refresh fails (a phone losing signal), it keeps answering from the copy it already holds and tries again 30 s later (added 15 October).
 2. **Append `site-js-append.js` to `public/site.js`.** It registers the worker on `/movements` pages only. A clip that finished loading before the worker took control (first visit) is reloaded once, only while paused.
 
 **Why a worker and not the obvious client fix:** serving clips from `blob:` URLs makes them seekable too, and the first test seeked correctly. But the player checks `video.currentSrc` against the clip path and React owns the `src` prop. Swapping `src` outside React makes the next render reset it. That reloads the video and silently aborts **Play**: in testing, the Play button stopped working. Doing it properly means rewriting the player's source tracking and handling a race if Play is pressed before the blob arrives. The worker keeps every URL identical, so the player's own logic is untouched.
@@ -65,13 +65,21 @@ All runs used headless Chromium with every `/api/` request intercepted (0 reache
   | Range with no `If-Range`, 31 s later | 206, `bytes 0-99/44523`, E2 |
 
 - **First-visit recovery under a slow network:** the clip response was delayed 2.5 s, Play was pressed at once, and the slider was dragged to 60 % on Pixel 7 emulation. Result: playing, controlled by the worker, `seekable [0, 4]`, the scrub landed at 2.40 s, no error.
+- **Network drop (15 October):** the held copy was made stale, the network was cut, and six range requests were sent at once, as a scrub does.
+  - The 6 October worker answered none of them (each failed with `TypeError`).
+  - The current worker answers all six with `206` from the copy it holds, then refreshes once the network is back.
+  - The same Safari-style suite as below still passes 12/12: WebKit's `bytes=0-1` probe, the whole clip, the tail, 40 concurrent ranges with 10 aborted (every byte matched the file), `416`, a clamped end, a weak `If-Range`, and a seek to 2.40 s.
 - **Scope:** the home page is not controlled by the worker. The direct clip link (`/movements/push-up-front.mp4`) still opens with `200 video/mp4`.
 - **On the real live origin**, with the worker injected by test-browser routing and nothing deployed: it registers and controls `/movements`. For the live 146,583-byte clip it returns `206` for `0-99`, `1000-` and `-200`, while the direct network answer is still `200`. The live page has no Content-Security-Policy header and no Trusted Types policy, so registration isn't blocked.
 - **Live validators (curl):** clips carry a strong `ETag` and `Cache-Control: public, max-age=0, must-revalidate`; a matching `If-None-Match` returns `304`. The host ignores `If-Range` too (`Range: bytes=0-99` with a matching `If-Range` still returns `200`, full body), so the worker is what answers it.
 
 ## Not verified
 
-- **iPhone Safari:** not tested; the test environment has no WebKit. Safari is known to need `206` responses for MP4. Serving them from a service worker is the usual workaround, but confirm on an iPhone.
+- **iPhone Safari:** not tested on a device; the test environment has no WebKit. A review of WebKit's source and bug tracker (15 October) found no blocker:
+  - Safari sends media requests through the controlling worker with the `Range` header intact, and accepts `206` responses made by a worker.
+  - Safari's own fallback for hosts that answer `200` is fragile (WebKit bug 284443 is still open), so the worker's real `206` answers are the safer path.
+  - **Gap:** in-app browsers (the ones Instagram and Facebook open links in) don't run service workers, so those visitors keep today's behaviour. Only Range support on the host fixes them (see the last section).
+  - Confirm on an iPhone.
 - **Real H.264 decoding** of the original clips during seeking: the test browser can't decode H.264, so the A/B used VP9 copies of the same clips (same 4 s, 24 fps, single keyframe).
 - **Firefox:** not tested.
 - **The production deploy itself:** whether the Sites host serves the new file at the root with a JavaScript MIME type. Check it after deploying with `curl -I https://blackglass.co.nz/movement-clips-sw.js`.

@@ -11,7 +11,9 @@
  * Version identity: every answer carries the clip's ETag/Last-Modified, a
  * held copy is refetched (a cheap 304 revalidation) after FRESH_MS, and an
  * If-Range that no longer matches gets the whole new file (200), so the
- * media stack never splices bytes from two versions of a clip.
+ * media stack never splices bytes from two versions of a clip. A refresh that
+ * fails (a phone losing signal) keeps serving the copy already held and tries
+ * again after FRESH_MS; only a clip never fetched falls back to the network.
  */
 const CLIP = /^\/movements\/[a-z0-9-]+\.mp4$/;
 const FRESH_MS = 30000;
@@ -29,7 +31,7 @@ self.addEventListener('fetch', (event) => {
 function whole(path) {
   const held = memo.get(path);
   if (held && Date.now() - held.at < FRESH_MS) return held.clip;
-  const clip = fetch(path, { credentials: 'same-origin' }).then(async (r) => {
+  const fresh = fetch(path, { credentials: 'same-origin' }).then(async (r) => {
     if (!r.ok) throw new Error(`clip ${r.status}`);
     return {
       buf: await r.arrayBuffer(),
@@ -38,6 +40,7 @@ function whole(path) {
       modified: r.headers.get('Last-Modified'),
     };
   });
+  const clip = held ? fresh.catch(() => held.clip) : fresh;
   const entry = { at: Date.now(), clip };
   memo.set(path, entry);
   clip.catch(() => memo.get(path) === entry && memo.delete(path));
@@ -84,6 +87,7 @@ async function serve(request, path) {
   }
   return new Response(clip.buf.slice(start, end + 1), {
     status: 206,
+    statusText: 'Partial Content',
     headers: { ...base, 'Content-Range': `bytes ${start}-${end}/${size}`, 'Content-Length': String(end - start + 1) },
   });
 }
