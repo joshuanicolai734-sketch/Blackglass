@@ -62,6 +62,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .sh-dash { width: 16px; border-top: var(--hair) solid var(--rule-strong); }
 .sh-rule { flex: 1; min-width: 24px; border-top: var(--hair) solid var(--rule); }
 .sh-meta { white-space: nowrap; }
+@media (max-width: 479.98px) { .sh { gap: 8px; } .sh-dash { display: none; } } /* keeps "Get started", "Why it helps" on one line */
 
 /* Spec card: label–value, hairline-ruled, square. */
 .spec { position: relative; display: grid; gap: 12px; align-content: start; padding: 24px 0 28px; border-top: var(--hair) solid var(--rule); }
@@ -244,6 +245,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .rl-path i { position: absolute; left: -5px; top: -5px; width: 11px; height: 11px; background: var(--c-volt); outline: 2px solid var(--c-glass); will-change: transform; }
 .rl-floor { top: var(--fl); left: 5cqw; right: 5cqw; height: var(--hair); background: var(--rule-strong); }
 .rl-tempo { left: 58cqw; right: 5cqw; bottom: calc(100cqh - var(--fl) + 4cqh); display: grid; gap: 1.2cqh; }
+@container reel (max-width: 359.98px) { .rl-tempo { left: 52cqw; } } /* three 12px columns need ~130px; still clear of the figure */
 .rl-cols { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 8px; }
 .rl-col { display: grid; gap: 6px; }
 .rl-n { font-weight: 800; font-size: 13.2cqw; line-height: .8; letter-spacing: -.065em; font-variant-numeric: tabular-nums; color: var(--fg); }
@@ -392,6 +394,7 @@ html:not(.js) .demo-tabs { display: none; }
 .demo-tabs[data-ink] .demo-sq { display: block; top: 50%; width: var(--signal-size); height: var(--signal-size); margin-top: -3px; background: var(--c-volt); transform: translateX(calc(var(--sx, 0) * 1px)); }
 .demo-tabs[data-ink] button::after, .demo-tabs[data-ink] button .sq { visibility: hidden; }
 .demo-tabs[data-ink-live] .demo-bar, .demo-tabs[data-ink-live] .demo-sq { transition: transform var(--t-drive) var(--ease-expo); }
+@media (max-width: 359.98px) { .demo-tabs { gap: 10px; } } /* all three tabs fit at 320px instead of "03 LE" */
 .demo-panel { display: grid; gap: 40px; align-items: center; }
 html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-ui { display: grid; }
@@ -567,7 +570,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .links-inner > p { text-align: center; color: var(--fg-2); margin-bottom: 32px; }
 .link-list { display: grid; gap: 10px; }
 .link-list .btn { width: 100%; min-height: 68px; white-space: normal; }
-.link-list .btn small { display: block; margin-top: 8px; font-size: var(--fs-label); opacity: .8; }
+.link-list .btn small { display: block; margin-top: 8px; font-size: var(--fs-label); opacity: .8; text-wrap: balance; }
 .links-foot { margin-top: 32px; text-align: center; line-height: 2; }
 .links-foot a { display: inline-flex; align-items: center; min-height: 24px; }
 
@@ -680,7 +683,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   /* 12px like every label; the tighter tracking keeps "01 / Squat" on one line at 320px. */
   .ms-exercises .label { letter-spacing: .04em; }
   .ms-exercises .title { font-size: 1.0625rem; }
-  .ms-studio .ms-play { min-width: 88px; }
+  .ms-studio .ms-play { min-width: 94px; } /* fits "Pause" (92px), so Play and Pause match and the row never re-wraps on the tap */
 }
 @media (min-width: 900px) {
   .ms-panel { grid-template-columns: minmax(0, 1.65fr) minmax(250px, 1fr); gap: 48px; align-items: start; }
@@ -724,7 +727,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .hero::after { content: ""; position: absolute; z-index: -1; right: -8vw; bottom: -12vw; width: 60vw; height: 34vw; pointer-events: none; opacity: .82;
   clip-path: polygon(72% 0, 84% 0, 19% 100%, 0 100%); background: linear-gradient(115deg, var(--c-ember), var(--c-volt)); }
 .hero-grid { position: relative; z-index: 1; }
-.hero-kicker { margin: 0 0 24px; color: var(--fg-2); }
+.hero-kicker { margin: 0 0 24px; color: var(--fg-2); text-wrap: balance; }
 .hero-kicker span { margin-right: 12px; color: var(--c-volt); font-weight: 700; letter-spacing: -.08em; }
 .hero h1 { max-width: 11ch; font-weight: 850; line-height: .86; letter-spacing: -.058em; text-transform: uppercase; }
 .hero .body-2 { max-width: 36ch; }
@@ -753,10 +756,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .sticky-cta .btn { flex: 1 1 auto; padding: 0 14px; gap: 12px; }
 .sticky-cta .btn-ghost { flex: 0 0 auto; }
 html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-@media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
+@media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] { scroll-padding-bottom: 0; } html[data-sticky-on] body { padding-bottom: 0; } }
 /* Short screens (landscape phones, 400% zoom at 320x256): the sticky header already carries the same action, so the bar
    stays away instead of leaving the page a strip between two copies of it. */
-@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
+@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] { scroll-padding-bottom: 0; } html[data-sticky-on] body { padding-bottom: 0; } }
 
 /* Reduced motion: nothing moves, draws or scales; state changes are colour and opacity only. */
 @media (prefers-reduced-motion: reduce) {

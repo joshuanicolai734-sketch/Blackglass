@@ -24,7 +24,7 @@ function Item({ href, title, note, primary, track }: { href: string; title: stri
 
 // Each clause stays whole, so a narrow phone breaks the note at a separator and never inside "12 weeks".
 function clauses(parts: string[]): ReactNode {
-  return parts.map((t, i) => <span key={t}>{i > 0 && " · "}<span className="nb">{t}</span></span>);
+  return parts.map((t, i) => <span key={t}>{i > 0 && "\u00a0· "}<span className="nb">{t}</span></span>);
 }
 
 export default function Links() {
