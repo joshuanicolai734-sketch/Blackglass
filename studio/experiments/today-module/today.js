@@ -115,7 +115,7 @@
     locked = true; primary.setAttribute("aria-disabled", "true");
     if (!reduce.matches) primary.textContent = "Set logged"; // feedback at the thumb, where the press happened
     clearTimeout(lockTimer);
-    lockTimer = setTimeout(function () { locked = false; primary.removeAttribute("aria-disabled"); render(); }, reduce.matches ? 0 : LOCK_MS);
+    lockTimer = setTimeout(function () { locked = false; primary.removeAttribute("aria-disabled"); render(); }, LOCK_MS); // duplicate-input protection does not depend on motion preference
   }
 
   primary.addEventListener("click", function () {

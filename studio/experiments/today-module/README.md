@@ -21,7 +21,7 @@ Open `index.html` through any static server from the repository root (it reads f
 **Chosen: A.** It plays once (when the module scrolls into view, or on "Replay the intro"), takes about 1.4 s, and then the module is still. Set completion uses a short tick lock (one drive) rather than more assembly. Reduced motion: no assembly and no tweens; the same states change instantly and stay marked.
 
 ## Interaction rules
-- A logged set holds the button for 450 ms (`aria-disabled`, focus kept), so a rapid double click or Enter logs one set.
+- A logged set holds the button for 450 ms in every motion mode (`aria-disabled`, focus kept), so a rapid double click or Enter logs one set.
 - Keyboard: Tab order is skip link, primary, replay (Pause and Reset join when shown). Enter and Space work. No focus trap. Focus moves to the primary button after Pause and Reset, so it never lands on a hidden control.
 - Touch targets are at least 52 px tall. Smallest text is 12 px.
 - No JavaScript: the full plan and the first action are readable; the buttons stay hidden and a note says logging needs JavaScript.
