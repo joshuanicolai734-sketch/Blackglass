@@ -768,3 +768,45 @@ html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bott
   [data-page="coaching"] .section.fit { padding-block: calc(var(--section) * .6); }
   .section.faq-end { padding-bottom: calc(var(--section) * .3); }
 }
+
+/* /cut: the free cut calculator. Form and result side by side from 1000px; the result follows the form on phones.
+   Inputs reuse .form-card and .field; the segmented choices are native radios under a mono chip. */
+.cut-calc { display: grid; gap: 40px; }
+@media (min-width: 1000px) { .cut-calc { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 56px; align-items: start; } .cut-result { position: sticky; top: 96px; } }
+.cut-fs { border: 0; padding: 0; margin-inline: 0; min-width: 0; }
+.cut-fs legend { padding: 0; margin-bottom: 10px; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg); }
+.cut-seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.field .cut-seg label { position: relative; display: block; }
+.cut-seg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.cut-seg span { display: inline-flex; align-items: center; min-height: 48px; padding: 12px 18px; border: var(--hair) solid var(--rule-strong); color: var(--fg-2); transition: border-color var(--t-snap), color var(--t-snap); }
+.cut-seg input:checked + span { border-color: var(--fg); color: var(--fg); box-shadow: inset 0 -2px 0 var(--signal); }
+.cut-seg input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) { .cut-seg label:hover span { border-color: var(--fg-2); } }
+.cut-seg[aria-invalid="true"] span { border-color: var(--c-danger); }
+.cut-row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px; }
+.cut-hint { margin: 14px 0 0; font-size: .875rem; color: var(--fg-3); }
+.field.cut-checks { gap: 14px; }
+.field.cut-checks label { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; font: 400 .9375rem/1.45 var(--font-sans); letter-spacing: 0; text-transform: none; color: var(--fg-2); cursor: pointer; }
+.cut-checks input { width: 20px; height: 20px; min-height: 0; margin: 1px 0 0; accent-color: var(--c-volt); }
+.cut-errlist { margin: 8px 0 0; padding-left: 1.1em; }
+.cut-form .btn[disabled] { opacity: .45; cursor: not-allowed; }
+.cut-out { padding-top: 8px; }
+.cut-out > .title { outline: 0; }
+.cut-big { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 16px; margin: 16px 0 24px; }
+.cut-kcal { font-weight: 800; font-size: clamp(4rem, 10vw, 6.5rem); line-height: .82; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.cut-big .label { padding-bottom: .3em; }
+.cut-spec { display: grid; grid-template-columns: 1fr auto; margin: 0 0 24px; border-top: var(--hair) solid var(--rule); }
+.cut-spec dt, .cut-spec dd { margin: 0; padding: 12px 0; border-bottom: var(--hair) solid var(--rule); }
+.cut-spec dt { color: var(--fg-3); }
+.cut-spec dd { color: var(--fg); text-align: right; font-variant-numeric: tabular-nums; }
+.cut-out .body-2 { margin: 0 0 16px; }
+.cut-table-wrap { overflow-x: auto; margin: 8px 0 24px; }
+.cut-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.cut-table caption { text-align: left; padding-bottom: 12px; color: var(--fg-3); }
+.cut-table th, .cut-table td { padding: 10px 8px 10px 0; border-bottom: var(--hair) solid var(--rule); text-align: right; white-space: nowrap; }
+.cut-table th:first-child { text-align: left; }
+.cut-table thead th { font: 500 var(--fs-label)/1.3 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); border-bottom-color: var(--rule-strong); }
+.cut-table tbody th { font-weight: 500; color: var(--fg); }
+.cut-table td { color: var(--fg-2); }
+.cut-table tr.is-maint th, .cut-table tr.is-maint td { color: var(--fg); background: rgba(244, 63, 70, .12); }
+.cut-ref { margin-top: clamp(48px, 7vw, 80px); max-width: 60rem; }

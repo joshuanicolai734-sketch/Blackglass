@@ -1,4 +1,4 @@
-import { app, coaching, site } from "./site";
+import { app, coaching, cutPlan, site } from "./site";
 
 export type Faq = { q: string; a: string };
 
@@ -79,5 +79,39 @@ export const getFaqLive: Faq[] = [
   {
     q: "Is there an iPhone version?",
     a: "No. Blackglass is Android only.",
+  },
+];
+
+const cutPrice = `${cutPlan.currency}${cutPlan.price}`;
+
+/** Shown on /cut. Keep these true to the current edition of the plan and to `content/site.ts → cutPlan`. */
+export const cutFaq: Faq[] = [
+  {
+    q: "What do I get?",
+    a: `A ${cutPlan.pages}-page PDF, laid out to read on a phone: how to work out your calories, protein and weekly rate, four training splits for 3 to 6 days a week with a no-gym swap for every exercise, the weekly check-in and its rules, a maintenance week, an example day of eating and logs. It costs ${cutPrice}, once.`,
+  },
+  {
+    q: "How is it delivered?",
+    a: cutPlan.storeUrl
+      ? `${cutPlan.storeName ?? "The store"} handles payment and emails you the download straight away. No account on this site.`
+      : "It isn't on sale yet. The calculator on this page is free to use now.",
+  },
+  {
+    q: "Do I need a gym?",
+    a: "No. Every exercise has a swap for adjustable dumbbells and a bench. A gym makes the training easier to progress.",
+  },
+  {
+    q: "Is this coaching?",
+    a: coaching.available
+      ? `No. It's a plan you run yourself, with no check-ins from ${site.founder}. For a plan built around your week and a weekly check-in, see coaching with ${site.founder}: ${coaching.currency}${coaching.weekly} a week.`
+      : "No. It's a plan you run yourself.",
+  },
+  {
+    q: "Is it safe for me?",
+    a: "It's for healthy adults. It isn't for anyone under 18, pregnant or breastfeeding, with a history of an eating disorder, or with a medical condition or medicine that affects appetite, blood sugar or blood pressure: talk to your GP instead. Calories never go below 1,400 a day or 22 per kg of bodyweight. It's general guidance, not medical advice.",
+  },
+  {
+    q: "What happens to what I type in the calculator?",
+    a: "Nothing leaves your browser. The numbers are worked out on your phone or computer, and nothing is sent to this site or saved.",
   },
 ];

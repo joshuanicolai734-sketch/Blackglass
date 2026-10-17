@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/site/chrome";
 import { SectionHead } from "@/components/site/ui";
-import { contact, site } from "@/content/site";
+import { contact, cutPlan, site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -19,7 +19,7 @@ export default function Privacy() {
           <div className="wrap">
             <SectionHead title="Privacy" meta="This website" />
             <h1 className="display">Your details. Your choice.</h1>
-            <p className="body-2">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list and the site&rsquo;s visit counts.</p>
+            <p className="body-2">{site.name} is run by {site.founder} in {site.location}. This notice covers this website: the coaching enquiry form, the Android preview list, the cut calculator and the site&rsquo;s visit counts.</p>
           </div>
         </section>
         <section className="section" style={{ paddingTop: 64 }} data-sec>
@@ -33,6 +33,8 @@ export default function Privacy() {
             <p>Submissions are stored in the website&rsquo;s database with its hosting provider and are visible only in an owner sign-in area. They&rsquo;re kept while needed for the conversation, the preview and any resulting service or records, then removed.</p>
             <h2>Visit counts</h2>
             <p>The site counts a few actions, such as visits to the Get Blackglass page, button taps and completed forms, as daily totals, along with the campaign a visit came from (for example &ldquo;instagram&rdquo;). It sets no tracking cookies and stores no IP address or device identifier. The one exception: if you submit a form with JavaScript switched off and it is rejected, your typed answers are held in a single cookie for two minutes so the form can be filled back in for you. It is never used for anything else.</p>
+            <h2>The cut calculator</h2>
+            <p>The calculator on the Cut page works everything out in your browser. What you type there, including your weight, measurements and the health questions, is never sent to this website or saved. If you buy {cutPlan.name}, the online store linked on that page handles the payment and your email address under its own privacy policy; this website doesn&rsquo;t receive your card details.</p>
             <h2>Your choices</h2>
             <p>Ask {site.founder} for access to, correction of, or deletion of your details at <a href={`mailto:${contact.email}`}>{contact.email}</a>. You can also leave the preview list at any time by emailing the same address.</p>
             <h2>The app</h2>
