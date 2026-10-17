@@ -58,7 +58,7 @@ export default function Cut() {
               </div>
               <ul className="includes">
                 <li>Your calories, protein and weekly rate, worked out step by step</li>
-                <li>Four training splits for 3 to 6 days a week, with a no-gym swap for every exercise</li>
+                <li>Four training splits for 3 to 6 days a week, with a dumbbell option for every exercise</li>
                 <li>A weekly check-in, with clear rules for when to change</li>
                 <li>A maintenance week, an example day of eating, and logs</li>
               </ul>
@@ -85,7 +85,7 @@ export default function Cut() {
             <ol className="steps cut-rules">
               <SpecCard as="li" index="01" title="0.5 to 1% a week"><p>Matched to your body fat, and slower as you lean out: lean people lose more muscle at the same deficit.</p></SpecCard>
               <SpecCard as="li" index="02" title="Protein for your muscle"><p>2.2 to 2.6 g per kg of lean mass a day, rising as you get leaner.</p></SpecCard>
-              <SpecCard as="li" index="03" title="Train hard, keep the volume"><p>At least {SETS_PER_MUSCLE_MIN} hard sets per muscle a week. Holding your strength is the sign the muscle is staying.</p></SpecCard>
+              <SpecCard as="li" index="03" title="Train hard, keep the volume"><p>At least {SETS_PER_MUSCLE_MIN} hard sets a week for each major muscle group. Holding your strength is the sign the muscle is staying.</p></SpecCard>
               <SpecCard as="li" index="04" title="A planned break"><p>A week at maintenance after every {WEEKS_BEFORE_BREAK} weeks of deficit.</p></SpecCard>
               <SpecCard as="li" index="05" title="A floor that wins"><p>Never below {KCAL_FLOOR.toLocaleString("en-NZ")} kcal a day or {KCAL_FLOOR_PER_KG} per kg of bodyweight, even when it makes you slower.</p></SpecCard>
             </ol>

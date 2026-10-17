@@ -88,7 +88,7 @@ const cutPrice = `${cutPlan.currency}${cutPlan.price}`;
 export const cutFaq: Faq[] = [
   {
     q: "What do I get?",
-    a: `A ${cutPlan.pages}-page PDF, laid out to read on a phone: how to work out your calories, protein and weekly rate, four training splits for 3 to 6 days a week with a no-gym swap for every exercise, the weekly check-in and its rules, a maintenance week, an example day of eating and logs. It costs ${cutPrice}, once.`,
+    a: `A ${cutPlan.pages}-page PDF, laid out to read on a phone: how to work out your calories, protein and weekly rate, four training splits for 3 to 6 days a week with a dumbbell option for every exercise, the weekly check-in and its rules, a maintenance week, an example day of eating and logs. It costs ${cutPrice}, once.`,
   },
   {
     q: "How is it delivered?",
@@ -98,7 +98,7 @@ export const cutFaq: Faq[] = [
   },
   {
     q: "Do I need a gym?",
-    a: "No. Every exercise has a swap for adjustable dumbbells and a bench. A gym makes the training easier to progress.",
+    a: "No. Every exercise has a dumbbell option, so adjustable dumbbells and a bench are enough. A gym makes the training easier to progress.",
   },
   {
     q: "Is this coaching?",
