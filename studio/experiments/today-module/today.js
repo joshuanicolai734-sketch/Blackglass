@@ -111,9 +111,9 @@
     if (announce) say(announce);
   }
 
-  function hold() {
+  function hold(logged) {
     locked = true; primary.setAttribute("aria-disabled", "true");
-    if (!reduce.matches) primary.textContent = "Set logged"; // feedback at the thumb, where the press happened
+    if (logged && !reduce.matches) primary.textContent = "Set logged"; // feedback at the thumb, where the press happened
     clearTimeout(lockTimer);
     lockTimer = setTimeout(function () { locked = false; primary.removeAttribute("aria-disabled"); render(); }, LOCK_MS); // duplicate-input protection does not depend on motion preference
   }
@@ -122,10 +122,10 @@
     if (locked) return;
     if (state.phase === "idle" || state.phase === "done") {
       state = { phase: "active", done: 0 };
-      save(); render("Session started. Set 1 is next.");
+      save(); render("Session started. Set 1 is next."); hold(false); // a rapid second activation must not log a set
     } else if (state.phase === "paused") {
       state.phase = "active";
-      save(); render("Resumed. " + state.done + " of " + TOTAL + " sets logged.");
+      save(); render("Resumed. " + state.done + " of " + TOTAL + " sets logged."); hold(false);
     } else {
       var w = where(state.done);
       justIndex = w.m;
@@ -133,9 +133,13 @@
       if (state.done >= TOTAL) state.phase = "done";
       save();
       render(state.phase === "done" ? "Last set logged. Session complete." : "Set logged. " + state.done + " of " + TOTAL + ".");
-      hold();
+      hold(true);
     }
   });
+
+  // A held Enter repeats keydown and would click again once the cooldown ends, even across the finished-session boundary.
+  // Only repeats are cancelled: a first press, Space and ordinary clicks are untouched.
+  primary.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.repeat) e.preventDefault(); });
 
   pause.addEventListener("click", function () {
     if (state.phase !== "active") return;
@@ -149,29 +153,34 @@
   });
 
   // Intro assembly. Plays once on load, on request, and never under reduced motion.
-  var assembleTimer = 0;
+  var assembleTimer = 0, assembleFrame = 0, io = null;
   var actionsEl = root.querySelector(".actions");
   function setHeld(on) { if (actionsEl) actionsEl.inert = on; } // invisible actions must not take focus either
+  function cancelIntro() { // one cleanup for every way the intro can end early
+    clearTimeout(assembleTimer); cancelAnimationFrame(assembleFrame);
+    if (io) { io.disconnect(); io = null; }
+    root.classList.remove("assembling", "assemble"); setHeld(false);
+  }
   function assemble() {
     if (reduce.matches) return;
-    clearTimeout(assembleTimer);
+    clearTimeout(assembleTimer); cancelAnimationFrame(assembleFrame);
     moveEls.forEach(function (el, i) { el.style.setProperty("--i", i); });
     root.classList.remove("assemble"); root.classList.add("assembling"); setHeld(true);
     void root.offsetWidth;
-    requestAnimationFrame(function () {
+    assembleFrame = requestAnimationFrame(function () {
       root.classList.add("assemble");
-      assembleTimer = setTimeout(function () { root.classList.remove("assembling", "assemble"); setHeld(false); }, 1400); // lockout: back to static
+      assembleTimer = setTimeout(cancelIntro, 1400); // lockout: back to static
     });
   }
   replay.addEventListener("click", assemble);
-  var onMotion = function () { replay.hidden = reduce.matches; };
+  var onMotion = function () { replay.hidden = reduce.matches; if (reduce.matches) cancelIntro(); };
   if (reduce.addEventListener) reduce.addEventListener("change", onMotion); else if (reduce.addListener) reduce.addListener(onMotion);
 
   // Stop work when offscreen: the intro only starts when the module is in view.
   render();
   if ("IntersectionObserver" in window && !reduce.matches) {
     root.classList.add("assembling"); setHeld(true); // hold the rows hidden for the moment before the intro starts
-    var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { io.disconnect(); assemble(); } }, { threshold: 0.2 });
+    io = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { io.disconnect(); io = null; assemble(); } }, { threshold: 0.2 });
     io.observe(root);
   }
 })();

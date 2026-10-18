@@ -55,3 +55,8 @@ Not tested: any physical phone or touch hardware, Safari or Firefox, a screen re
 - "Replay the intro" is hidden under reduced motion and follows the media query live. Replay clears its cleanup timer, and the actions ignore pointer input while the intro runs.
 - No-JS copy is neutral; the reserved two-line "Next" height applies below 600 px only; the pane rule is an inset shadow (the outline was clipped); the dead `aria-pressed` rule and attribute are gone.
 - Evidence: `evidence/round2/`.
+
+## Round 5 (Gamma's three input findings on `c86fa68`)
+- Start and resume now take the same 450 ms input lock as a logged set (`hold(false)`, no "Set logged" label), so a rapid second activation cannot log a set.
+- `cancelIntro()` is the single intro cleanup: it clears the timer and pending frame, disconnects the observer and releases `inert`. It also runs when reduced motion turns on, before or during the intro.
+- A held Enter (`keydown` with `repeat`) is cancelled on the primary button only. A first press, Space and ordinary clicks are unchanged, so a held Enter cannot cross the finished-session boundary.
