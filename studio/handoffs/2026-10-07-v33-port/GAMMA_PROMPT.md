@@ -2,6 +2,8 @@
 
 GitHub comments don't reach Gamma on their own (`studio/collaboration/README.md`: GitHub "is not an automatic agent-to-agent connection"). Paste the text below into the ChatGPT project that owns the Blackglass Site.
 
+> **Update, 28 October:** the public site (Sites v34) already has items 1–5 and 8–11, and part of item 12. What's left is item 7, the clip worker, plus the v34 home-page labels under 12 px; the README's "Status on the public site" section has the evidence. If you paste this, ask Gamma for those two only.
+
 ---
 
 Gamma, this is Josh. I've approved two things, for the owner-only preview only. Don't publish.

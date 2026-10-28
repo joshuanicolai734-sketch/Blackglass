@@ -1,4 +1,44 @@
-# v33 port: coaching format and mobile fixes (7 October 2026, updated 15 October)
+# v33 port: coaching format and mobile fixes (7 October 2026, updated 28 October)
+
+## Status on the public site: Sites v34 (checked 28 October)
+
+Gamma confirmed on 28 October that the public site is Sites version 34. Checked read-only against `https://blackglass.co.nz` in headless Chromium, with every `/api/` request aborted and beacons stubbed (0 reached the server). **Don't re-port items 1–5 and 8–11: v34 already has them.**
+
+| # | On v34? | Evidence |
+| --- | --- | --- |
+| 1 | yes | C1 ×3 pass: offer list, meta description, FAQ. |
+| 2 | yes | C2 passes at 320 and 360 px. |
+| 3 | yes | C4 passes on all 8 pages, with and without JavaScript. |
+| 4 | yes, except `/` | C3 passes on 7 pages. `/` has new v34 labels under 12 px (open item 2 below). |
+| 5 | yes | C6 passes; Play is 94 px wide (item 12's value). |
+| 6 | not checked | `/admin` is owner-only. |
+| 7 | **no** | `/movement-clips-sw.js` returns `404`; a clip `Range: bytes=0-99` request returns `200` with the whole 146,583-byte file. |
+| 8 | yes | C4 without JavaScript passes on `/movements`. |
+| 9 | yes | At 320×256 the action bar is `display: none`; at 390×844 it still shows. |
+| 10 | yes | Title, description and `og:site_name`/`locale`/`type`; `Service` JSON-LD with no `offers` and Dunedin inside New Zealand; the `/get` title. `/og/coaching.png` is byte-identical to the `104b3d9` render. |
+| 11 | yes, Gamma's variant | The hero states format and price; coaching header links go to `/coaching#how-it-works` and `/coaching#questions`; the goal hint and the `/links` note match. v34 keeps its one set of next steps inside the form rather than in the hero, so there's still no duplicate. |
+| 12 | partly | Play is 94 px. v34's home page differs from this repository's (new hero), so the demo-tab, showreel and section-head fixes don't map onto it. |
+
+**`verify-staging.mjs https://blackglass.co.nz --clip`: 99/105.** The failures are C3 on `/` (4 runs) and C7 (2 checks; the other two C7 checks only run once a worker controls the page).
+
+**Still open on v34:**
+1. **Clip seeking (item 7, approved for staging).** v34's player (`movement-studio-BjhqG_T_.js`) uses the same seek rule as v33's: it only seeks to a position inside `video.seekable`. A/B on a local copy of the v34 `/movements` page and its bundles, desktop and Pixel 7 (clips transcoded to VP9 because the test browser can't decode H.264):
+
+   | Host | `seekable` | Scrub 60 / 25 / 90 % | Message |
+   | --- | --- | --- | --- |
+   | Ignores Range (like live) | `[0, 0]` | 0 / 0 / 0 s | "That position couldn't load…" |
+   | Ignores Range, plus `movement-clips-sw.js` and the `site.js` append | `[0, 4]` | 2.4 / 1.0 / 3.6 s | none |
+   | Supports Range | `[0, 4]` | 2.4 / 1.0 / 3.6 s | none |
+
+   So scrubbing fails on live because the host ignores Range, and the worker (or Range support on the host) fixes it. Play works in all three.
+2. **Home-page labels under 12 px.** These are new in v34 and not in this repository.
+   - **10 px:** `.home-hero-topline.label`, `.home-hero-bottomline.label` (including the "Inside Blackglass" link), `.home-motion-chapter summary .label`, and `.phase-controls button span` ("01"–"03").
+   - **11 px:** `.home-principle-screen.label`, `.price .price-labels span`, and at 1280 px `.demo-bay .bay-topline span`.
+   - Set them to the 12 px label token in the v34 source.
+3. **Owner inbox (item 6):** check `/admin` by hand.
+
+After those, the same command should report **107/107**.
+
 
 ## Approvals (Josh, 7 Oct, in chat)
 
@@ -54,7 +94,7 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 - **C1:** the format line, meta description and FAQ on `/coaching`.
 - **C2:** every enquiry option fits its select at 320 and 360 px.
 - **C3:** no text under 12 px.
-- **C4:** no target under 24 px tall. A link is exempt only when it sits inside real sentence text (WCAG 2.5.8). A row of links such as "Open A / Open B" isn't a sentence. Navigation, breadcrumb and footer links are never exempt.
+- **C4:** no target under 24 px tall. A link is exempt only when it sits inside real sentence text (WCAG 2.5.8). A row of links such as "Open A / Open B" isn't a sentence. Navigation, breadcrumb and footer links are never exempt. A checkbox or radio counts its label's box, since the label activates it (v34's 20×20 "Repeat" checkbox has a 78×44 label).
 - **C5:** no horizontal overflow.
 - **C6:** the Movement Studio play row fits with "Playing" and "Loading".
 - **C7 (`--clip`):**
@@ -72,6 +112,7 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 | Baseline build with the item 8 fix (local) | 102 / 103 | Only `/` at 320 px is 331 px wide, from the offer cards. Fixed in PR #11; live doesn't have this problem, so it isn't needed there. |
 | Baseline build before the item 8 fix (local) | 101 / 103 | Also fails C4 no-JS on `/movements`: both fallback links are 15 px. This shows the new check catches the problem. |
 | Live v33, with `--clip` | 66 / 105 | All known gaps: C1 ×3, C2 ×2, C3 ×7, C4 ×25 (with and without JavaScript), and C7 (worker 404, no controller, so its other two checks don't run). |
+| Live v34 (28 Oct), with `--clip` | 99 / 105 | C3 on `/` ×4 (new v34 labels at 10–11 px) and C7 (worker 404, no controller). See the v34 status above. |
 | Local copies that ignore `Range`, `--clip` only | worker: 4/4 C7; no worker: fails | With the worker, the clip returns `206 bytes 0-99/69396` and the scrub lands at 2.4 s. Without it: `404`, no controller. |
 | 15 Oct: local build with items 9–12 (`c1aaf43`) | 102 / 103 | Same single known failure as the baseline (PR #11's home overflow at 320 px). |
 

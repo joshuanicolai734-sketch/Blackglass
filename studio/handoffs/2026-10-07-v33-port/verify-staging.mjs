@@ -100,10 +100,16 @@ async function pageChecks(path, w, js) {
       if (getComputedStyle(e).display !== 'inline') return false;
       const p = e.parentElement; return !!p && otherWords(p) >= 2;
     };
+    // A checkbox or radio is also activated through its label, so its target is the label's box when that is larger.
+    const box = (e) => {
+      const r = e.getBoundingClientRect();
+      const labels = e.matches('input[type=checkbox], input[type=radio]') ? [...(e.labels || [])].filter(vis) : [];
+      return labels.reduce((b, l) => { const q = l.getBoundingClientRect(); return { height: Math.max(b.height, q.height), width: Math.max(b.width, q.width) }; }, { height: r.height, width: r.width });
+    };
     const taps = [...document.querySelectorAll('a[href], button, select, summary, input:not([type=hidden])')]
       .filter((e) => vis(e) && !e.closest('.trap'))
-      .filter((e) => { const r = e.getBoundingClientRect(); return r.height < 24 && !inSentence(e); })
-      .map((e) => { const r = e.getBoundingClientRect(); return `${e.tagName.toLowerCase()} ${Math.round(r.width)}x${Math.round(r.height)} "${(e.getAttribute('aria-label') || e.textContent).trim().slice(0, 30)}"`; });
+      .filter((e) => box(e).height < 24 && !inSentence(e))
+      .map((e) => { const r = box(e); return `${e.tagName.toLowerCase()} ${Math.round(r.width)}x${Math.round(r.height)} "${(e.getAttribute('aria-label') || e.textContent).trim().slice(0, 30)}"`; });
     return { small: [...new Set(small)], taps: [...new Set(taps)], sw: document.documentElement.scrollWidth, vw: innerWidth };
   });
   add(`C3 text >= 12px ${path} ${tag}`, m.small.length === 0, m.small.slice(0, 6).join('; ') || 'ok');
