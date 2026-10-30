@@ -1,15 +1,19 @@
-# v33 port: coaching format and mobile fixes (7 October 2026, updated 28 October)
+# v33 port: coaching format and mobile fixes (7 October 2026, updated 30 October)
 
-## Status on the public site: Sites v34 (checked 28 October)
+## Acceptance record on the public site: Sites v34 (checked 28 October, updated 30 October)
 
-Gamma confirmed on 28 October that the public site is Sites version 34. Checked read-only against `https://blackglass.co.nz` in headless Chromium, with every `/api/` request aborted and beacons stubbed (0 reached the server). **Don't re-port items 1–5 and 8–11: v34 already has them.**
+Gamma confirmed on 28 October that the public site is Sites version 34. Everything below was checked read-only against `https://blackglass.co.nz` in headless Chromium, with every `/api/` request aborted and beacons stubbed (0 reached the server). The record has three parts, and only part A is scored by `verify-staging.mjs`. **107/107 there is a scoped port check, not whole-site acceptance or release approval.**
+
+### A. Port items on v34, and the port checker
+
+**Don't re-port items 1–5 and 8–11: v34 already has them.**
 
 | # | On v34? | Evidence |
 | --- | --- | --- |
 | 1 | yes | C1 ×3 pass: offer list, meta description, FAQ. |
 | 2 | yes | C2 passes at 320 and 360 px. |
 | 3 | yes | C4 passes on all 8 pages, with and without JavaScript. |
-| 4 | yes, except `/` | C3 passes on 7 pages. `/` has new v34 labels under 12 px (open item 2 below). |
+| 4 | yes, except `/` | C3 passes on 7 pages. `/` has new v34 labels under 12 px (B1). |
 | 5 | yes | C6 passes; Play is 94 px wide (item 12's value). |
 | 6 | not checked | `/admin` is owner-only. |
 | 7 | **no** | `/movement-clips-sw.js` returns `404`; a clip `Range: bytes=0-99` request returns `200` with the whole 146,583-byte file. |
@@ -19,10 +23,17 @@ Gamma confirmed on 28 October that the public site is Sites version 34. Checked 
 | 11 | yes, Gamma's variant | The hero states format and price; coaching header links go to `/coaching#how-it-works` and `/coaching#questions`; the goal hint and the `/links` note match. v34 keeps its one set of next steps inside the form rather than in the hero, so there's still no duplicate. |
 | 12 | partly | Play is 94 px. v34's home page differs from this repository's (new hero), so the demo-tab, showreel and section-head fixes don't map onto it. |
 
-**`verify-staging.mjs https://blackglass.co.nz --clip`: 99/105.** The failures are C3 on `/` (4 runs) and C7 (2 checks; the other two C7 checks only run once a worker controls the page).
+**`verify-staging.mjs https://blackglass.co.nz --clip`: 99/105.** The checker scores items 1–8 only (C1–C7).
+- **Failures:** C3 on `/` in all 4 runs (B1), and 2 C7 checks (B2). The other two C7 checks only run once a worker controls the page.
+- **Target:** 107/107 once B1 and B2 are fixed.
 
-**Still open on v34:**
-1. **Clip seeking (item 7, approved for staging).** v34's player (`movement-studio-BjhqG_T_.js`) uses the same seek rule as v33's: it only seeks to a position inside `video.seekable`. A/B on a local copy of the v34 `/movements` page and its bundles, desktop and Pixel 7 (clips transcoded to VP9 because the test browser can't decode H.264):
+### B. Remaining UX items on v34
+
+1. **Home-page labels under 12 px (also C3).** These are new in v34 and not in this repository.
+   - **10 px:** `.home-hero-topline.label`, `.home-hero-bottomline.label` (including the "Inside Blackglass" link), `.home-motion-chapter summary .label` and `.phase-controls button span` ("01"–"03").
+   - **11 px:** `.home-principle-screen.label`, `.price .price-labels span`, and at 1280 px `.demo-bay .bay-topline span`.
+   - Set them to the 12 px label token in the v34 source.
+2. **Clip seeking (item 7, approved for staging; also C7).** On live, `/movement-clips-sw.js` returns `404`, and a clip `Range: bytes=0-99` request returns `200` with the whole 146,583-byte file. v34's player (`movement-studio-BjhqG_T_.js`) uses the same seek rule as v33's: it only seeks to a position inside `video.seekable`. A/B on a local copy of the v34 `/movements` page and its bundles, desktop and Pixel 7 (clips transcoded to VP9 because the test browser can't decode H.264):
 
    | Host | `seekable` | Scrub 60 / 25 / 90 % | Message |
    | --- | --- | --- | --- |
@@ -30,15 +41,17 @@ Gamma confirmed on 28 October that the public site is Sites version 34. Checked 
    | Ignores Range, plus `movement-clips-sw.js` and the `site.js` append | `[0, 4]` | 2.4 / 1.0 / 3.6 s | none |
    | Supports Range | `[0, 4]` | 2.4 / 1.0 / 3.6 s | none |
 
-   So scrubbing fails on live because the host ignores Range, and the worker (or Range support on the host) fixes it. Play works in all three.
-2. **Home-page labels under 12 px.** These are new in v34 and not in this repository.
-   - **10 px:** `.home-hero-topline.label`, `.home-hero-bottomline.label` (including the "Inside Blackglass" link), `.home-motion-chapter summary .label`, and `.phase-controls button span` ("01"–"03").
-   - **11 px:** `.home-principle-screen.label`, `.price .price-labels span`, and at 1280 px `.demo-bay .bay-topline span`.
-   - Set them to the 12 px label token in the v34 source.
-3. **Owner inbox (item 6):** check `/admin` by hand.
+   Play works in all three. This shows the mechanism, not real-browser behaviour (see C).
+3. **Share text (POLISH).** The home page's `og:title` ("Blackglass — One session. Then the next.") differs from its `<title>`, and the `/links` `og:title` is only "Blackglass". The home one was confirmed on 30 Oct.
+4. **429 message wording (PR #10).** Listed as open by the 30 Oct check-in. Test it with a synthetic `429` response, never a real submit.
+5. **A footer "website" link at 185×21 on `/coaching` and `/get`.** Reported by the 30 Oct check-in, but not reproduced here at 360 or 1280 px: the only links under 24 px there sit inside sentences ("Privacy", "Email Josh", "coaching with Josh", "Open the same page"), which WCAG 2.5.8 exempts. Re-measure at the width the check-in used.
+6. **Owner inbox (item 6).** Josh checks `/admin` by hand.
 
-After those, the same command should report **107/107**.
+### C. Device and journey verification (no automated check here covers these)
 
+1. **Clip seeking on real browsers.** Test iPhone Safari, Android Chrome, and the in-app browsers that open links from Instagram and Facebook. Compare native Range support (if the host gains it) with the worker. The in-app browsers don't run service workers, so only host Range support can fix them. Real H.264 decoding is untested.
+2. **The home page's "Play motion" first press on a phone.** Headless Chromium can't play H.264.
+3. **After any port, re-run the journeys:** synthetic `200`, `409`, `429`, `503` and network-failure responses, plus no-JavaScript and reduced-motion passes. These were last run on 28 Oct and haven't been repeated since.
 
 ## Approvals (Josh, 7 Oct, in chat)
 
@@ -48,6 +61,8 @@ After those, the same command should report **107/107**.
 **Not covered:** publishing, the Today module (PR #14), or any merge on GitHub.
 
 ## Where to port: the owner-only preview, not a fresh copy of live v33
+
+*Historical (7–15 Oct). The public site is now Sites v34; the acceptance record above is the current status. Don't use "v33" in this file as a source pin.*
 
 Gamma's [2 Oct staging update](https://github.com/joshuanicolai734-sketch/Blackglass/pull/10#issuecomment-5960897133) says a private, owner-only preview was staged at 20:13 UTC that day. It holds the reviewed 429 enquiry fix (PR #10) and six mobile-clarity changes:
 - shorter coaching option labels with a price hint
