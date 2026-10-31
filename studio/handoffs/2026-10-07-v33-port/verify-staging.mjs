@@ -4,7 +4,8 @@
  *
  *   node verify-staging.mjs https://<staging-host> [--chromium /path/to/chromium] [--clip] [--storage-state <file>] [--sanitized]
  *
- * --clip adds C7, the clip-range service worker checks (only once that worker is staged).
+ * --clip adds C7, clip seeking: it reports whether the host answers Range natively and, if not, checks the clip-range
+ *   service worker; then it checks an in-page 206 and that the slider lands at 60 % of the clip.
  * --storage-state loads a Playwright storage state (a signed-in browser session) for an owner-only preview.
  *   That file holds a sign-in cookie: keep it local, never commit or post it.
  * --sanitized prints only check IDs, PASS/FAIL and the totals: no measurements or page text. Use it for any output
@@ -34,6 +35,7 @@ const PAGES = ['/', '/coaching', '/get', '/movements', '/links', '/privacy', '/g
 const WIDTHS = [320, 360, 1280];
 const results = [];
 const add = (id, ok, detail) => results.push({ id, ok, detail });
+const info = (id, detail) => results.push({ id, ok: null, detail }); // reported, not counted
 let apiAborted = 0;
 
 const browser = await chromium.launch(exe ? { executablePath: exe } : {});
@@ -133,39 +135,57 @@ for (const w of [320, 360]) {
   await ctx.close();
 }
 
-// 7 (only with --clip). The clip-range service worker from studio/fixes/movement-clip-range/.
+// 7 (only with --clip). Clip seeking needs byte ranges: from the host itself (native Range) or from the clip-range
+// service worker (studio/fixes/movement-clip-range/). The two paths are reported separately. With native Range the
+// worker isn't required; without it, the worker checks count. Either way the in-page range and an accurate seek count.
 if (args.includes('--clip')) {
   const { ctx, page } = await open('/movements', 360);
+  const clip = await page.evaluate(() => {
+    const src = [...document.querySelectorAll('.ms-studio video')].map((v) => v.currentSrc || v.getAttribute('src')).find(Boolean)
+      || [...document.querySelectorAll('.ms-studio a[href$=".mp4"]')].map((a) => a.href)[0];
+    return src ? new URL(src, location.href).pathname : null;
+  });
+  // A GET made outside the page, so no service worker can answer it (it shares the context's sign-in cookies).
+  const native = clip ? await ctx.request.get(base + clip, { headers: { Range: 'bytes=0-99' } })
+    .then(async (r) => ({ status: r.status(), len: (await r.body()).length }), () => null) : null;
+  const nativeOk = !!native && native.status === 206 && native.len === 100;
+  info(`C7 host answers Range natively: ${nativeOk ? 'yes' : 'no'}`, native ? `${clip}: ${native.status}, ${native.len} bytes` : 'no clip found or request failed');
   const sw = await page.evaluate(async () => {
     const r = await fetch('/movement-clips-sw.js', { cache: 'no-store' });
     return { status: r.status, type: r.headers.get('content-type') || '' };
   });
-  add('C7 worker file served as JavaScript', sw.status === 200 && /javascript/.test(sw.type), `${sw.status} ${sw.type}`);
-  const controlled = await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 15000 }).then(() => true, () => false);
-  add('C7 worker controls /movements', controlled, controlled ? 'controller present' : 'no controller after 15 s');
-  if (controlled) {
-    const range = await page.evaluate(async () => {
-      const src = [...document.querySelectorAll('.ms-studio video')].map((v) => v.currentSrc || v.getAttribute('src')).find(Boolean)
-        || [...document.querySelectorAll('.ms-studio a[href$=".mp4"]')].map((a) => a.href)[0];
-      if (!src) return null;
-      const r = await fetch(new URL(src, location.href).pathname, { headers: { Range: 'bytes=0-99' } });
-      return { path: new URL(src, location.href).pathname, status: r.status, len: (await r.arrayBuffer()).byteLength, cr: r.headers.get('content-range') };
-    });
-    add('C7 clip range answered with 206', !!range && range.status === 206 && range.len === 100, range ? `${range.path}: ${range.status} ${range.cr} len=${range.len}` : 'no clip found');
+  const swServed = sw.status === 200 && /javascript/.test(sw.type);
+  const controlled = await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: nativeOk ? 5000 : 15000 }).then(() => true, () => false);
+  if (nativeOk) {
+    info(`C7 worker file served: ${swServed ? 'yes' : 'no'} (not required with native Range)`, `${sw.status} ${sw.type}`);
+    info(`C7 worker controls /movements: ${controlled ? 'yes' : 'no'} (not required with native Range)`, controlled ? 'controller present' : 'no controller');
+  } else {
+    add('C7 worker file served as JavaScript', swServed, `${sw.status} ${sw.type}`);
+    add('C7 worker controls /movements', controlled, controlled ? 'controller present' : 'no controller after 15 s');
+  }
+  if (clip && (nativeOk || controlled)) {
+    const range = await page.evaluate(async (path) => {
+      const r = await fetch(path, { headers: { Range: 'bytes=0-99' } });
+      return { status: r.status, len: (await r.arrayBuffer()).byteLength, cr: r.headers.get('content-range') };
+    }, clip);
+    add('C7 clip range answered with 206', range.status === 206 && range.len === 100, `${clip}: ${range.status} ${range.cr} len=${range.len}`);
     await page.locator('.ms-studio input[type=range]:visible').first().fill('60').catch(() => {});
     await page.waitForTimeout(3000);
+    // The slider maps linearly onto the clip, so 60 % should land at 0.6 × duration (2.4 s on the 4 s clips).
     const seek = await page.evaluate(() => {
       const vs = [...document.querySelectorAll('.ms-studio video')].filter((v) => v.seekable.length && v.seekable.end(v.seekable.length - 1) > 0.5);
       const err = /couldn.t load/i.test(document.querySelector('.ms-studio')?.innerText || '');
-      return { seekable: vs.length, t: vs.map((v) => +v.currentTime.toFixed(2)), err };
+      return { seekable: vs.length, at: vs.map((v) => ({ t: +v.currentTime.toFixed(2), want: +(v.duration * 0.6).toFixed(2) })), err };
     });
-    add('C7 slider seeks (60 %)', seek.seekable > 0 && seek.t.some((t) => t > 1) && !seek.err, JSON.stringify(seek));
+    add('C7 slider seeks to 60 % (within 0.3 s)', seek.seekable > 0 && seek.at.some(({ t, want }) => Math.abs(t - want) <= 0.3) && !seek.err, JSON.stringify(seek));
   }
   await ctx.close();
 }
 
 await browser.close();
-const failed = results.filter((r) => !r.ok);
-for (const r of results) console.log(sanitized ? `${r.ok ? 'PASS' : 'FAIL'}  ${r.id}` : `${r.ok ? 'PASS' : 'FAIL'}  ${r.id}  —  ${r.detail}`);
-console.log(`\n${results.length - failed.length}/${results.length} passed. /api/ requests aborted: ${apiAborted} (none reached the server).`);
+const counted = results.filter((r) => r.ok !== null);
+const failed = counted.filter((r) => !r.ok);
+const mark = (r) => (r.ok === null ? 'INFO' : r.ok ? 'PASS' : 'FAIL');
+for (const r of results) console.log(sanitized ? `${mark(r)}  ${r.id}` : `${mark(r)}  ${r.id}  —  ${r.detail}`);
+console.log(`\n${counted.length - failed.length}/${counted.length} passed. /api/ requests aborted: ${apiAborted} (none reached the server).`);
 process.exit(failed.length ? 1 : 0);

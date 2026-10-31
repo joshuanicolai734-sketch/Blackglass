@@ -6,7 +6,7 @@ Gamma confirmed on 28 October that the public site is Sites version 34. Everythi
 
 ### A. Port items on v34, and the port checker
 
-**Don't re-port items 1–5 and 8–11: v34 already has them.**
+**Don't re-port items 1–3, 5 and 8–11, or item 4 outside `/`: v34 already has them.** Item 4 is still open on the home page (B1).
 
 | # | On v34? | Evidence |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ Gamma confirmed on 28 October that the public site is Sites version 34. Everythi
 
 **`verify-staging.mjs https://blackglass.co.nz --clip`: 99/105.** The checker scores items 1–8 only (C1–C7).
 - **Failures:** C3 on `/` in all 4 runs (B1), and 2 C7 checks (B2). The other two C7 checks only run once a worker controls the page.
-- **Target:** 107/107 once B1 and B2 are fixed.
+- **Target:** once B1 and B2 are fixed, 107/107 with the worker, or 105/105 if the host answers Range natively. With native Range, C7 reports the worker as information instead of counting it.
 
 ### B. Remaining UX items on v34
 
@@ -49,7 +49,7 @@ Gamma confirmed on 28 October that the public site is Sites version 34. Everythi
 
 ### C. Device and journey verification (no automated check here covers these)
 
-1. **Clip seeking on real browsers.** Test iPhone Safari, Android Chrome, and the in-app browsers that open links from Instagram and Facebook. Compare native Range support (if the host gains it) with the worker. The in-app browsers don't run service workers, so only host Range support can fix them. Real H.264 decoding is untested.
+1. **Clip seeking on real browsers.** Test iPhone Safari, Android Chrome, and the in-app browsers that open links from Instagram and Facebook. Compare native Range support (if the host gains it) with the worker. In-app browsers built on iOS WKWebView only get service workers on app-bound domains (WebKit bug 210451; an Apple engineer on the Apple developer forums, February 2025). That comes from the bug tracker and forum, not from a test here. If it holds, only host Range support can fix those visitors. Real H.264 decoding is untested.
 2. **The home page's "Play motion" first press on a phone.** Headless Chromium can't play H.264.
 3. **After any port, re-run the journeys:** synthetic `200`, `409`, `429`, `503` and network-failure responses, plus no-JavaScript and reduced-motion passes. These were last run on 28 Oct and haven't been repeated since.
 
@@ -112,11 +112,12 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 - **C4:** no target under 24 px tall. A link is exempt only when it sits inside real sentence text (WCAG 2.5.8). A row of links such as "Open A / Open B" isn't a sentence. Navigation, breadcrumb and footer links are never exempt. A checkbox or radio counts its label's box, since the label activates it (v34's 20×20 "Repeat" checkbox has a 78×44 label).
 - **C5:** no horizontal overflow.
 - **C6:** the Movement Studio play row fits with "Playing" and "Loading".
-- **C7 (`--clip`):**
-  - the worker file is served as JavaScript
-  - the worker controls `/movements`
-  - a clip `Range: bytes=0-99` request comes back as `206` with 100 bytes
-  - dragging the slider to 60 % seeks with no "couldn't load" message
+- **C7 (`--clip`), clip seeking by either path:**
+  - **Reported first (INFO, not counted):** whether the host answers a clip `Range: bytes=0-99` itself with `206`. The request is made outside the page, so no worker can answer it.
+  - **Without native Range (counted):** the worker file is served as JavaScript, and the worker controls `/movements`.
+  - **With native Range:** the worker checks are reported as INFO only.
+  - **Either path (counted):** a clip `Range: bytes=0-99` request made from the page comes back as `206` with 100 bytes.
+  - **Either path (counted):** dragging the slider to 60 % lands within 0.3 s of 60 % of the clip's duration (2.4 s on the 4 s clips), with no "couldn't load" message.
 
 **Where C3–C5 run:** on 8 pages at 320, 360 and 1280 px with JavaScript, and again at 360 px with JavaScript off, where fallback controls appear.
 
@@ -133,7 +134,7 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 
 ## Pass condition for the preview
 
-1. The script reports **107 / 107** with `--clip`.
+1. The script reports **107 / 107** with `--clip` when the worker is staged, or **105 / 105** with `INFO C7 host answers Range natively: yes` if the host serves Range itself. Treat the two paths as separate acceptances.
 2. Signed in as owner, `/admin` shows "Coaching enquiries by campaign source" and "Preview sign-ups by campaign source" when such events exist in the last 30 days, and hides both when there are none. The visits and funnel lines are unchanged.
 3. **Josh, on his own iPhone and Android phone**, opens the preview's `/movements` (signed in), drags the slider, and the clip follows. Headless Chromium can't test Safari, and the preview is owner-only, so this check has to be done by hand.
 
@@ -148,7 +149,7 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
    This repository is public.
 2. Josh does the phone check above. Claude reviews the sanitized results against this README.
 3. Publishing needs a separate approval from Josh. That one publish would also take the 2 Oct staged work (the 429 fix and mobile-clarity changes) live.
-4. **After publishing**, Claude runs the same script against the public domain (`node verify-staging.mjs https://blackglass.co.nz --clip`) as the independent check of the deployed build. Expect 107/107. If an item fails there, roll back that item alone; see Rollback.
+4. **After publishing**, Claude runs the same script against the public domain (`node verify-staging.mjs https://blackglass.co.nz --clip`) as the independent check of the deployed build. Expect 107/107 (worker) or 105/105 (native Range). If an item fails there, roll back that item alone; see Rollback.
 
 ## Not covered by the approvals (port only if Josh says so)
 
