@@ -10,6 +10,8 @@ export function Header({ current, result = false }: { current?: string; result?:
   const onGet = current === "/get";
   const onCoaching = current === "/coaching";
   const getTarget = !onGet ? "/get" : `${result ? "/get" : ""}#${hasDownload ? "android" : "preview"}`;
+  // On coaching pages "How it works" and "Questions" mean the coaching steps and FAQ, not the app's sections on the home page.
+  const navHref = (href: string) => (onCoaching && href.startsWith("/#") ? `/coaching${href.slice(1)}` : href);
   return (
     <header className="hdr">
       <a className="hdr-brand" href="/" aria-label="Blackglass home">
@@ -20,7 +22,7 @@ export function Header({ current, result = false }: { current?: string; result?:
       </a>
       <nav className="hdr-nav" aria-label="Main">
         {nav.map((item) => (
-          <a key={item.href} className="link" href={item.href} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
+          <a key={item.href} className="link" href={navHref(item.href)} aria-current={current === item.href ? "page" : undefined}><span>{item.label}</span></a>
         ))}
       </nav>
       {/* On coaching pages the header's action leads to the enquiry form. */}
@@ -42,7 +44,7 @@ export function Header({ current, result = false }: { current?: string; result?:
         <div className="menu-sheet">
           <nav aria-label="Mobile">
             <a href="/">Home</a>
-            {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
+            {nav.map((item) => <a key={item.href} href={navHref(item.href)}>{item.label}</a>)}
             <a href="/get" data-track="cta_get_menu">{appCta}</a>
           </nav>
           <p className="menu-note label">Built in {site.location.split(",")[0]} · <a className="inline-link" href={`mailto:${contact.email}`}>Email {site.founder}</a></p>

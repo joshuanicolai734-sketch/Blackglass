@@ -6,17 +6,17 @@ import { Faqs } from "@/components/site/faqs";
 import { EnquiryForm, NextSteps } from "@/components/site/forms";
 import { Button, JsonLd, SectionHead, SpecCard, TextLink } from "@/components/site/ui";
 import { coachingFaq } from "@/content/faq";
-import { coaching, contact, site } from "@/content/site";
+import { coaching, contact, ogBase, site } from "@/content/site";
 
 const price = `${coaching.currency}${coaching.weekly}`;
 const NUMBERS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
 const inWords = (n: number) => NUMBERS[n] ?? String(n);
 
 export const metadata: Metadata = {
-  title: "Strength and physique coaching with Josh",
-  description: `${coaching.weeks} weeks of strength and physique coaching with Josh, based in Dunedin: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
+  title: "Strength coaching in Dunedin or online across NZ",
+  description: `Strength and physique coaching with ${site.founder}, ${coaching.formatInline}. ${coaching.weeks} weeks, weekly check-ins, ${price} a week.`,
   alternates: { canonical: "/coaching" },
-  openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
+  openGraph: { ...ogBase, title: `Strength coaching with ${site.founder} | Blackglass`, description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${coaching.format}. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: `Coaching with ${site.founder}: ${coaching.weeks} weeks, ${price} a week. ${coaching.format}.` }] },
 };
 
 export default function Coaching() {
@@ -25,6 +25,18 @@ export default function Coaching() {
     { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
     { "@type": "ListItem", position: 2, name: "Coaching", item: `${site.url}/coaching` },
   ] };
+  // What search engines can read about the service: only facts the page states. No price here: docs/SEO.md keeps offer prices out
+  // of structured data because terms are confirmed in writing.
+  const service = {
+    "@context": "https://schema.org", "@type": "Service", "@id": `${site.url}/coaching#service`,
+    name: `Strength and physique coaching with ${site.founder}`, serviceType: "Strength and physique coaching", url: `${site.url}/coaching`,
+    provider: { "@type": "Organization", "@id": `${site.url}/#org`, name: site.name },
+    areaServed: [
+      { "@type": "City", name: "Dunedin", containedInPlace: { "@type": "Country", name: "New Zealand" } },
+      { "@type": "Country", name: "New Zealand" },
+    ],
+    description: `${coaching.weeks} weeks of coaching: a plan built around your week, weekly check-ins and adjustments. ${coaching.format}.`,
+  };
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
@@ -36,7 +48,7 @@ export default function Coaching() {
             <div>
               <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / Coaching</nav>
               <h1 id="coach-title" className="display">{`Coaching with ${site.founder}.`}</h1>
-              <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress.</p>
+              <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress. {coaching.format}. {price} a week.</p>
               <div className="actions"><Button href="#enquire" track="cta_enquire_hero" down>Enquire about coaching</Button></div>
               <p className="label next-steps-label">What happens after you enquire</p>
               <NextSteps />
@@ -48,6 +60,7 @@ export default function Coaching() {
                 <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span></p>
               </div>
               <ul className="includes">
+                <li>{coaching.format}</li>
                 <li>A training plan built around your goal, available days and equipment</li>
                 <li>One check-in with {site.founder} each week</li>
                 <li>Adjustments as you progress, instead of starting over</li>
@@ -70,7 +83,7 @@ export default function Coaching() {
           </div>
         </section>
 
-        <section className="section begin" aria-labelledby="weeks-title" data-sec>
+        <section className="section begin" id="how-it-works" aria-labelledby="weeks-title" data-sec>
           <div className="wrap">
             <div className="section-head"><SectionHead index="02" title={`How the ${coaching.weeks} weeks run`} meta="03 steps" /><h2 id="weeks-title" className="display">{`Week one to week ${inWords(coaching.weeks)}.`}</h2></div>
             <ol className="steps">
@@ -97,7 +110,7 @@ export default function Coaching() {
           </div>
         </section>
 
-        <section className="section faq-end" aria-labelledby="cq-title" data-sec>
+        <section className="section faq-end" id="questions" aria-labelledby="cq-title" data-sec>
           <div className="wrap faq-grid">
             <div className="section-head"><SectionHead title="Questions" meta={`${String(coachingFaq.length).padStart(2, "0")} answers`} /><h2 id="cq-title" className="display">Good to know.</h2></div>
             <Faqs items={coachingFaq} />
@@ -106,6 +119,7 @@ export default function Coaching() {
       </main>
       <Footer />
       <JsonLd data={crumbs} />
+      <JsonLd data={service} />
     </>
   );
 }

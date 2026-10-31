@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./tokens.css";
 import "./site.css";
-import { site } from "@/content/site";
+import { ogBase, site } from "@/content/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: "Blackglass — Train with intent", template: "%s | Blackglass" },
   description: "Blackglass keeps your programme, today's session, movement guides and food targets in one clear Android app, built in Dunedin, New Zealand.",
   applicationName: site.name,
-  openGraph: { siteName: site.name, locale: "en_NZ", type: "website" },
+  openGraph: { ...ogBase, images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass: know what today asks of you" }] },
   twitter: { card: "summary_large_image" },
   manifest: "/site.webmanifest",
   icons: {

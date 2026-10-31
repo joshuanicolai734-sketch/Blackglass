@@ -16,7 +16,7 @@ export default function Joined() {
       <main id="main">
         <section className="page-hero result" aria-labelledby="joined-title" data-sec>
           <div className="wrap">
-            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/get">Get Blackglass</a> / Sign-up received</nav>
+            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/get">Get Blackglass</a> / <span className="nb">Sign-up received</span></nav>
             <h1 id="joined-title" className="display">Sign-up received.</h1>
             <div className="msg is-ok result-msg" role="status">
               <p>This page confirms a preview-list sign-up. {site.founder} will email the address that was given when there&rsquo;s an Android build you can try. No newsletter, and you can ask to be removed at any time.</p>

@@ -5,13 +5,13 @@ import { Reel } from "@/components/site/reel";
 import { Button, JsonLd, Pane, SectionHead, Signal, SpecCard, TextLink } from "@/components/site/ui";
 import { paths } from "@/content/brand";
 import { homeFaq } from "@/content/faq";
-import { coaching, contact, site, socialLinks } from "@/content/site";
+import { coaching, contact, ogBase, site, socialLinks } from "@/content/site";
 
 export const metadata: Metadata = {
   title: { absolute: "Blackglass — Training, technique and food in one app" },
-  description: "Know what today asks of you. Blackglass keeps your programme, today's session, movement guides and food targets in one Android app. In development; join the preview list.",
+  description: "Your programme, today's session, movement guides and food targets in one Android app, built in Dunedin. In development: join the free preview list.",
   alternates: { canonical: "/" },
-  openGraph: { title: "Blackglass — Know what today asks of you", description: "Your programme, today's session, movement guides and food targets in one Android app. Built in Dunedin.", url: "/", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass: know what today asks of you" }] },
+  openGraph: { ...ogBase, title: "Blackglass — Know what today asks of you", description: "Your programme, today's session, movement guides and food targets in one Android app. Built in Dunedin.", url: "/", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass: know what today asks of you" }] },
 };
 
 const demo = [
@@ -187,7 +187,7 @@ export default function Home() {
                   <span id="apply" aria-hidden="true" />
                   <p className="spec-k label"><span className="i">02</span><span>Coaching with {site.founder}</span><span className="live-tag"><Signal />Available now</span></p>
                   <h3 id="offer-coach-title" className="title">Work directly with {site.founder}.</h3>
-                  <p className="body-2">A plan built around your week, a check-in every week, and adjustments as you progress. Available now, with any phone.</p>
+                  <p className="body-2">A plan built around your week, a check-in every week, and adjustments as you progress. Available now, with any phone. {coaching.format}.</p>
                   <div className="price">
                     <p className="monument">{coaching.weekly}</p>
                     <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span><span>{coaching.offerName}</span></p>
