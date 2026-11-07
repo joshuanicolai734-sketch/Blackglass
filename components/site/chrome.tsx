@@ -95,6 +95,7 @@ export function Footer() {
       <div className="wrap ftr-base label">
         <span>© <span data-year>2026</span> Blackglass</span>
         <a href="/privacy">Privacy</a>
+        <a href="/admin">Owner sign in</a>
       </div>
     </footer>
   );

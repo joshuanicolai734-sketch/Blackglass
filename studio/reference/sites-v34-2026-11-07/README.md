@@ -7,6 +7,9 @@ This is a read-only copy of what https://blackglass.co.nz served on 7 November 2
 **What's in it:**
 - `pages/`: the HTML of the 8 public pages and the 404 page.
 - `files/`: every same-origin file those pages loaded at 1280 px and on Pixel 7 emulation that differs from this repository's `public/` (8 identical files were skipped). That covers the stylesheets, the JavaScript chunks, `site.js`, `intro.js`, the brand SVGs, the curl-study image, and the six Movement Studio clips and posters as served.
+- Added later the same day, also with plain GETs:
+  - `files/og/home.png`: the share image the pages reference but never load.
+  - The curl study clip (`/movements/curl-study/three-quarter-5s.mp4`): the home page never preloads it. It went straight into `public/` and isn't duplicated here.
 - Nothing private. These are public pages fetched with plain GETs. Every `/api/` request was aborted and beacons were stubbed, so no visit was counted. Cloudflare's `/cdn-cgi/` scripts weren't kept.
 
 **How v34 differs from this repository** (page text similarity of the build at `7537c77`, then PR #9's head, against v34):

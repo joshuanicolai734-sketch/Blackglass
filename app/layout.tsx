@@ -1,14 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import "./tokens.css";
 import "./site.css";
+import "./performance.css";
 import { ogBase, site } from "@/content/site";
+import { BrandIntro } from "@/components/site/brand-intro";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: "Blackglass — Train with intent", template: "%s | Blackglass" },
   description: "Blackglass keeps your programme, today's session, movement guides and food targets in one clear Android app, built in Dunedin, New Zealand.",
   applicationName: site.name,
-  openGraph: { ...ogBase, images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass: know what today asks of you" }] },
+  openGraph: { ...ogBase, images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass Android training app preview" }] },
   twitter: { card: "summary_large_image" },
   manifest: "/site.webmanifest",
   icons: {
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#0b0d0e", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#171a1c", colorScheme: "dark" };
 
 // Runs before first paint: marks that scripts run, so no-JS visitors get the complete static page. On a
 // cross-document view transition it also names the arriving page's preview button "cta", so the tapped /get button
@@ -30,16 +32,24 @@ export const viewport: Viewport = { themeColor: "#0b0d0e", colorScheme: "dark" }
 // set through a constructed stylesheet, not an attribute, so React's hydration sees the markup it rendered.
 const jsGate = `document.documentElement.classList.add('js');addEventListener('pagereveal',function(e){var f;try{f=sessionStorage.getItem('bg-cta');sessionStorage.removeItem('bg-cta')}catch(x){}if(!e.viewTransition)return;var b=document.querySelector('[data-vt-cta]');if(!b)return;var r=b.getBoundingClientRect();if(f&&r.bottom>innerHeight&&!location.hash){b.closest('form').scrollIntoView({block:'end'});r=b.getBoundingClientRect()}if(r.bottom>0&&r.top<innerHeight&&document.adoptedStyleSheets){var c=new CSSStyleSheet();c.replaceSync('[data-vt-cta]{view-transition-name:cta}');document.adoptedStyleSheets=document.adoptedStyleSheets.concat(c);e.viewTransition.finished.then(function(){document.adoptedStyleSheets=document.adoptedStyleSheets.filter(function(x){return x!==c})})}})`;
 
+// The brand intro's gate (components/site/brand-intro.tsx): before first paint, on a plain visit to "/" only, once per
+// session. It's skipped with reduced motion, Save-Data or two or fewer cores. A 1.7 s backstop clears it even if
+// public/intro.js never runs.
+const introGate = `try{var n=navigator,c=n.connection;var allow=location.pathname==='/'&&!location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!(c&&c.saveData)&&!(n.hardwareConcurrency&&n.hardwareConcurrency<=2);if(allow&&!sessionStorage.getItem('bg-intro-performance-v1')){sessionStorage.setItem('bg-intro-performance-v1','seen');document.documentElement.classList.add('bg-intro-active');document.documentElement.dataset.introStart=String(performance.now());document.documentElement.dataset.introState='playing';setTimeout(function(){document.documentElement.classList.remove('bg-intro-active');document.documentElement.dataset.introState='complete'},1700)}}catch(e){}`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-NZ" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: jsGate }} />
+        <script dangerouslySetInnerHTML={{ __html: introGate }} />
+        <script src="/intro.js" defer />
         <link rel="preload" href="/fonts/inter-tight-latin-wght.woff2" as="font" type="font/woff2" crossOrigin="" />
         {/* The enhancement layer: runs once per document at DOMContentLoaded, without waiting for hydration. */}
         <script src="/site.js" defer />
       </head>
       <body>
+        <BrandIntro />
         {children}
       </body>
     </html>

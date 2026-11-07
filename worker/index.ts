@@ -4,7 +4,7 @@
 import handler from "vinext/server/fetch-handler";
 import { rangeResponse } from "../lib/byte-range";
 
-const CLIP = /^\/movements\/[a-z0-9-]+\.mp4$/;
+const CLIP = /^\/movements\/(?:[a-z0-9-]+\/)?[a-z0-9-]+\.mp4$/; // e.g. /movements/back-squat-angled.mp4, /movements/curl-study/three-quarter-5s.mp4
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {

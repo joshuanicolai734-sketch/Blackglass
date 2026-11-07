@@ -26,7 +26,7 @@ const localBindingConfig = {
   name: "blackglass",
   // Movement Studio clips go to the Worker first, so it can answer byte ranges with 206 (worker/index.ts).
   main: "./worker/index.ts",
-  assets: { binding: "ASSETS", run_worker_first: ["/movements/*.mp4"] },
+  assets: { binding: "ASSETS", run_worker_first: ["/movements/*.mp4", "/movements/*/*.mp4"] },
   compatibility_flags: ["nodejs_compat"],
   vars: { CF_ACCESS_TEAM_DOMAIN: ownAccount.accessTeamDomain, CF_ACCESS_AUD: ownAccount.accessAud },
   d1_databases: d1

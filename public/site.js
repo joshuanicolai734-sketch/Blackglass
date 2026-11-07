@@ -148,8 +148,8 @@
       return Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);
     };
 
-    const leaving = new Map();
-    const settle = () => { leaving.forEach((anims, p) => { anims.forEach((a) => a.cancel()); p.classList.remove('is-leaving'); p.inert = false; }); leaving.clear(); panels.forEach((p) => p.classList.remove('is-entering')); };
+    const leaving = new Map(), entering = new Map();
+    const settle = () => { entering.forEach((anims) => anims.forEach((a) => a.cancel())); entering.clear(); leaving.forEach((anims, p) => { anims.forEach((a) => a.cancel()); p.classList.remove('is-leaving'); p.inert = false; }); leaving.clear(); panels.forEach((p) => p.classList.remove('is-entering')); };
     const select = (i, focus) => {
       if (focus) tabs[i].focus();
       if (i === current) return;
@@ -182,15 +182,28 @@
       ].filter(Boolean);
       leaving.set(out, outAnims);
       Promise.all(outAnims.map((a) => a.finished)).then(() => {
+        if (leaving.get(out) !== outAnims) return;
         outAnims.forEach((a) => a.cancel()); out.classList.remove('is-leaving'); out.inert = false; leaving.delete(out);
       }, () => {});
       // The arriving screen sits on top with a see-through frame, so the leaving one shows beneath it until it lands.
       inn.classList.add('is-entering');
-      const drop = () => inn.classList.remove('is-entering');
       const a = img?.animate([{ opacity: 0, transform: `translateX(${dir * 24}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, easing: curve('--ease-expo') });
-      if (a) a.finished.then(drop, drop); else drop();
-      inn.querySelector('.demo-copy')?.animate([{ opacity: 0, transform: `translateX(${dir * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: snap, easing: curve('--ease-expo'), fill: 'backwards' });
+      const copy = inn.querySelector('.demo-copy')?.animate([{ opacity: 0, transform: `translateX(${dir * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: drive, delay: snap, easing: curve('--ease-expo'), fill: 'backwards' });
+      const inAnims = [a, copy].filter(Boolean);
+      entering.set(inn, inAnims);
+      Promise.all(inAnims.map((anim) => anim.finished)).then(() => {
+        if (entering.get(inn) !== inAnims) return;
+        inAnims.forEach((anim) => anim.cancel());
+        entering.delete(inn); inn.classList.remove('is-entering');
+      }, () => {});
     };
+    reduce.addEventListener('change', () => {
+      if (!reduce.matches) return;
+      ++turn; // Invalidate any pending decode from a superseded animated swap.
+      settle();
+      panels.forEach((p, i) => p.toggleAttribute('data-inactive', i !== current));
+      fit();
+    });
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i));
       t.addEventListener('keydown', (e) => {
@@ -201,7 +214,7 @@
     });
     // Swipe the screen like the app: a horizontal drag of 40px or more steps one tab; vertical drags scroll.
     let sx = null, sy = 0;
-    demo.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' && e.target.closest('.demo-pane')) { sx = e.clientX; sy = e.clientY; warmAll(); } }, { passive: true });
+    demo.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' && e.target.closest('.demo-pane') && !e.target.closest('video, button, input, select, label')) { sx = e.clientX; sy = e.clientY; warmAll(); } }, { passive: true });
     demo.addEventListener('pointerup', (e) => {
       if (sx === null) return;
       const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
@@ -300,6 +313,30 @@
   /* ---- Forms: real submission, inline validation, honest success and failure. Without JavaScript the same forms
      post to /api/enquiries and land back on the page with a status flag. While sending, focus stays on the button
      (aria-disabled); on success the confirmation replaces the form and takes focus. ---- */
+  // Receipt validation and deadline cover both headers and the response body.
+  // A timeout is uncertain delivery: the server may already have saved the enquiry.
+  async function sendEnquiry(data, timeoutMs = 15000) {
+    const controller = new AbortController();
+    let status = 0, timer;
+    const deadline = new Promise((_, reject) => {
+      timer = setTimeout(() => { controller.abort(); reject(new Error('Receipt timeout')); }, timeoutMs);
+    });
+    try {
+      const res = await Promise.race([
+        fetch('/api/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal }),
+        deadline,
+      ]);
+      status = res.status;
+      if (!res.ok || !res.headers.get('content-type')?.includes('application/json')) return { ok: false, status };
+      const receipt = await Promise.race([res.json(), deadline]);
+      return { ok: receipt?.ok === true, status };
+    } catch {
+      return { ok: false, status };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   d.querySelectorAll('form[data-form]').forEach((form) => {
     // Native validation stays on until React has hydrated (the attribute would otherwise read as a mismatch); our own messages take over after.
@@ -375,9 +412,9 @@
       label.textContent = kind === 'preview' ? 'Adding you…' : 'Sending…';
       let status = 0;
       try {
-        const res = await fetch('/api/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        status = res.status;
-        if (!res.ok) throw new Error(String(status));
+        const receipt = await sendEnquiry(data);
+        status = receipt.status;
+        if (!receipt.ok) throw new Error('Receipt not confirmed');
         form.reset();
         if (kind === 'preview') {
           show(`${who} will email ${data.email} when there’s an Android build you can try.`, true);
@@ -395,7 +432,7 @@
         a.innerHTML = '<span>Send it by email instead</span><svg class="arrow" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>';
         show(status === 409
           ? 'We received a message from this email in the last two minutes. If this is something new, send it by email instead.'
-          : 'That didn’t go through, and nothing was saved. Your answers are still here. Try again, or send it by email instead.', false, a);
+          : 'We couldn’t confirm whether this was received. Your answers are still here. You can try again, or send it by email instead.', false, a);
       } finally {
         busy = false;
         button.removeAttribute('aria-disabled');
