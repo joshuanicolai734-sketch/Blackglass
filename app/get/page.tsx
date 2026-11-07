@@ -5,7 +5,7 @@ import { Faqs } from "@/components/site/faqs";
 import { PreviewForm } from "@/components/site/forms";
 import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, TextLink } from "@/components/site/ui";
 import { getFaq, getFaqLive, previewSteps } from "@/content/faq";
-import { app, coaching, contact, ogBase, site } from "@/content/site";
+import { app, coaching, contact, ogBase, qrTarget, site } from "@/content/site";
 
 const hasPlay = Boolean(app.android.playUrl);
 const hasApk = !hasPlay && Boolean(app.android.apkUrl);
@@ -117,7 +117,7 @@ export default function Get() {
             <div className="qr">
               {/* eslint-disable-next-line @next/next/no-img-element -- static QR code */}
               <img src="/qr/get.svg" alt="QR code that opens blackglass.co.nz/get on your phone" width="132" height="132" loading="lazy" />
-              <p><strong>On a computer?</strong>Scan with your phone’s camera to open this page there{hasDownload ? " and install Blackglass." : "."}</p>
+              <p><strong>On a computer?</strong>Scan with your phone’s camera to open this page there{hasDownload ? " and install Blackglass." : "."} <a href={qrTarget}>Open the same page</a></p>
             </div>
           </div>
         </section>

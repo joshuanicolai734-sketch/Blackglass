@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Footer, Header, StickyCta } from "@/components/site/chrome";
 import { Faqs } from "@/components/site/faqs";
-import { EnquiryForm, NextSteps } from "@/components/site/forms";
+import { EnquiryForm } from "@/components/site/forms";
 import { Button, JsonLd, SectionHead, SpecCard, TextLink } from "@/components/site/ui";
 import { coachingFaq } from "@/content/faq";
 import { coaching, contact, ogBase, site } from "@/content/site";
@@ -50,8 +50,6 @@ export default function Coaching() {
               <h1 id="coach-title" className="display">{`Coaching with ${site.founder}.`}</h1>
               <p className="body-2">{coaching.weeks} weeks of strength and physique coaching built around your actual week: a personal plan, a check-in every week, and adjustments as you progress. {coaching.format}. {price} a week.</p>
               <div className="actions"><Button href="#enquire" track="cta_enquire_hero" down>Enquire about coaching</Button></div>
-              <p className="label next-steps-label">What happens after you enquire</p>
-              <NextSteps />
             </div>
             <div className="offer paper">
               <SectionHead title={coaching.offerName} meta="Dunedin" />

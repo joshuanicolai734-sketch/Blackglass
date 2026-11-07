@@ -70,7 +70,7 @@ export const coachingFaq: Faq[] = [
   },
   {
     q: "Can I get a programme without weekly coaching?",
-    a: "Yes. Choose \"Programme only\" in the enquiry form. Its scope and price are agreed separately.",
+    a: "Yes. Choose \"Programme\" in the enquiry form. Its scope and price are agreed separately.",
   },
 ];
 

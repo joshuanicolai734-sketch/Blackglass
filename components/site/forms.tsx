@@ -118,12 +118,14 @@ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null
       <div className="field"><label htmlFor="e-phone">Mobile for a text reply<span className="opt">OPTIONAL</span></label>
         <input id="e-phone" name="phone" type="tel" defaultValue={typed.phone} autoComplete="tel" inputMode="tel" maxLength={30} pattern="\+?[0-9\s\(\)\.\-]{7,30}" aria-describedby={bad("phone") ? "e-phone-hint enquire-error" : "e-phone-hint"} autoFocus={bad("phone")} aria-invalid={bad("phone") || undefined} /><span className="hint" id="e-phone-hint">Only used to reply to this enquiry.</span></div>
       <div className="field"><label htmlFor="e-route">What are you looking for?</label>
-        <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"}><option value="coaching">{coaching.weeks}-week coaching</option><option value="programme">Programme only</option></select></div>
+        <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"} aria-describedby="e-route-hint"><option value="coaching">Coaching</option><option value="programme">Programme</option></select>
+        <span className="hint" id="e-route-hint">{coaching.weeks}-week coaching: {`${coaching.currency}${coaching.weekly}`}/week ({coaching.currency}{coaching.total} total). Personal programme scope and price are agreed separately.</span></div>
       <div className="field"><label htmlFor="e-goal">What do you want to change?</label>
         <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby={bad("goal") ? "e-goal-hint enquire-error" : "e-goal-hint"} autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">A sentence or two is enough. Say whether you&rsquo;d like in person (Dunedin) or online. Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
       <div className="trap" aria-hidden="true"><label htmlFor="e-website">Leave blank</label><input id="e-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
+      <NextSteps className="form-steps" />
       <button className="btn btn-primary" type="submit"><span>Send my enquiry</span><Arrow /></button>
-      <p className="form-note">No payment is taken here, and enquiring doesn&rsquo;t commit you to anything. {site.founder} uses these details only to reply. <a href="/privacy">Privacy</a></p>
+      <p className="form-note">Enquiring doesn&rsquo;t commit you to anything. {site.founder} uses these details only to reply. <a href="/privacy">Privacy</a></p>
       <div className="msg" data-form-msg role="status" aria-live="polite" hidden />
     </form>
   );
