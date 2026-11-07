@@ -37,12 +37,29 @@ const results = [];
 const add = (id, ok, detail) => results.push({ id, ok, detail });
 const info = (id, detail) => results.push({ id, ok: null, detail }); // reported, not counted
 let apiAborted = 0;
+const iso = { swSeen: 0, swApi: 0, offList: new Set() };
 
 const browser = await chromium.launch(exe ? { executablePath: exe } : {});
-async function open(path, width, js = true) {
-  const ctx = await browser.newContext({ viewport: { width, height: 800 }, javaScriptEnabled: js, ...(storageState ? { storageState } : {}) });
+// Isolation. C1–C6 block service workers, so the context's router sees every request a page makes and aborts /api/.
+// C7 needs the worker, so its router allows only the paths /movements is known to load and aborts everything else;
+// it also counts the requests it sees from the service worker, which shows the router covers the worker's traffic.
+const C7_ALLOW = /^\/(movements(\/|\.html|$)|movement-clips-sw\.js$|_next\/|fonts\/|brand\/|site\.js$|intro\.js$|favicon|apple-touch-icon|site\.webmanifest$)/;
+async function open(path, width, js = true, { worker = false } = {}) {
+  const ctx = await browser.newContext({ viewport: { width, height: 800 }, javaScriptEnabled: js, serviceWorkers: worker ? 'allow' : 'block', ...(storageState ? { storageState } : {}) });
   if (js) await ctx.addInitScript(() => { navigator.sendBeacon = () => true; });
-  await ctx.route(/\/api\//, (r) => { apiAborted++; return r.abort(); });
+  if (!worker) await ctx.route(/\/api\//, (r) => { apiAborted++; return r.abort(); });
+  else {
+    const origin = new URL(base).origin;
+    await ctx.route(() => true, (r) => {
+      const u = new URL(r.request().url());
+      const fromWorker = !!r.request().serviceWorker();
+      if (fromWorker) iso.swSeen++;
+      if (u.pathname.startsWith('/api/')) { apiAborted++; if (fromWorker) iso.swApi++; return r.abort(); }
+      if (u.origin === origin && C7_ALLOW.test(u.pathname)) return r.continue();
+      iso.offList.add(u.origin === origin ? u.pathname : u.origin);
+      return r.abort();
+    });
+  }
   const page = await ctx.newPage();
   const res = await page.goto(base + path, { waitUntil: 'networkidle', timeout: 45000 });
   await page.waitForTimeout(800);
@@ -139,7 +156,7 @@ for (const w of [320, 360]) {
 // service worker (studio/fixes/movement-clip-range/). The two paths are reported separately. With native Range the
 // worker isn't required; without it, the worker checks count. Either way the in-page range and an accurate seek count.
 if (args.includes('--clip')) {
-  const { ctx, page } = await open('/movements', 360);
+  const { ctx, page } = await open('/movements', 360, true, { worker: true });
   const clip = await page.evaluate(() => {
     const src = [...document.querySelectorAll('.ms-studio video')].map((v) => v.currentSrc || v.getAttribute('src')).find(Boolean)
       || [...document.querySelectorAll('.ms-studio a[href$=".mp4"]')].map((a) => a.href)[0];
@@ -147,8 +164,12 @@ if (args.includes('--clip')) {
   });
   // A GET made outside the page, so no service worker can answer it (it shares the context's sign-in cookies).
   const native = clip ? await ctx.request.get(base + clip, { headers: { Range: 'bytes=0-99' } })
-    .then(async (r) => ({ status: r.status(), len: (await r.body()).length }), () => null) : null;
-  const nativeOk = !!native && native.status === 206 && native.len === 100;
+    .then(async (r) => ({ status: r.status(), len: (await r.body()).length, cr: r.headers()['content-range'] || '' }), () => null) : null;
+  // A valid answer to bytes=0-99 is exactly "bytes 0-99/<whole size>" with 100 bytes.
+  const crTotal = (cr) => { const m = /^bytes 0-99\/(\d+)$/.exec(cr || ''); return m ? Number(m[1]) : null; };
+  const nativeOk = !!native && native.status === 206 && native.len === 100 && (crTotal(native.cr) ?? 0) > 100;
+  // The clip's whole size: from the native Content-Range, or from the whole file a host that ignores Range sends.
+  const clipSize = nativeOk ? crTotal(native.cr) : native && native.status === 200 ? native.len : null;
   info(`C7 host answers Range natively: ${nativeOk ? 'yes' : 'no'}`, native ? `${clip}: ${native.status}, ${native.len} bytes` : 'no clip found or request failed');
   const sw = await page.evaluate(async () => {
     const r = await fetch('/movement-clips-sw.js', { cache: 'no-store' });
@@ -168,17 +189,41 @@ if (args.includes('--clip')) {
       const r = await fetch(path, { headers: { Range: 'bytes=0-99' } });
       return { status: r.status, len: (await r.arrayBuffer()).byteLength, cr: r.headers.get('content-range') };
     }, clip);
-    add('C7 clip range answered with 206', range.status === 206 && range.len === 100, `${clip}: ${range.status} ${range.cr} len=${range.len}`);
-    await page.locator('.ms-studio input[type=range]:visible').first().fill('60').catch(() => {});
-    await page.waitForTimeout(3000);
-    // The slider maps linearly onto the clip, so 60 % should land at 0.6 × duration (2.4 s on the 4 s clips).
-    const seek = await page.evaluate(() => {
-      const vs = [...document.querySelectorAll('.ms-studio video')].filter((v) => v.seekable.length && v.seekable.end(v.seekable.length - 1) > 0.5);
-      const err = /couldn.t load/i.test(document.querySelector('.ms-studio')?.innerText || '');
-      return { seekable: vs.length, at: vs.map((v) => ({ t: +v.currentTime.toFixed(2), want: +(v.duration * 0.6).toFixed(2) })), err };
+    const total = crTotal(range.cr);
+    add('C7 clip range answered with 206', range.status === 206 && range.len === 100 && total !== null && total > 100 && (clipSize === null || total === clipSize),
+      `${clip}: ${range.status} "${range.cr}" len=${range.len}; whole clip ${clipSize ?? 'unknown'} bytes`);
+    // The active video is the one in the same panel as the visible "Rep position" slider. It must be paused before the
+    // slider moves, the slider action must succeed (no swallowed error), and the player must take the value.
+    const slider = page.locator('.ms-studio input[type=range]:visible').first();
+    const active = () => page.evaluate(() => {
+      const s = [...document.querySelectorAll('.ms-studio input[type=range]')].find((e) => e.offsetParent !== null);
+      let n = s; while (n && n.querySelectorAll('video').length !== 1) n = n.parentElement;
+      const v = n?.querySelector('video');
+      return v ? { found: true, paused: v.paused, t: v.currentTime, d: v.duration, seeking: v.seeking, ready: v.readyState, value: s.value, valuetext: s.getAttribute('aria-valuetext') || '' } : { found: false };
     });
-    add('C7 slider seeks to 60 % (within 0.3 s)', seek.seekable > 0 && seek.at.some(({ t, want }) => Math.abs(t - want) <= 0.3) && !seek.err, JSON.stringify(seek));
+    const before = await active();
+    let action = 'ok';
+    if (!before.found) action = 'no active video next to the slider';
+    else if (!before.paused) action = 'the active video was playing before the slider moved';
+    else action = await slider.fill('60').then(() => 'ok', (e) => `slider action failed: ${String(e.message || e).split('\n')[0]}`);
+    // Settled: not seeking, with two readings 300 ms apart equal and within 0.3 s of 0.6 × duration (2.4 s on 4 s clips).
+    let after = null;
+    if (action === 'ok') {
+      const deadline = Date.now() + 10000;
+      for (let prev = null; Date.now() < deadline; await page.waitForTimeout(300)) {
+        after = await active();
+        const near = after.found && !after.seeking && after.ready >= 2 && Number.isFinite(after.d) && Math.abs(after.t - 0.6 * after.d) <= 0.3;
+        if (near && prev && prev.t === after.t) break;
+        prev = near ? after : null;
+      }
+    }
+    const err = await page.evaluate(() => /couldn.t load/i.test(document.querySelector('.ms-studio')?.innerText || ''));
+    const settled = !!after && after.found && !after.seeking && Number.isFinite(after.d) && Math.abs(after.t - 0.6 * after.d) <= 0.3;
+    const took = !!after && after.value === '60' && /^60 percent/.test(after.valuetext);
+    add('C7 slider seeks the active paused video to 60 % (settled, within 0.3 s)', action === 'ok' && settled && took && !err,
+      action !== 'ok' ? action : JSON.stringify({ before: { paused: before.paused, t: +before.t.toFixed(2) }, after: after && { t: +after.t.toFixed(2), want: +(0.6 * after.d).toFixed(2), value: after.value, valuetext: after.valuetext }, err }));
   }
+  info(`C7 isolation: router saw ${iso.swSeen} service-worker requests, ${iso.swApi} of them to /api/`, `off-allowlist requests aborted: ${[...iso.offList].join(', ') || 'none'}`);
   await ctx.close();
 }
 
@@ -187,5 +232,5 @@ const counted = results.filter((r) => r.ok !== null);
 const failed = counted.filter((r) => !r.ok);
 const mark = (r) => (r.ok === null ? 'INFO' : r.ok ? 'PASS' : 'FAIL');
 for (const r of results) console.log(sanitized ? `${mark(r)}  ${r.id}` : `${mark(r)}  ${r.id}  —  ${r.detail}`);
-console.log(`\n${counted.length - failed.length}/${counted.length} passed. /api/ requests aborted: ${apiAborted} (none reached the server).`);
+console.log(`\n${counted.length - failed.length}/${counted.length} passed. /api/ requests aborted by the browser's router: ${apiAborted}. C1–C6 ran with service workers blocked; C7's router allowed only the /movements assets, and its isolation line counts the service-worker requests it saw.`);
 process.exit(failed.length ? 1 : 0);

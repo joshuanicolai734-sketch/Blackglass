@@ -103,7 +103,7 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
 
 > **`state.json` holds a sign-in cookie.** Keep it on your machine and delete it afterwards. Never commit it, post it or paste it anywhere.
 
-**What the script does:** it only reads pages. It stubs `navigator.sendBeacon` and aborts every `/api/` request, so nothing is counted or submitted. It exits with 0 only if every check passes.
+**What the script does:** it only reads pages. It stubs `navigator.sendBeacon` and aborts every `/api/` request, so nothing is counted or submitted. C1–C6 run with service workers blocked, so the browser's router sees every request a page makes. C7 needs the worker, so it sends every request through an allowlist of the assets `/movements` loads, aborts everything else, and reports how many of the worker's own requests the router saw (an `INFO` line). It exits with 0 only if every check passes.
 
 **Checks:**
 - **C1:** the format line, meta description and FAQ on `/coaching`.
@@ -116,8 +116,8 @@ node verify-staging.mjs https://<preview-host> --clip [--chromium /path/to/chrom
   - **Reported first (INFO, not counted):** whether the host answers a clip `Range: bytes=0-99` itself with `206`. The request is made outside the page, so no worker can answer it.
   - **Without native Range (counted):** the worker file is served as JavaScript, and the worker controls `/movements`.
   - **With native Range:** the worker checks are reported as INFO only.
-  - **Either path (counted):** a clip `Range: bytes=0-99` request made from the page comes back as `206` with 100 bytes.
-  - **Either path (counted):** dragging the slider to 60 % lands within 0.3 s of 60 % of the clip's duration (2.4 s on the 4 s clips), with no "couldn't load" message.
+  - **Either path (counted):** a clip `Range: bytes=0-99` request made from the page comes back as `206` with 100 bytes and `Content-Range: bytes 0-99/<size>`, where `<size>` is the whole clip's size.
+  - **Either path (counted):** the active video (the one beside the visible "Rep position" slider) is paused first. The slider is set to 60 %, and any error in that action fails the check. The player must show the value (`aria-valuetext` "60 percent, …"). The video must then settle, not seeking, with two readings 300 ms apart equal and within 0.3 s of 60 % of the clip's duration (2.4 s on the 4 s clips). No "couldn't load" message may appear.
 
 **Where C3–C5 run:** on 8 pages at 320, 360 and 1280 px with JavaScript, and again at 360 px with JavaScript off, where fallback controls appear.
 
