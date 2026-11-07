@@ -1,8 +1,12 @@
-# BG-<issue number>: <outcome>
+# BG-###: <outcome>
+- GitHub issue URL (independent of BG ID):
+- Status / brief approval evidence:
 - User/problem:
 - Why now:
 - Source base SHA and release target:
-- Implementer / independent reviewer / integrator:
+- Creative lead/final visual reviewer / implementer / independent reviewer / integrator:
+- Approved design/motion references (public-safe) and defining interaction to preserve:
+- Isolated prototype needed? If so, its question and boundary:
 - Owned files or area:
 - Dependencies and overlapping tasks:
 - Preserve:

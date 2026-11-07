@@ -5,12 +5,16 @@ title: ''
 ---
 
 ## Outcome and user problem
+Stable BG-### ID:
+Approved brief / status:
+GitHub issue URL (add after creation; independent of BG ID):
 
 ## Current source and target
 Base SHA:
 Release target:
 
 ## Ownership
+Creative lead / final visual reviewer:
 Implementer:
 Independent reviewer:
 Owned files/area:

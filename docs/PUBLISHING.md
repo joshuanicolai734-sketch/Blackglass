@@ -1,10 +1,10 @@
 # Working on Blackglass with Claude Code and Codex
 
-This GitHub repository is the shared source of truth for website changes. The current default branch is `claude/blackglass-domain-migration-0pxc6q`. Both coding assistants should start from its latest commit, create a short feature branch for substantial changes, run the checks, and merge only a reviewed result. Do not force-push or replace it with an older ZIP export.
+This public GitHub repository is the shared review surface for changes committed here. It is not a complete mirror of the public Site, external Android project or owner-only review source. Read [the current-state map](../studio/collaboration/CURRENT_STATE.md), agree the source and target, and verify the exact base before editing. The default branch is `claude/blackglass-domain-migration-0pxc6q`. Use a scoped branch, run the checks, and merge only after the appropriate approval. Do not force-push or replace a source with an older ZIP export.
 
 ## Daily editing
 
-1. In Claude Code on your computer: pull the latest default branch, make a branch, edit the site, run `pnpm lint && pnpm exec tsc --noEmit && pnpm build`, then push your branch and open a pull request.
+1. In Claude Code on your computer: first inspect and preserve local commits, uncommitted and untracked work. Select the agreed base in a separate branch/worktree before authorised edits. Run `pnpm lint && pnpm exec tsc --noEmit && pnpm build`, then push the scoped branch and open a draft pull request when publication of the diff is authorised.
 2. In Codex: give the repository or pull request URL. Codex can inspect it, make changes on a branch, review and merge after checks, and hand back the commit URL. If another editor pushes while work is in progress, compare the latest branch before writing.
 3. Keep product settings in `content/site.ts`, content in the appropriate `app/` page and `content/faq.ts`, styling in `app/site.css`, and shared UI in `components/site/`. Read `AGENTS.md`, `BLACKGLASS_HANDOFF.md` and `docs/MAINTAINING.md` first.
 

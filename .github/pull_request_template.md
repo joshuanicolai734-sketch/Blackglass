@@ -1,5 +1,5 @@
 ## Linked task
-BG-<issue number> / issue link
+Stable BG-### ID / GitHub issue URL (independent identifiers) / approved brief
 
 ## User outcome and scope
 
@@ -16,4 +16,5 @@ BG-<issue number> / issue link
 - [ ] Current base and overlapping work reconciled
 - [ ] Existing functionality preserved; rollback/checkpoint identified
 - [ ] Independent review requested when an authorised reviewer is available
+- [ ] Accepted/deferred findings and Gamma's final visual-review status recorded for meaningful product changes; outstanding gates are explicit
 - [ ] Publication is a separate decision; this PR does not claim deployment
