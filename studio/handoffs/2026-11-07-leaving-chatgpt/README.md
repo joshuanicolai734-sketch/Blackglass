@@ -17,8 +17,8 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
 2. **Josh: send ChatGPT one last message (below).** It puts the v34 source on GitHub. No customer data goes to GitHub.
 3. **Josh: save the enquiries.** Either ask ChatGPT in the same chat for a CSV download, or copy them from `/admin`. Keep them private: the repository is public. The new inbox can start empty, with the old enquiries kept as a file.
 4. **Josh: create a free Cloudflare account.** Claude then asks for a deploy token through the secure credential form. Never paste a token in chat.
-5. **Claude: build and preview.**
-   - Put v34 and the open PR #9 items (clip worker, 12 px home labels) on GitHub.
+5. **Claude: build and preview** (runbook: `docs/HOSTING.md`).
+   - Put v34 and the open PR #9 item (12 px home labels) on GitHub. Clip seeking needs no service worker on this host: the Worker answers ranges itself (`worker/index.ts`).
    - Create the D1 database and apply the migrations.
    - Replace the ChatGPT sign-in with Cloudflare Access.
    - Deploy to a `workers.dev` preview, then run `verify-staging.mjs`, the journey checks and an enquiry test with synthetic data.
@@ -40,8 +40,11 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
 ## What Claude does meanwhile (no account or approval needed)
 
 - Coordinates on issue #7 as "Claude lead". It assigns and reviews Claude Builder's work. The daily Claude critic stays the independent reviewer.
-- Keeps PR #9's port items ready: the clip worker (`studio/fixes/movement-clip-range/`) and the home-page label fix. They ship with the move in step 5, since nothing can reach the ChatGPT-hosted site.
-- Prepares the Cloudflare changes on a branch: wrangler settings, the D1 binding and the Access sign-in. It doesn't deploy them before step 4.
+- Keeps PR #9's home-page label fix ready. It ships with the move in step 5, since nothing can reach the ChatGPT-hosted site.
+- **Done on PR #9's branch (7 Nov):** the Cloudflare changes. Nothing is deployed before step 4.
+  - The Worker entry answers clip byte ranges with `206`. That's tested locally: the player seeks to 2.4 s for a 2.4 s target, with no service worker.
+  - Cloudflare Access sign-in for `/admin`, with token checks. Forged ChatGPT headers and forged tokens are refused.
+  - The D1 settings and migration and deploy commands. See `docs/HOSTING.md`.
 
 ## Never
 

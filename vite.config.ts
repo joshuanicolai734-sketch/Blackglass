@@ -13,15 +13,30 @@ const { d1, r2 } = hostingConfig;
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 const managedLinux = readExecutionProfile() === "managed-linux";
 
+// Own-account hosting (studio/handoffs/2026-11-07-leaving-chatgpt/, docs/HOSTING.md). These come from the environment
+// at build time, so the repository holds no account ids. Unset, the build behaves as before.
+const ownAccount = {
+  databaseName: process.env.D1_DATABASE_NAME || "site-creator-d1",
+  databaseId: process.env.D1_DATABASE_ID || SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+  accessTeamDomain: process.env.CF_ACCESS_TEAM_DOMAIN || "",
+  accessAud: process.env.CF_ACCESS_AUD || "",
+};
+
 const localBindingConfig = {
-  main: "vinext/server/fetch-handler",
+  name: "blackglass",
+  // Movement Studio clips go to the Worker first, so it can answer byte ranges with 206 (worker/index.ts).
+  main: "./worker/index.ts",
+  assets: { binding: "ASSETS", run_worker_first: ["/movements/*.mp4"] },
   compatibility_flags: ["nodejs_compat"],
+  vars: { CF_ACCESS_TEAM_DOMAIN: ownAccount.accessTeamDomain, CF_ACCESS_AUD: ownAccount.accessAud },
   d1_databases: d1
     ? [
         {
           binding: d1,
-          database_name: "site-creator-d1",
-          database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+          database_name: ownAccount.databaseName,
+          database_id: ownAccount.databaseId,
+          // Relative to the generated dist/server/wrangler.json, for `wrangler d1 migrations apply`.
+          migrations_dir: "../../drizzle",
         },
       ]
     : [],
