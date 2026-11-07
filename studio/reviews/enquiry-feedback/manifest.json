@@ -1,0 +1,70 @@
+{
+  "format": "blackglass-native-enquiry-review-v1",
+  "native_base_commit": "7daacb89a396bc3bda44ca8ea17a5f1675011d9d",
+  "github_review_parent": "b87393d8a5ffff089ecc327ec0212e67161e1921",
+  "brief_commit": "e0fcf0f3434b4e7802e2a5b69a0af156c64f3d3b",
+  "production_target": "public/site.js",
+  "runtime_modified_by_this_bundle": false,
+  "files": [
+    {
+      "path": "original/public/site.js",
+      "bytes": 29490,
+      "sha256": "1a3119e9ec0b64ba8e7316a92fd065f14d11125ad6eb643c015d305b4b2b4a86"
+    },
+    {
+      "path": "candidate/public/site.js",
+      "bytes": 29646,
+      "sha256": "57449e61e578c4f00a4172e3ecbf6fb83f2c10c66cc94f9a75d556c0d59dd175"
+    },
+    {
+      "path": "enquiry-feedback.patch",
+      "bytes": 1058,
+      "sha256": "d424af6f676b858c464cc4031fd40f1e6b494425dcd45b108f721138784ee330"
+    },
+    {
+      "path": "candidate/tests/enquiry-feedback.test.mjs",
+      "bytes": 11443,
+      "sha256": "7abd61b8f677365a50109e330a50451a03601eb18470ec79136efe7d2f80cbb2"
+    },
+    {
+      "path": "tests/enquiry-regression.test.mjs",
+      "bytes": 14346,
+      "sha256": "a9d6c9e994e4608c461a95fd4def326fda9b7b935a546f12c75cfb35df7d3ea3"
+    }
+  ],
+  "packaging_checks": {
+    "node": "24.19.0",
+    "candidate_implementation_suite": {
+      "pass": 22,
+      "fail": 0
+    },
+    "candidate_independent_suite": {
+      "pass": 48,
+      "fail": 0
+    },
+    "original_implementation_suite": {
+      "pass": 14,
+      "expected_fail": 8
+    },
+    "original_independent_suite": {
+      "pass": 40,
+      "expected_fail": 8
+    },
+    "patch_reconstructs_candidate": true
+  },
+  "native_full_checks": {
+    "source": "independent worker verification of an isolated full native base plus candidate",
+    "frozen_install": "pass",
+    "lint": "pass",
+    "typescript": "pass",
+    "production_build": "pass",
+    "not_rerun_by_packager": true
+  },
+  "limits": [
+    "Synthetic DOM/fetch tests, not browser or live endpoint tests",
+    "Backend and no-JavaScript behavior reviewed statically only",
+    "GitHub CI does not automatically execute bundled synthetic suites",
+    "Full native source is not contained in this bundle",
+    "Native integration and publication remain held for review and separate approval"
+  ]
+}
