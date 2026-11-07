@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Movement Studio",
   description: `Explore Blackglass’s new back squat, deadlift and push-up movement artwork. Two views, slow playback and phase controls. ${hasDownload ? "Available for Android." : "Android app in development."}`,
   alternates: { canonical: "/movements" },
-  openGraph: { ...ogBase, title: "Blackglass — Movement Studio", description: "Three movement studies. Two views. Your pace.", url: "/movements", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass: know what today asks of you" }] },
+  openGraph: { ...ogBase, title: "Blackglass — Movement Studio", description: "Three movement studies. Two views. Your pace.", url: "/movements", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass — Train with intent" }] },
 };
 
 export default function Movements() {
