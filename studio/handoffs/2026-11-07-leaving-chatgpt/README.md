@@ -45,6 +45,10 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
   - The Worker entry answers clip byte ranges with `206`. That's tested locally: the player seeks to 2.4 s for a 2.4 s target, with no service worker.
   - Cloudflare Access sign-in for `/admin`, with token checks. Forged ChatGPT headers and forged tokens are refused.
   - The D1 settings and migration and deploy commands. See `docs/HOSTING.md`.
+- **Done on PR #9's branch (7 and 8 Nov, approved by Josh):** v34 rebuilt from the published site, so step 5 no longer waits for the export.
+  - It covers the shell, styles, home page and Movement Studio, plus the /coaching, /get and /get/joined details.
+  - `pnpm check:v34` shows it matches the live pages, stylesheets and media.
+  - The exported source still wins if it arrives.
 
 ## Never
 
