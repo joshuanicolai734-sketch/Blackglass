@@ -28,6 +28,18 @@ async function loadActivity(): Promise<Activity[]> {
   }
 }
 
+/** 30-day totals per campaign source for the matching events, in the order the query returned them. */
+function bySource(activity: Activity[], match: (name: string) => boolean): [string, number][] {
+  const sources = new Map<string, number>();
+  activity.filter((a) => match(a.name)).forEach((a) => sources.set(a.source, (sources.get(a.source) || 0) + a.total));
+  return [...sources];
+}
+
+function SourceLine({ label, sources }: { label: string; sources: [string, number][] }) {
+  if (sources.length === 0) return null;
+  return <p className="lead-meta">{label}: {sources.map(([s, n]) => `${s === "none" ? "direct/other" : s} ${n}`).join(" · ")}</p>;
+}
+
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Enquiries | Blackglass", robots: { index: false, follow: false } };
 
@@ -58,8 +70,6 @@ export default async function Admin() {
   activity.forEach((a) => totals.set(a.name, (totals.get(a.name) || 0) + a.total));
   const sum = (names: string[]) => names.reduce((n, k) => n + (totals.get(k) || 0), 0);
   const ctaTaps = [...totals].filter(([k]) => k.startsWith("cta_") || k.startsWith("links_")).reduce((s, [, v]) => s + v, 0);
-  const sources = new Map<string, number>();
-  activity.filter((a) => a.name.endsWith("_view")).forEach((a) => sources.set(a.source, (sources.get(a.source) || 0) + a.total));
   const newCount = leads.filter((lead) => lead.status === "new").length;
   const clients = leads.filter((lead) => lead.status === "won").length;
   return (
@@ -77,7 +87,9 @@ export default async function Admin() {
             <span>{ctaTaps} · BUTTON TAPS</span>
           </div>
           <p className="lead-meta">Funnel: {sum(COACH_TAPS)} taps towards coaching → {totals.get("enquiry_sent") || 0} enquiries · {sum(APP_TAPS)} taps towards the app → {totals.get("preview_signup") || 0} preview sign-ups.</p>
-          {sources.size > 0 && <p className="lead-meta">Visits by campaign source: {[...sources].map(([s, n]) => `${s === "none" ? "direct/other" : s} ${n}`).join(" · ")}</p>}
+          <SourceLine label="Visits by campaign source" sources={bySource(activity, (name) => name.endsWith("_view"))} />
+          <SourceLine label="Coaching enquiries by campaign source" sources={bySource(activity, (name) => name === "enquiry_sent")} />
+          <SourceLine label="Preview sign-ups by campaign source" sources={bySource(activity, (name) => name === "preview_signup")} />
         </section>
         <div className="admin-counts"><span>{leads.length} ENQUIRIES SHOWN</span><span>{newCount} NEW</span><span>{clients} CLIENTS</span></div>
         {error ? <p className="admin-empty" role="alert">The inbox is temporarily unavailable. Please try again later.</p> :
