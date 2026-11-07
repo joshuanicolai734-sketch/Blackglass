@@ -13,6 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "check:hosting": "node --experimental-strip-types scripts/check-hosting.mjs",
+    "check:v34": "node --experimental-strip-types --no-warnings scripts/check-v34.mjs",
     "cf:migrate": "wrangler d1 migrations apply DB --remote --config dist/server/wrangler.json",
     "cf:deploy": "wrangler deploy --config dist/server/wrangler.json"
   },

@@ -167,3 +167,49 @@ export class ForceTimeline {
     if (this.progress === 1) this.intent = false;
   }
 }
+
+// ---- The scroll handoff (force-product-handoff.tsx) ----
+
+export type Box = { top: number; left: number; width: number; height: number };
+export type HandoffGeometry = ReturnType<typeof measureHandoff>;
+
+/** Where the plane starts (the opening's settled front) and lands (the Today pane), and the scroll range between. */
+export function measureHandoff({ art, pane, origin, viewport, mobile }: { art: Box; pane: Box; origin: Box; viewport: number; mobile: boolean }) {
+  const f = forceFrame(1, mobile ? "mobile" : "desktop");
+  const scale = art.width / f.w;
+  const source = {
+    x: art.left + (f.x - f.frontWidth / 2) * scale - origin.left,
+    y: art.top + (f.y - f.frontHeight / 2) * scale - origin.top,
+    width: f.frontWidth * scale,
+    height: f.frontHeight * scale,
+  };
+  const target = { x: pane.left - 12 - origin.left, y: pane.top + 22 - origin.top, height: 96 };
+  const end = Math.max(240, target.y + origin.top - viewport * 0.72);
+  const distance = clamp(end - Math.max(0, source.y + origin.top - viewport * 0.5), 240, 640);
+  const start = Math.max(0, end - distance);
+  const sourceTop = source.y + origin.top - start;
+  const targetTop = target.y + origin.top - (start + distance);
+  return {
+    source,
+    target,
+    start,
+    distance,
+    canAnimate: sourceTop >= 80 && sourceTop + source.height <= viewport && targetTop >= 80 && targetTop + target.height <= viewport,
+  };
+}
+
+export function handoffFrame(progress: number, { source, target }: HandoffGeometry) {
+  const p = clamp(progress);
+  const travel = smoothstep((p - 0.38) / 0.62);
+  return {
+    p,
+    proof: 1 - smoothstep(p / 0.16),
+    replace: p > 0.18,
+    x: lerp(source.x, target.x, travel),
+    y: lerp(source.y, target.y, travel),
+    edgeX: lerp(source.x - 2.5, target.x, travel),
+    edgeWidth: lerp(5, 4, travel),
+    height: lerp(source.height, target.height, travel),
+    width: source.width * (1 - smoothstep((p - 0.18) / 0.2)),
+  };
+}

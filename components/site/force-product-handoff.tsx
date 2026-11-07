@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { clamp, forceFrame } from "./force-model";
+import { handoffFrame, measureHandoff, type Box, type HandoffGeometry } from "./force-model";
 
 /**
  * The scroll handoff (Sites v34): once the force opening has finished, scrolling carries its plane and lime edge
@@ -13,53 +13,7 @@ import { clamp, forceFrame } from "./force-model";
  * names are new, the behaviour and numbers are unchanged.
  */
 
-type Box = { top: number; left: number; width: number; height: number };
-type Geometry = ReturnType<typeof measureHandoff>;
 type Connection = EventTarget & { saveData?: boolean };
-
-const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
-const smoothstep = (t: number) => ((t = clamp(t)), t * t * (3 - 2 * t));
-
-/** Where the plane starts (the opening's settled front) and lands (the Today pane), and the scroll range between. */
-function measureHandoff({ art, pane, origin, viewport, mobile }: { art: Box; pane: Box; origin: Box; viewport: number; mobile: boolean }) {
-  const f = forceFrame(1, mobile ? "mobile" : "desktop");
-  const scale = art.width / f.w;
-  const source = {
-    x: art.left + (f.x - f.frontWidth / 2) * scale - origin.left,
-    y: art.top + (f.y - f.frontHeight / 2) * scale - origin.top,
-    width: f.frontWidth * scale,
-    height: f.frontHeight * scale,
-  };
-  const target = { x: pane.left - 12 - origin.left, y: pane.top + 22 - origin.top, height: 96 };
-  const end = Math.max(240, target.y + origin.top - viewport * 0.72);
-  const distance = clamp(end - Math.max(0, source.y + origin.top - viewport * 0.5), 240, 640);
-  const start = Math.max(0, end - distance);
-  const sourceTop = source.y + origin.top - start;
-  const targetTop = target.y + origin.top - (start + distance);
-  return {
-    source,
-    target,
-    start,
-    distance,
-    canAnimate: sourceTop >= 80 && sourceTop + source.height <= viewport && targetTop >= 80 && targetTop + target.height <= viewport,
-  };
-}
-
-function handoffFrame(progress: number, { source, target }: Geometry) {
-  const p = clamp(progress);
-  const travel = smoothstep((p - 0.38) / 0.62);
-  return {
-    p,
-    proof: 1 - smoothstep(p / 0.16),
-    replace: p > 0.18,
-    x: lerp(source.x, target.x, travel),
-    y: lerp(source.y, target.y, travel),
-    edgeX: lerp(source.x - 2.5, target.x, travel),
-    edgeWidth: lerp(5, 4, travel),
-    height: lerp(source.height, target.height, travel),
-    width: source.width * (1 - smoothstep((p - 0.18) / 0.2)),
-  };
-}
 
 function mountHandoff(root: HTMLElement | null | undefined) {
   if (!root || root.hasAttribute("data-product-handoff-ready")) return null;
@@ -78,7 +32,7 @@ function mountHandoff(root: HTMLElement | null | undefined) {
   const connection = (navigator as Navigator & { connection?: Connection }).connection;
   const cleanups: (() => void)[] = [];
   const intersecting = new Map<Element, boolean>();
-  let geometry: Geometry | null = null;
+  let geometry: HandoffGeometry | null = null;
   let stale = true;
   let frame = 0;
   let destroyed = false;
