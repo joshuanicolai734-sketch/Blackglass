@@ -86,7 +86,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .btn:active::before, .btn[data-press]::before { transform: none; }
 .btn:active .arrow, .btn[data-press] .arrow { transform: translate(4px, -4px); }
 .btn:active .arrow-down, .btn[data-press] .arrow-down { transform: rotate(90deg) translate(4px, -4px); }
-/* Chamfered fill: crimson on Glass, ink on Paper (the --action token switches with the ground). */
+/* Chamfered fill: the signal colour on Glass (lime since v34), ink on Paper (the --action token switches with the ground). */
 .btn-primary { color: var(--on-action); }
 .btn-primary::before { background: var(--action); }
 .btn-primary::after { inset: 0; pointer-events: none; background: linear-gradient(128deg, transparent 78%, rgba(255, 255, 255, .17) 78% 80%, transparent 80%); }
@@ -715,7 +715,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 @keyframes pane-drive { from { transform: translateX(24px); } }
 @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) { .hero-pane .pane-glass { animation: pane-drive var(--t-load) var(--ease-load) both; } }
 
-/* Poster field: one engineered crimson arc and one diagonal plane. Both sit behind the actual app screen and copy.
+/* Poster field (switched off by app/performance.css since v34): one engineered arc and one diagonal plane in the signal colour. Both sit behind the actual app screen and copy.
    The rest of the reference's tiny marks become a single factual rail, so the page stays legible on phones. */
 .hero { isolation: isolate; background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
 .hero::before { content: ""; position: absolute; z-index: -1; top: -26vw; right: -15vw; width: min(88vw, 1120px); aspect-ratio: 1; border-radius: 50%; pointer-events: none;

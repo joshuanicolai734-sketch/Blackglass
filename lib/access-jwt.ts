@@ -34,14 +34,30 @@ export async function importAccessKeys(jwks: { keys?: Jwk[] }): Promise<Map<stri
 }
 
 let cache: { team: string; at: number; keys: Map<string, CryptoKey> } | null = null;
+const KEEP_MS = 10 * 60 * 1000;
+const REFETCH_GAP_MS = 30 * 1000;
 
-/** The team's signing keys, fetched from Access and kept for ten minutes (Access rotates keys with an overlap). */
-export async function accessKeys(team: string, fetchImpl: typeof fetch = fetch): Promise<Map<string, CryptoKey>> {
-  if (cache && cache.team === team && Date.now() - cache.at < 10 * 60 * 1000) return cache.keys;
+/** The key id a token was signed with, from its header (unverified: it only picks which key to verify with). */
+export function tokenKid(token: string): string | null {
+  const header = b64urlJson<{ kid?: unknown }>(token.split(".")[0] ?? "");
+  return header && typeof header.kid === "string" ? header.kid : null;
+}
+
+/**
+ * The team's signing keys, fetched from Access and kept for ten minutes (Access rotates keys with an overlap).
+ * Given the `kid` of the token at hand, an unknown key id means Access may have rotated: the keys are fetched again,
+ * at most once every 30 seconds, so a rotation can't lock the owner out and forged ids can't force a fetch per request.
+ */
+export async function accessKeys(team: string, fetchImpl: typeof fetch = fetch, opts: { kid?: string | null; now?: number } = {}): Promise<Map<string, CryptoKey>> {
+  const now = opts.now ?? Date.now();
+  if (cache && cache.team === team && now - cache.at < KEEP_MS) {
+    const known = !opts.kid || cache.keys.has(opts.kid);
+    if (known || now - cache.at < REFETCH_GAP_MS) return cache.keys;
+  }
   const res = await fetchImpl(`https://${team}/cdn-cgi/access/certs`);
   if (!res.ok) throw new Error(`Access certs: ${res.status}`);
   const keys = await importAccessKeys((await res.json()) as { keys?: Jwk[] });
-  cache = { team, at: Date.now(), keys };
+  cache = { team, at: now, keys };
   return keys;
 }
 

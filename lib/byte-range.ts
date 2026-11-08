@@ -6,9 +6,11 @@
  * (worker/index.ts) reads the clip from the asset binding and answers ranges here. That covers every browser, including
  * the in-app browsers that never run the clip service worker.
  *
- * Supported: one range per request (media stacks never ask for more), open-ended and suffix forms, 416 when the start is
- * past the end, If-Range (a strong ETag must match exactly, or a date must equal Last-Modified; otherwise the whole file
- * is sent), If-None-Match (304), and HEAD.
+ * Supported: one range per request (media stacks never ask for more), open-ended and suffix forms, 416 when the range
+ * can't be satisfied (it starts past the end, or asks for the last 0 bytes), If-Range (a strong ETag must match exactly,
+ * or a date must equal Last-Modified; otherwise the whole file is sent), If-None-Match (304), and HEAD. A malformed or
+ * invalid range (such as bytes=5-2, whose end is before its start) is ignored and the whole file sent, as RFC 9110 §14.2
+ * allows.
  */
 
 export type Clip = {
@@ -49,6 +51,9 @@ export function rangeResponse(clip: Clip, request: { method: string; headers: He
   const range = ifRangeHolds(request.headers.get("If-Range"), clip) ? request.headers.get("Range") : null;
   const m = range ? /^bytes=(\d*)-(\d*)$/.exec(range.trim()) : null;
   if (!m || (m[1] === "" && m[2] === "")) {
+    return new Response(head ? null : clip.body, { status: 200, headers: { ...base, "Content-Length": String(size) } });
+  }
+  if (m[1] !== "" && m[2] !== "" && Number(m[2]) < Number(m[1])) {
     return new Response(head ? null : clip.body, { status: 200, headers: { ...base, "Content-Length": String(size) } });
   }
   let start: number;

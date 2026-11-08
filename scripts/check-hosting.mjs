@@ -2,7 +2,7 @@
 // (lib/access-jwt.ts). Run: node --experimental-strip-types scripts/check-hosting.mjs
 import assert from "node:assert/strict";
 import { rangeResponse } from "../lib/byte-range.ts";
-import { importAccessKeys, verifyAccessJwt } from "../lib/access-jwt.ts";
+import { accessKeys, importAccessKeys, tokenKid, verifyAccessJwt } from "../lib/access-jwt.ts";
 
 let passed = 0;
 async function check(name, fn) {
@@ -34,8 +34,8 @@ await check("overlong end is clamped; start past the end is 416", async () => {
   assert.equal(r.headers.get("Content-Range"), "bytes */1000");
   assert.equal(ask({ Range: "bytes=-0" }).status, 416);
 });
-await check("no or malformed Range → 200 whole file with Accept-Ranges", async () => {
-  for (const h of [{}, { Range: "bytes=abc" }, { Range: "items=0-1" }, { Range: "bytes=0-1,5-6" }]) {
+await check("no, malformed or invalid Range → 200 whole file with Accept-Ranges", async () => {
+  for (const h of [{}, { Range: "bytes=abc" }, { Range: "items=0-1" }, { Range: "bytes=0-1,5-6" }, { Range: "bytes=5-2" }, { Range: "bytes=1500-1200" }]) {
     const r = ask(h);
     assert.equal(r.status, 200);
     assert.equal(r.headers.get("Accept-Ranges"), "bytes");
@@ -97,6 +97,24 @@ await check("wrong key, unknown kid, unsigned or garbage → null", async () => 
   assert.equal(await verify(`${h}.${p}.`), null);
   assert.equal(await verify("not-a-token"), null);
   assert.equal(await verify("a.b.c"), null);
+});
+await check("an unknown key id refetches Access keys, at most once per 30 s", async () => {
+  let fetches = 0;
+  const fakeFetch = async () => { fetches++; return new Response(JSON.stringify({ keys: [jwk] }), { status: 200 }); };
+  const t0 = 1_000_000_000_000;
+  const t = "refetch-check.cloudflareaccess.com";
+  await accessKeys(t, fakeFetch, { now: t0 });
+  await accessKeys(t, fakeFetch, { kid: "k1", now: t0 + 1_000 }); // known key: cached
+  await accessKeys(t, fakeFetch, { kid: "k9", now: t0 + 10_000 }); // unknown, but fetched under 30 s ago: cached
+  assert.equal(fetches, 1);
+  await accessKeys(t, fakeFetch, { kid: "k9", now: t0 + 31_000 }); // unknown after 30 s: fetched again
+  assert.equal(fetches, 2);
+  await accessKeys(t, fakeFetch, { kid: "k1", now: t0 + 31_000 + 9 * 60_000 }); // known, within 10 min: cached
+  assert.equal(fetches, 2);
+  await accessKeys(t, fakeFetch, { now: t0 + 31_000 + 11 * 60_000 }); // 10 min old: fetched again
+  assert.equal(fetches, 3);
+  assert.equal(tokenKid(await token(good)), "k1");
+  assert.equal(tokenKid("not-a-token"), null);
 });
 
 console.log(`\n${passed} checks passed.`);

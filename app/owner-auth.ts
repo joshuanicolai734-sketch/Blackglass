@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { headers } from "next/headers";
-import { accessKeys, verifyAccessJwt } from "../lib/access-jwt";
+import { accessKeys, tokenKid, verifyAccessJwt } from "../lib/access-jwt";
 import { chatGPTSignInPath, getChatGPTUser } from "./chatgpt-auth";
 
 export type OwnerAuth = {
@@ -28,7 +28,7 @@ export async function ownerAuth(returnTo = "/admin"): Promise<OwnerAuth> {
     let email: string | null = null;
     if (token) {
       try {
-        email = await verifyAccessJwt(token, { team, aud, keys: await accessKeys(team) });
+        email = await verifyAccessJwt(token, { team, aud, keys: await accessKeys(team, fetch, { kid: tokenKid(token) }) });
       } catch {
         email = null;
       }
