@@ -36,7 +36,11 @@ Then check the preview:
 - `verify-staging.mjs <preview> --clip` should report `C7 host answers Range natively: yes`.
 - Run the journey checks with synthetic data only.
 - One real test enquiry: send it, see it in `/admin`, delete it.
-- Josh checks the preview on his phone.
+- Access key rotation, with Josh's yes (it changes the account, and needs a token allowed to change Access): open `/admin`, rotate the signing keys (`POST /accounts/<account_id>/access/keys/rotate`), sign in again and reopen `/admin` within 10 minutes. It should open straight away.
+- Josh checks the preview on his phone, for what headless Chromium can't show:
+  - Movement Studio: a clip plays, and dragging its scrubber shows the matching frame.
+  - Home page: the motion's play button ("Replay the sequence") works on the first tap.
+  - With the phone turned sideways, the header and action bar leave most of the screen for the page.
 
 ## Moving the domain (only on Josh's approval)
 
