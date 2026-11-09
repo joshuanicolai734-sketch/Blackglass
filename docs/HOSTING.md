@@ -36,6 +36,7 @@ Then check the preview:
 - `verify-staging.mjs <preview> --clip` should report `C7 host answers Range natively: yes`.
 - Run the journey checks with synthetic data only.
 - One real test enquiry: send it, see it in `/admin`, delete it.
+- CPU time per request, on the Worker's metrics in the Cloudflare dashboard: under 10 ms on the free plan, or see Cost below.
 - Access key rotation, with Josh's yes (it changes the account, and needs a token allowed to change Access): open `/admin`, rotate the signing keys (`POST /accounts/<account_id>/access/keys/rotate`), sign in again and reopen `/admin` within 10 minutes. It should open straight away.
 - Josh checks the preview on his phone, for what headless Chromium can't show:
   - Movement Studio: a clip plays, and dragging its scrubber shows the matching frame.
@@ -60,4 +61,4 @@ The old enquiries stay in the CSV Josh downloads from ChatGPT. The new inbox sta
 
 ## Cost
 
-The free plans cover this site. Claude checks the current limits when setting up, and asks before anything that would cost money.
+The free plans cover the request volume, D1 and Access. The exception is CPU: Workers Free allows 10 ms per request, and the Worker renders every page on each visit. On 9 November a local build used 8 to 12 ms per page (home 11.8 ms, measured from workerd's own CPU time over 300 warm requests), so check the preview's CPU time per request in the dashboard. If it's over 10 ms, Josh chooses between Workers Paid (US$5 a month, 10 million requests and 30 million CPU ms included) and pre-building the static pages. Claude asks before anything that would cost money.

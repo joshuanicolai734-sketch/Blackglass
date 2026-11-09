@@ -31,7 +31,11 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
 
 **Rollback until step 7:** point the domain back at ChatGPT Sites; nothing there is deleted.
 
-**Cost:** Cloudflare's free plan should cover this site: Workers (100,000 requests a day at the time of writing), D1, and Access (up to 50 users). Claude rechecks the current limits at sign-up. The domain registration stays at Crazy Domains. Nothing here needs a paid plan. If that ever changes, Claude asks first.
+**Cost:** Cloudflare's free plan covers the request volume (100,000 a day at the time of writing), D1 and Access (up to 50 users). Its tight limit is CPU: 10 ms per request. The Worker renders every page on each visit, and on 9 Nov a local build used 8 to 12 ms per page (home 11.8 ms), so some visits could fail on the free plan. The preview (step 5) shows the real CPU times. If they're over the limit, Josh chooses between:
+- Workers Paid, at US$5 a month with 10 million requests and 30 million CPU ms included;
+- or Claude pre-building the six static pages so they're served as files, with no Worker time. That takes some work.
+
+Claude rechecks the limits at sign-up and asks before any spending. The domain registration stays at Crazy Domains.
 
 ## The one ChatGPT message (Josh pastes it once, in the Blackglass project)
 
