@@ -5,6 +5,10 @@ Source repository: https://github.com/joshuanicolai734-sketch/Blackglass (defaul
 **Current live release: Sites version 34.** Gamma published it from the Sites project; it was live by 28 October 2026. It was unchanged when rechecked on 8 November.
 - **Source:** v34's source was never pushed to GitHub, and versions 17 to 33 have no matching commit on the default branch either. PR #9 (`ccr-9a0aa706-ht9bg2`) rebuilt it from the published site on 7 and 8 November, using the snapshot in `studio/reference/sites-v34-2026-11-07/`.
 - **Proof:** `pnpm check:v34` shows the build still matches v34: all 9 pages' text, classes, metadata and markup, the three stylesheets byte for byte, the movement media digests and the opening's maths.
+- **Approved changes from v34 (Josh, 9 November), listed in `scripts/check-v34.mjs`:**
+  - home-page text is at least 12 px (v34 used 9 to 11 px in ten places);
+  - the link-preview titles of `/` and `/links` match their page titles;
+  - the enquiry forms say "Too many requests right now" on an HTTP 429, PR #10's reviewed patch. `pnpm check:enquiry` runs its 70 synthetic cases.
 - **If the exact source turns up:** prefer the v34 source if it's ever exported from ChatGPT Sites (branch `sites-v34-source`).
 - **What changed in v34:**
   - a lime signal (`#DFFF00`);

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: { absolute: "Blackglass — Training, technique and food in one app" },
   description,
   alternates: { canonical: "/" },
-  openGraph: { ...ogBase, title: "Blackglass — One session. Then the next.", description, url: "/", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass Android training app preview" }] },
+  openGraph: { ...ogBase, title: "Blackglass — Training, technique and food in one app", description, url: "/", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass Android training app preview" }] },
 };
 
 const demo = [

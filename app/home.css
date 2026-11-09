@@ -858,7 +858,7 @@
 .home-principles .home-principle-screen {
   text-transform: uppercase;
   margin-top: 15px;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 .home-v2 .home-start {
   background: var(--home-ink);
@@ -945,7 +945,7 @@
 }
 .home-coach-copy .price-labels {
   gap: 4px;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 .home-coach-copy .includes {
@@ -1087,7 +1087,7 @@
   }
   .home-hero-bottomline {
     gap: 10px;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
   }
   .home-demo .home-section-label {
     margin-bottom: 34px;
@@ -1177,7 +1177,7 @@
   .home-hero-topline {
     gap: 10px;
     padding-bottom: 19px;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
   }
   .home-hero .home-hero-title {
     font-size: clamp(4rem, 21vw, 6.4rem);
@@ -1238,7 +1238,7 @@
   }
   .home-motion-chapter > summary > .label {
     flex-basis: 100%;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
   }
   .home-motion-chapter > summary > span:nth-child(2) {
     font-size: 1rem;
@@ -1267,7 +1267,7 @@
   }
   .home-v2 .home-demo .demo-tabs button {
     gap: 5px;
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
   }
   .home-product-art {
     height: 475px;

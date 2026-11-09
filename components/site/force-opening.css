@@ -130,7 +130,7 @@
 .bg-force figcaption,
 .bg-force footer,
 .bg-force .no-js-note {
-  font: 500 11px/1.5 var(--mono);
+  font: 500 12px/1.5 var(--mono);
 }
 .bg-force .study-label {
   color: var(--dim);
@@ -316,7 +316,7 @@
   font-size: 14px;
 }
 .bg-force .phase-controls button span {
-  font: 500 10px var(--mono);
+  font: 500 12px var(--mono);
   margin-right: 8px;
 }
 .bg-force .phase-controls button[aria-pressed="true"] {
@@ -371,7 +371,7 @@
 .bg-force .time {
   white-space: nowrap;
   color: var(--dim);
-  font: 500 10px var(--mono);
+  font: 500 12px var(--mono);
   min-width: 78px;
 }
 .bg-force .demo-disclosure {
@@ -652,7 +652,7 @@
   }
   .bg-force .time {
     min-width: 70px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .bg-force .demo-disclosure {
     padding: 4px 18px 24px;

@@ -13,7 +13,7 @@ This is a read-only copy of what https://blackglass.co.nz served on 7 November 2
   - On 8 November: the three front-view posters, which load only when a visitor changes view, plus `movements/manifest.json` and `movements/back-squat-cover.webp`, which no page loads. They also went straight into `public/movements/`. All twelve clips and posters match the manifest's SHA-256s.
 - Nothing private. These are public pages fetched with plain GETs. Every `/api/` request was aborted and beacons were stubbed, so no visit was counted. Cloudflare's `/cdn-cgi/` scripts weren't kept.
 
-**Since 8 November, PR #9's source reproduces this snapshot.** `pnpm check:v34 --pages <local build>` compares all 9 pages, the three stylesheets, the static files, the movement media and the opening's maths. The table below is the starting point.
+**Since 8 November, PR #9's source reproduces this snapshot.** `pnpm check:v34 --pages <local build>` compares all 9 pages, the three stylesheets, the static files, the movement media and the opening's maths. Since 9 November it allows only the changes Josh approved, which it lists: 12 px home-page text, two link-preview titles and the enquiry forms' 429 message. The table below is the starting point.
 
 **How v34 differed from this repository on 7 November** (page text similarity of the build at `7537c77`, then PR #9's head, against v34):
 

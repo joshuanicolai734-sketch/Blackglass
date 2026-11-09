@@ -2,7 +2,7 @@
 
 The short version: **settings live in `content/`, pages in `app/`, styles in `app/site.css`**, plus the Sites v34 layers in `app/performance.css` (all pages), `app/home.css` (home) and `components/site/force-opening.css`.
 
-**Sites v34 (live since late October 2026).** This source was rebuilt from the published v34 site on 7 November 2026 (`studio/reference/sites-v34-2026-11-07/`); `pnpm check:v34` proves the build still matches it. Where an older note below conflicts with v34, v34 wins and the note says so.
+**Sites v34 (live since late October 2026).** This source was rebuilt from the published v34 site on 7 November 2026 (`studio/reference/sites-v34-2026-11-07/`); `pnpm check:v34` proves the build still matches it, apart from the changes Josh approved on 9 November, which the script lists (12 px home-page text, two link-preview titles and the enquiry forms' 429 message). Any other change from v34 makes it fail, so add an approved change there in the same commit. Where an older note below conflicts with v34, v34 wins and the note says so.
 
 ## Change these most often
 

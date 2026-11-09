@@ -14,11 +14,11 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
 ## Order
 
 1. **Josh: keep ChatGPT and the Sites project until step 7.** Cancelling or deleting first could take the site, its enquiry inbox and the enquiries offline.
-2. **Josh: send ChatGPT one last message (below).** It puts the v34 source on GitHub. No customer data goes to GitHub.
+2. **Optional since 8 Nov: Josh sends ChatGPT one last message (below).** It would put the exact v34 source on GitHub. The rebuild on PR #9 already matches v34 (`pnpm check:v34`), so the export is only a cross-check. No customer data goes to GitHub.
 3. **Josh: save the enquiries.** Either ask ChatGPT in the same chat for a CSV download, or copy them from `/admin`. Keep them private: the repository is public. The new inbox can start empty, with the old enquiries kept as a file.
 4. **Josh: create a free Cloudflare account.** Claude then asks for a deploy token through the secure credential form. Never paste a token in chat.
 5. **Claude: build and preview** (runbook: `docs/HOSTING.md`).
-   - Put v34 and the open PR #9 item (12 px home labels) on GitHub. Clip seeking needs no service worker on this host: the Worker answers ranges itself (`worker/index.ts`).
+   - Done on PR #9: v34 on GitHub, with the 12 px home labels (9 Nov). Clip seeking needs no service worker on this host: the Worker answers ranges itself (`worker/index.ts`).
    - Create the D1 database and apply the migrations.
    - Replace the ChatGPT sign-in with Cloudflare Access.
    - Deploy to a `workers.dev` preview, then run `verify-staging.mjs`, the journey checks and an enquiry test with synthetic data.
@@ -49,6 +49,7 @@ The public site still depends on ChatGPT Sites in four ways. Nothing below chang
   - It covers the shell, styles, home page and Movement Studio, plus the /coaching, /get and /get/joined details.
   - `pnpm check:v34` shows it matches the live pages, stylesheets and media.
   - The exported source still wins if it arrives.
+- **Done on PR #9's branch (9 Nov, approved by Josh):** home-page text at 12 px, link-preview titles that match the page titles on `/` and `/links`, and PR #10's 429 message. `pnpm check:v34` lists these as the only differences from v34.
 
 ## Never
 

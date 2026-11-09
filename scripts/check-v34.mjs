@@ -1,5 +1,6 @@
 // Checks that this source still reproduces the public site as published at Sites v34, against the 7 Nov 2026
-// snapshot in studio/reference/sites-v34-2026-11-07/. Read-only, and it never contacts the live site.
+// snapshot in studio/reference/sites-v34-2026-11-07/, apart from the approved changes listed in CHANGES below.
+// Read-only, and it never contacts the live site.
 //
 //   pnpm build && pnpm check:v34                      compiled CSS, static files, movement media, opening maths
 //   pnpm check:v34 --pages http://127.0.0.1:8787      also every page a local build serves (run pnpm start first)
@@ -33,22 +34,72 @@ async function check(name, fn) {
 const read = (file) => fs.readFileSync(file);
 const sha256 = (buffer) => createHash("sha256").update(buffer).digest("hex");
 
-// ---- Compiled stylesheets: byte-identical to v34 ----
+// ---- Approved changes from v34 ----
+// The only ways this source differs from what v34 served. Each check below applies them to the snapshot first, so
+// any other difference still fails, and each `from` must appear in the snapshot exactly once.
+// 12 px text on the home page: BG-002 item 1, approved by Josh on 9 Nov 2026 (v34 used 9 to 11 px here).
+// Link-preview titles that match the page titles on / and /links: approved by Josh on 9 Nov 2026.
+// A "too many requests" message for HTTP 429 on the enquiry forms: PR #10's reviewed patch (pnpm check:enquiry).
+const HOME_TITLE = "Blackglass — Training, technique and food in one app";
+const UNSURE = "          : 'We couldn’t confirm whether this was received. Your answers are still here. You can try again, or send it by email instead.', false, a);";
+const CHANGES = {
+  "static/site.js": [
+    [UNSURE, "          : status === 429\n            ? 'Too many requests right now. Your answers are still here. Please try again later, or send it by email instead.'\n  " + UNSURE],
+  ],
+  "css/page": [
+    [".home-principles .home-principle-screen{text-transform:uppercase;margin-top:15px;font-size:.6875rem}", ".home-principles .home-principle-screen{text-transform:uppercase;margin-top:15px;font-size:.75rem}"],
+    [".home-coach-copy .price-labels{gap:4px;font-size:.6875rem;line-height:1.5}", ".home-coach-copy .price-labels{gap:4px;font-size:.75rem;line-height:1.5}"],
+    [".home-hero-bottomline{gap:10px;font-size:.625rem}", ".home-hero-bottomline{gap:10px;font-size:.75rem}"],
+    [".home-hero-topline{gap:10px;padding-bottom:19px;font-size:.625rem}", ".home-hero-topline{gap:10px;padding-bottom:19px;font-size:.75rem}"],
+    [".home-motion-chapter>summary>.label{flex-basis:100%;font-size:.625rem}", ".home-motion-chapter>summary>.label{flex-basis:100%;font-size:.75rem}"],
+    [".home-v2 .home-demo .demo-tabs button{gap:5px;font-size:.6875rem}", ".home-v2 .home-demo .demo-tabs button{gap:5px;font-size:.75rem}"],
+  ],
+  "css/force-opening": [
+    [".bg-force .no-js-note{font:500 11px/1.5 var(--mono)}", ".bg-force .no-js-note{font:500 12px/1.5 var(--mono)}"],
+    [".bg-force .phase-controls button span{font:500 10px var(--mono);", ".bg-force .phase-controls button span{font:500 12px var(--mono);"],
+    [".bg-force .time{white-space:nowrap;color:var(--dim);font:500 10px var(--mono);", ".bg-force .time{white-space:nowrap;color:var(--dim);font:500 12px var(--mono);"],
+    [".bg-force .time{min-width:70px;font-size:9px}", ".bg-force .time{min-width:70px;font-size:12px}"],
+  ],
+  "page/home": [
+    ['<meta property="og:title" content="Blackglass — One session. Then the next."/>', `<meta property="og:title" content="${HOME_TITLE}"/>`],
+    ['<meta name="twitter:title" content="Blackglass — One session. Then the next."/>', `<meta name="twitter:title" content="${HOME_TITLE}"/>`],
+  ],
+  "page/links": [
+    ['<meta property="og:title" content="Blackglass"/>', '<meta property="og:title" content="Links | Blackglass"/>'],
+    ['<meta name="twitter:title" content="Blackglass"/>', '<meta name="twitter:title" content="Links | Blackglass"/>'],
+  ],
+};
+function withChanges(key, text) {
+  for (const [from, to] of CHANGES[key] ?? []) {
+    assert.equal(text.split(from).length - 1, 1, `${key}: v34 should contain this exactly once: ${from}`);
+    text = text.replace(from, () => to);
+  }
+  return text;
+}
+const changes = (key) => (CHANGES[key] ? ` with its ${CHANGES[key].length} approved change${CHANGES[key].length === 1 ? "" : "s"}` : "");
+
+// ---- Compiled stylesheets: byte-identical to v34, approved changes applied ----
 for (const name of ["index", "page", "force-opening"]) {
-  await check(`stylesheet ${name}.*.css is byte-identical to v34`, () => {
+  await check(`stylesheet ${name}.*.css is byte-identical to v34${changes(`css/${name}`)}`, () => {
     const dir = path.join(root, "dist/client/_next/static/css");
     if (!fs.existsSync(dir)) throw new Error("no build output: run pnpm build first");
     const built = fs.readdirSync(dir).filter((f) => f.startsWith(`${name}.`) && f.endsWith(".css"));
     const live = fs.readdirSync(path.join(snap, "files/_next/static/css")).find((f) => f.startsWith(`${name}.`));
     assert.equal(built.length, 1, `expected one ${name}.*.css in the build, found ${built.length}`);
-    assert.ok(read(path.join(dir, built[0])).equals(read(path.join(snap, "files/_next/static/css", live))), `${built[0]} differs from v34's ${live}`);
+    const expected = withChanges(`css/${name}`, fs.readFileSync(path.join(snap, "files/_next/static/css", live), "utf8"));
+    const actual = fs.readFileSync(path.join(dir, built[0]), "utf8");
+    let at = 0;
+    while (at < expected.length && expected[at] === actual[at]) at++;
+    assert.ok(actual === expected, `${built[0]} differs from v34's ${live} at character ${at}:\n v34:  ${expected.slice(Math.max(0, at - 60), at + 60)}\n ours: ${actual.slice(Math.max(0, at - 60), at + 60)}`);
   });
 }
 
 // ---- Static files: identical to what v34 served ----
-await check("site.js, intro.js, brand SVGs, share image and curl poster are identical to v34", () => {
+await check(`site.js, intro.js, brand SVGs, share image and curl poster are identical to v34 (site.js${changes("static/site.js")})`, () => {
   for (const file of ["site.js", "intro.js", "brand/blackglass-lockup.svg", "brand/blackglass-mark.svg", "og/home.png", "movements/curl-study/three-quarter-setup.png"]) {
-    assert.ok(read(path.join(root, "public", file)).equals(read(path.join(snap, "files", file))), `public/${file} differs from the snapshot`);
+    const saved = read(path.join(snap, "files", file));
+    const expected = CHANGES[`static/${file}`] ? Buffer.from(withChanges(`static/${file}`, saved.toString("utf8"))) : saved;
+    assert.ok(read(path.join(root, "public", file)).equals(expected), `public/${file} differs from the snapshot`);
   }
 });
 
@@ -157,15 +208,16 @@ function markup(html) {
     .replace(/<link rel="modulepreload"[^>]*>/g, "")
     .replace(/<script type="module"[^>]*>[\s\S]*?<\/script>/g, "")
     .replace(/\/_next\/static\/chunks\/[A-Za-z0-9._-]+/g, "/_next/static/chunks/X")
+    .replace(/\/_next\/static\/css\/([a-z-]+)\.[A-Za-z0-9_-]+\.css/g, "/_next/static/css/$1.X.css") // contents checked above
     .replace(/ nonce="[^"]*"/g, "")
     .split(">");
 }
 if (base) {
   for (const [route, name] of Object.entries(PAGES)) {
-    await check(`page ${route} matches v34 (text, classes, metadata, markup)`, async () => {
+    await check(`page ${route} matches v34${changes(`page/${name}`)} (text, classes, metadata, markup)`, async () => {
       const response = await fetch(base + route);
       const local = await response.text();
-      const live = fs.readFileSync(path.join(snap, "pages", `${name}.html`), "utf8");
+      const live = withChanges(`page/${name}`, fs.readFileSync(path.join(snap, "pages", `${name}.html`), "utf8"));
       assert.deepEqual(meta(local), meta(live), "metadata");
       assert.equal(text(local), text(live), "visible text");
       assert.deepEqual(classes(local), classes(live), "class names");

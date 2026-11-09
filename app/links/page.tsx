@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Join the Blackglass preview list, see how the app works, and coaching with Josh.",
   alternates: { canonical: "/links" },
   robots: { index: false, follow: true },
-  openGraph: { ...ogBase, title: "Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
+  openGraph: { ...ogBase, title: "Links | Blackglass", description: "Training, technique and food in one Android app. Built in Dunedin.", url: "/links", images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Blackglass" }] },
 };
 
 function Item({ href, title, note, primary, track }: { href: string; title: string; note: ReactNode; primary?: boolean; track: string }) {
