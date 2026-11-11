@@ -1,6 +1,8 @@
 # Maintaining the Blackglass site
 
-The short version: **settings live in `content/`, pages in `app/`, styles in `app/site.css`**.
+The short version: **settings live in `content/`, pages in `app/`, styles in `app/site.css`**, plus the Sites v34 layers in `app/performance.css` (all pages), `app/home.css` (home) and `components/site/force-opening.css`.
+
+**Sites v34 (live since late October 2026).** This source was rebuilt from the published v34 site on 7 November 2026 (`studio/reference/sites-v34-2026-11-07/`); `pnpm check:v34` proves the build still matches it, apart from the changes Josh approved on 9 November, which the script lists (12 px home-page text, two link-preview titles and the enquiry forms' 429 message). Any other change from v34 makes it fail, so add an approved change there in the same commit. Where an older note below conflicts with v34, v34 wins and the note says so.
 
 ## Change these most often
 
@@ -13,7 +15,7 @@ The short version: **settings live in `content/`, pages in `app/`, styles in `ap
 | Navigation labels | `content/site.ts → nav` |
 | Campaign name for UTM links, QR target | `content/site.ts → campaign`, `qrTarget` |
 | Questions and answers | `content/faq.ts` (home, /get, /coaching) |
-| Homepage copy and demo screens | `app/page.tsx` (`demo`, `benefits` at the top) |
+| Homepage copy and demo screens | `app/page.tsx` (`demo`, `principles` at the top); its styles in `app/home.css` |
 | Movement Studio and descriptions | `app/movements/page.tsx`, `components/site/movement-studio.tsx`, `content/movements.ts`; see `docs/MOVEMENT_STUDIO.md` |
 | Get Blackglass page | `app/get/page.tsx` |
 | Coaching page and enquiry form | `app/coaching/page.tsx` |
@@ -50,12 +52,12 @@ The Android 89.0 source build, historical alignment work and remaining device re
 
 - **Tokens:** `app/tokens.css` is the only place values live (colour, type, spacing, hairlines, motion). `site.css`, the admin styles and the shadcn variables in `globals.css` all read from it. Change a value there, never on top of it.
 - **Grounds:**
-  - **Glass** (`#0B0D0E`) is home.
-  - **Paper** (`#ECEAE3`, add `class="paper"` to a section) is for one or two feature sections per page. It switches every semantic token and adds a 3% grain.
-  - On Paper, crimson is a graphic accent. Text and actions use ink.
+  - **Glass** (`#171A1C` since v34, set by the performance palette in `app/performance.css`) is home.
+  - **Paper** (`#E1E4DB` since v34; add `class="paper"` to a section) is for one or two feature sections per page. It switches every semantic token and adds a 3% grain.
+  - On Paper, the signal is a graphic accent. Text and actions use ink.
 - **Signal colours:**
-  - **Crimson** (`#F43F46`) is for primary buttons on Glass, markers and a single large structural form in the home hero.
-  - The deeper red (`#B72F36`) is a tonal part of the same form, not a second signal.
+  - **Lime** (`#DFFF00`, `--c-volt`) is the signal since v34 (crimson `#F43F46` before it): primary buttons on Glass, markers and one graphic form per view.
+  - Ember (`#FF7900`) is a tonal accent for artwork, not a second signal.
 - **Type:** Inter Tight and Geist Mono, five sizes only: label (mono, uppercase, +0.12em), body, title, display (heavy, tight and uppercase) and monument (heavy numerals, one per viewport).
 - **Annotation vocabulary:** only four marks are used. Each must point at something real, and there are at most three per viewport.
   1. Hairline rule.
@@ -64,16 +66,17 @@ The Android 89.0 source build, historical alignment work and remaining device re
   4. 6px signal square (`Signal`).
 - **Corners:** square, or 45° chamfers (`--chamfer`). No rounded corners.
 - **Components** (`components/site/ui.tsx`):
-  - `Button` (primary: crimson on Glass, ink on Paper; ghost: hairline chamfer)
+  - `Button` (primary: the signal on Glass, ink on Paper; ghost: hairline chamfer)
   - `TextLink` (the hairline draws on hover)
   - `SectionHead` (`01 — TITLE ———— meta`)
   - `SpecCard` (label–value rows)
   - `Pane` (a real screen as black glass with one specular edge)
   - `Brackets` and `Signal`
-  - `Faqs`, `Header`, `Footer` (a colophon) and `Reel`
+  - `Faqs`, `Header`, `Footer` (a colophon) and `Reel` (no longer on any page since v34)
+  - v34 home pieces: `BrandIntro`, `HomeProductArt`, `ForceOpening`, `ForceProductHandoff`, `StudyPlayer` (below)
 - **Motion:**
   - Content is complete on first paint. Nothing waits to be revealed and nothing moves on load or on scroll.
-  - Motion answers the visitor (hover, focus, a tab, a page change) or lives in the showreel. Don't add entrance animations back.
+  - Motion answers the visitor (hover, focus, a tab, a page change). Since v34 the home page has three bounded exceptions, all skipped with reduced motion or Save-Data and none hiding content: the brand intro, the Today art's single 1.8 s settle and the motion study's single autoplay. Don't add others.
   - The grammar is **Load · Drive · Lockout** (`app/tokens.css`). Anything arriving, opening or answering drives at `--t-drive` (220 ms, `--ease-expo`, landing in 4–6 frames); anything leaving or closing loads at `--t-load` (350 ms, `--ease-load`, a symmetric ease-in-out); a press or a hover colour takes `--t-snap` (120 ms). `--ease-quart` is for settles only. Every move ends dead still: no bounce or overshoot. Travel runs along the 45° axis or the reading axis.
   - Before adding a motion, name its load, its drive and its lockout. If you can't, don't add it.
   - Animate transform and opacity only (the FAQ height, via `interpolate-size`, is the one exception).
@@ -81,7 +84,13 @@ The Android 89.0 source build, historical alignment work and remaining device re
 
 ## Motion pieces
 
-- **Showreel:** `components/site/reel.tsx` (every layer, the athlete's geometry and the first frame, which is the poster) and `public/reel.js` (the engine: a pure `seek(t)` that only sets transform and opacity).
+- **Sites v34 home motion** (rebuilt from the published site; same behaviour, readable source):
+  - **Brand intro** (`components/site/brand-intro.tsx`, the gate in `app/layout.tsx`, `public/intro.js`): two doors part on the lockup, on `/` only, once per session, for 1.5 s, with a Skip button; any input closes it. Never with reduced motion, Save-Data or two cores or fewer; absent without JavaScript.
+  - **Today art** (`components/site/home-product-art.tsx`): its planes move once for 1.8 s when a quarter of it is in view, after the intro. The screen never moves.
+  - **Motion study** (`components/site/force-opening.tsx`, maths in `force-model.ts`): inside the home page's "Explore" disclosure. A plane is loaded, pressed three times and settles into an illustrative set record (60 kg, 3 reps, nothing saved). It autoplays once when 30% is visible. It has play, pause, chapters, scrubber and Show result controls, and it pauses on Escape, any input, a hidden tab or going offscreen. The static markup is the complete still.
+  - **Handoff** (`components/site/force-product-handoff.tsx`): once the study has finished, scrolling carries its plane into the Today screen. Scroll-linked only, and only when both ends fit on screen.
+  - **Curl study** (`components/site/study-player.tsx`): the Learn tab's rendered curl, with native controls, Replay, half speed and Repeat. It never autoplays and pauses offscreen.
+- **Showreel** (not shown on any page since v34; kept for reference): `components/site/reel.tsx` (every layer, the athlete's geometry and the first frame, which is the poster) and `public/reel.js` (the engine: a pure `seek(t)` that only sets transform and opacity).
   - It's a 12 s tempo film (a 3-1-1 back squat with a held lockout, two real app screens plus Learn as three phase chips (BRACE / REACH / RETURN), the lockup), loops seamlessly and has no audio. Beat sheet: `design/DESIGN_LANGUAGE.md`.
   - `site.js` loads it after the page's load event and never with reduced motion. The server-rendered first frame is the first paint, the no-JS view and the reduced-motion view. The app screens are fetched only once it starts.
   - The athlete: each limb is an SVG layer moved with a CSS transform in figure units (`--u`). `pose()` exists in both files and must stay identical (a journeys check compares the poster pose with live frame 0). Tune the body in `PARTS` (reel.tsx) and the joints in `MODEL`.
@@ -94,7 +103,7 @@ The Android 89.0 source build, historical alignment work and remaining device re
   - **Buttons:** hover is the unrack: the arrow drives 4px along the 45° axis and a primary fill lifts 1px along it. Press is the rack: the button settles 1px down and in (`--t-snap`), undoing the lift, and releases at drive speed. `site.js` holds `data-press` for at least `--t-snap`, so a quick phone tap still shows it.
   - **Cards:** registration brackets drive in on hover and focus (`.snap`) and load out.
   - **Demo tabs:** one shared indicator (a hairline and the volt square) drives to the chosen tab. The incoming screen drives in 24px along the direction of travel on top of the outgoing one, whose frame stays until it lands, so the pane is never empty (checked frame by frame at 60 fps). All three panels share one grid cell, so nothing below moves. A horizontal swipe on the screen steps the tabs. Without JavaScript all three screens show; with reduced motion the swap is instant.
-  - **Demo screens:** Today and Train ship as `data-src` (`Pane defer`, so the Inter font gets the bandwidth); `site.js` loads them after the load event once the demo is within about 600px, or on the first touch of the tabs. Learn uses a small, lazy-loaded movement still. Loading never waits for hydration, so tab switches take the same time with or without React. `.demo-tabs` has `min-height: 56px`: without it the fixed stage height set by `fit()` collapses the tab grid track on phones. `fit()` follows the active panel on phones only; on desktop the stage keeps the tallest panel's height and the short Learn card is centred in it (`.js .demo-panel[data-demo-panel="technique"]`). `html[data-sticky-on]` already sets `scroll-padding-bottom: 88px`, so nothing focused scrolls under the bar. On phones the focus ring sits on the screen, not the panel (the panel's edge is under the sticky bar). A swap waits for the incoming image to decode, capped at 300 ms.
+  - **Demo screens:** since v34 Today loads with the page (the handoff lands on it) and Learn is the curl study. Before v34, Today and Train shipped as `data-src` (`Pane defer`, so the Inter font gets the bandwidth); `site.js` loads them after the load event once the demo is within about 600px, or on the first touch of the tabs. Learn uses a small, lazy-loaded movement still. Loading never waits for hydration, so tab switches take the same time with or without React. `.demo-tabs` has `min-height: 56px`: without it the fixed stage height set by `fit()` collapses the tab grid track on phones. `fit()` follows the active panel on phones only; on desktop the stage keeps the tallest panel's height and the short Learn card is centred in it (`.js .demo-panel[data-demo-panel="technique"]`). `html[data-sticky-on]` already sets `scroll-padding-bottom: 88px`, so nothing focused scrolls under the bar. On phones the focus ring sits on the screen, not the panel (the panel's edge is under the sticky bar). A swap waits for the incoming image to decode, capped at 300 ms.
   - **FAQ:** a 32px hairline box with a plus that becomes a minus. The answer's height drives open; closing fades the words first (`--t-snap`), then loads the height down (`interpolate-size`, Chromium; other browsers snap open). This is the site's one layout animation.
   - **Form success:** after the server confirms, the confirmation replaces the form and takes focus, and its signal rule locks in top to bottom (`.msg.is-ok`). Failures never animate; the email fallback is a ghost button.
 - **Scroll gauge** (`public/site.js`, 1100px and wider): a still tick scale on the right edge, one major tick per `[data-sec]` section. The signal square steps to the section in view at drive speed. Decorative, and hidden from assistive tech.
@@ -102,7 +111,7 @@ The Android 89.0 source build, historical alignment work and remaining device re
 - **Phone menu:** while open, `main`, the footer, the phone bar and the rest of the header are `inert`, so Tab stays in the sheet.
 - **Signal discipline:** the gauge square rests while the hero, the reel or the closer holds the screen. Screens sit above the column grid (`.pane-glass` z-index 61); the header and phone bar sit above screens (70). The hero screen's own app accent is muted beside the real CTA and returns to full colour on hover.
 - **Colophon clock:** the footer shows the current time in Dunedin (`data-clock`), updated to the minute.
-- **Hero screen** (1100px and wider): the real Train screen in a `Pane`, the hero's one dominant shape (the demo opens on Today, so no screen repeats; the Technique screen is never used in the hero). It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
+- **Hero screen:** since v34 the hero shows the Today screen in `HomeProductArt` at every width (`fetchPriority="high"`). Before v34 (1100px and wider): the real Train screen in a `Pane`, the hero's one dominant shape (the demo opens on Today, so no screen repeats; the Technique screen is never used in the hero). It uses `Pane`'s `media` prop, so phones never fetch it and their LCP stays the headline.
 - **Screens:** the Android status bar and nav bar are cropped off the real screens in CSS (`.pane-glass img`, 720/1400). Remove the crop once the screens are re-captured cleanly. Repeated screens show a crop (source rows of the 720x1560 files, `object-position = top / (1560 - height)`): hero Train 488-1256 (ends between plan rows 05 and 06; the edit pencil sits at the left of rows 03-04 and cannot be cropped out without a re-capture), demo Train 72-1252 (`crop-plan`, 720/1180, ends under plan row 05), and Today on phones 72-1240 (ends under "Log food"). The real demo screens use 480w/720w `srcset`, are deferred (`data-src`) and warmed near the demo. Learn uses a 480×368 back-squat still from the authored 88.2 pack, with an explicit artwork caption and a link to `/movements`. `.movement-card` preserves its full aspect ratio instead of applying the Android-screen crop. No Android recording of the new artwork is claimed.
 - **Demo stage:** on phones `public/site.js` sizes the stage to the active panel (`fit`, animated over `--t-drive`); desktop keeps one shared cell. The sticky phone bar attaches at parse (it carries `suppressHydrationWarning`); tabs, sticky and the skip link work with hydration blocked. `whenHydrated` waits two frames past React marking `<main>`, so the root's first commit has finished before text or children are written.
 - **Fonts and hero spacing:** `--font-sans` falls back to "Inter Tight Fallback" (local Arial, `size-adjust: 95.5%`, ascent/descent overrides in `app/tokens.css`), which cut font-swap layout shift from 0.0038 to 0.0001 on desktop (0.0006 to 0.0001 on phones; slow font, dev). Below 1100px the hero has 16px bottom padding (no hero screen there). `.faq-end` is `--section * .3`.

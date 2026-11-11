@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Home requires a document load to initialize its static interactions. */
 import type { Metadata } from "next";
 import Image from "next/image";
-import { chatGPTSignInPath, getChatGPTUser } from "../chatgpt-auth";
+import { ownerAuth } from "../owner-auth";
 import { enquiriesDb, isOwner, type Enquiry } from "../../db/enquiries";
 import StatusControl from "./StatusControl";
 import { nzDay } from "../../db/events";
@@ -36,11 +36,11 @@ function Header() {
 }
 
 export default async function Admin() {
-  const user = await getChatGPTUser();
-  if (!user) {
-    return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>FOLLOW THE<br />CONVERSATION.</h1><p>Sign in to view coaching enquiries.</p><p><a href={chatGPTSignInPath("/admin")} target="_top">Sign in with ChatGPT ↗</a></p></main></div>;
+  const auth = await ownerAuth("/admin");
+  if (!auth.email) {
+    return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>FOLLOW THE<br />CONVERSATION.</h1><p>Sign in to view coaching enquiries.</p>{auth.mode === "chatgpt" && auth.signInPath ? <p><a href={auth.signInPath} target="_top">Sign in with ChatGPT ↗</a></p> : auth.mode === "cloudflare-access" ? <p>Sign-in is handled by Cloudflare Access. If you see this, open the page again, or check that Access protects /admin.</p> : <p>Owner sign-in isn&rsquo;t set up on this deployment yet (Cloudflare Access; see docs/HOSTING.md).</p>}</main></div>;
   }
-  if (!isOwner(user.email)) {
+  if (!isOwner(auth.email)) {
     return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>PRIVATE<br />AREA.</h1><p>This account cannot access the Blackglass enquiry inbox.</p></main></div>;
   }
   let leads: Enquiry[] = [];

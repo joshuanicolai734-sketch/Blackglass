@@ -1,6 +1,6 @@
 # Source and release boundaries
 
-Snapshot: 1 October 2026. Re-verify before editing.
+Snapshot: 1 October 2026. Re-verify before editing. The 7 November reconciliation (`studio/reviews/2026-11-07-source-reconciliation.md`) has newer refs and versions.
 
 - Repository: `joshuanicolai734-sketch/Blackglass`
 - Default branch: `claude/blackglass-domain-migration-0pxc6q`

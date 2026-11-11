@@ -1,0 +1,182 @@
+diff --git a/app/coaching/page.tsx b/app/coaching/page.tsx
+index db59ffe..58949d7 100644
+--- a/app/coaching/page.tsx
++++ b/app/coaching/page.tsx
+@@ -14,7 +14,7 @@ const inWords = (n: number) => NUMBERS[n] ?? String(n);
+ 
+ export const metadata: Metadata = {
+   title: "Strength and physique coaching with Josh",
+-  description: `${coaching.weeks} weeks of strength and physique coaching with Josh, based in Dunedin: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
++  description: `${coaching.weeks} weeks of strength and physique coaching with Josh, in person in Dunedin or online anywhere in New Zealand: a plan built around your week, weekly check-ins and adjustments. Founding price ${price} a week.`,
+   alternates: { canonical: "/coaching" },
+   openGraph: { title: "Coaching with Josh | Blackglass", description: `A plan built around your week, a check-in every week, and adjustments as you progress. ${price} a week for ${coaching.weeks} weeks.`, url: "/coaching", images: [{ url: "/og/coaching.png", width: 1200, height: 630, alt: "Blackglass coaching with Josh" }] },
+ };
+@@ -48,6 +48,7 @@ export default function Coaching() {
+                 <p className="price-labels label"><span>{coaching.currency} a week</span><span>{coaching.weeks} weeks · {coaching.currency}{coaching.total} total</span></p>
+               </div>
+               <ul className="includes">
++                <li>{coaching.format}</li>
+                 <li>A training plan built around your goal, available days and equipment</li>
+                 <li>One check-in with {site.founder} each week</li>
+                 <li>Adjustments as you progress, instead of starting over</li>
+diff --git a/app/links/page.tsx b/app/links/page.tsx
+index 9097242..7d5b086 100644
+--- a/app/links/page.tsx
++++ b/app/links/page.tsx
+@@ -39,7 +39,7 @@ export default function Links() {
+         <p>Strength training, technique and food in one Android app. Built in Dunedin.</p>
+         <div className="link-list">
+           <Item primary href="/get" track="links_get" title={appCta}
+-            note={hasDownload ? "Android · download and install" : "Free · in development · no iPhone app"} />
++            note={clauses(hasDownload ? ["Android", "download and install"] : ["Free", "in development", "no iPhone app"])} />
+           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
+           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
+             note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "any phone"])} />}
+diff --git a/app/site.css b/app/site.css
+index 020788b..03721c2 100644
+--- a/app/site.css
++++ b/app/site.css
+@@ -125,7 +125,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
+ /* ---- Header ---- */
+ .hdr { position: sticky; top: 0; z-index: 70; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
+ .hdr::before { content: ""; position: absolute; left: var(--gutter); bottom: -1px; width: 42px; height: 2px; background: var(--c-volt); }
+-.hdr-brand { display: block; margin-right: auto; }
++.hdr-brand { display: flex; align-items: center; min-height: 24px; margin-right: auto; } /* WCAG 2.5.8: a 24px target around the 22px mark */
+ .hdr-brand img { height: 22px; width: auto; }
+ .hdr-mark { display: none; }
+ @media (max-width: 419.98px) { .hdr-lockup { display: none; } .hdr-mark { display: block; height: 28px !important; } }
+@@ -343,7 +343,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
+ 
+ /* Inner page heroes */
+ .crumbs { margin: 0 0 28px; }
+-.crumbs a { color: var(--fg-3); text-decoration: none; }
++.crumbs a { display: inline-flex; align-items: center; min-height: 24px; color: var(--fg-3); text-decoration: none; }
+ .crumbs a:hover { color: var(--fg); }
+ .spec .actions { margin-top: 8px; }
+ .page-hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 88px); border-bottom: var(--hair) solid var(--rule); }
+@@ -568,8 +568,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+ .links-inner > p { text-align: center; color: var(--fg-2); margin-bottom: 32px; }
+ .link-list { display: grid; gap: 10px; }
+ .link-list .btn { width: 100%; min-height: 68px; white-space: normal; }
+-.link-list .btn small { display: block; margin-top: 8px; opacity: .8; }
++.link-list .btn small { display: block; margin-top: 8px; font-size: var(--fs-label); opacity: .8; }
+ .links-foot { margin-top: 32px; text-align: center; line-height: 2; }
++.links-foot a { display: inline-flex; align-items: center; min-height: 24px; }
+ 
+ /* Prose (privacy) */
+ .prose { max-width: 70ch; }
+@@ -642,9 +643,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+ .ms-frame video { display: block; width: 100%; height: auto; aspect-ratio: 768 / 588; background: var(--c-glass); }
+ .ms-transport { display: none; margin-top: 16px; }
+ .ms-studio[data-enhanced] .ms-transport { display: block; }
+-.ms-play-row { display: flex; align-items: center; gap: 8px; }
++.ms-play-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+ .ms-studio .ms-play { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 100px; background: var(--action); color: var(--on-action); border-color: var(--action); }
+-.ms-state { margin-left: auto; letter-spacing: .04em; white-space: nowrap; }
++/* Sized for the longest state ("Loading"), so the row wraps the same way whatever it says and never jumps on Play. */
++.ms-state { min-width: 7.5ch; margin-left: auto; letter-spacing: .04em; white-space: nowrap; text-align: right; }
+ .ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
+ .ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
+ .ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
+@@ -665,6 +667,8 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+ .ms-studio[data-enhanced] .ms-static-phase { display: none; }
+ .ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
+ .ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
++/* The clip links stand alone (no-JS view and the media-error state), so they get full 44px targets. */
++.ms-fallback a { display: inline-flex; align-items: center; min-height: 44px; }
+ .ms-error { margin: 20px 0 0; color: var(--c-danger); }
+ .movement-next .display { max-width: 24em; }
+ .movement-next .body-2 { margin-top: 20px; }
+@@ -674,9 +678,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
+   .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
+ }
+ @media (max-width: 419.98px) {
+-  .ms-exercises .label { font-size: .625rem; letter-spacing: .04em; }
++  /* 12px like every label; the tighter tracking keeps "01 / Squat" on one line at 320px. */
++  .ms-exercises .label { letter-spacing: .04em; }
+   .ms-exercises .title { font-size: 1.0625rem; }
+-  .ms-state { font-size: .625rem; }
+   .ms-studio .ms-play { min-width: 88px; }
+ }
+ @media (min-width: 900px) {
+diff --git a/app/tokens.css b/app/tokens.css
+index 5af394c..960ab82 100644
+--- a/app/tokens.css
++++ b/app/tokens.css
+@@ -40,7 +40,7 @@
+   /* Type: two faces, five sizes. */
+   --font-sans: "Inter Tight", "Inter Tight Fallback", Arial, Helvetica, sans-serif;
+   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+-  --fs-label: .6875rem;                          /* 11px; 12px from 900px */
++  --fs-label: .75rem;                            /* 12px: the floor for status and disclosure labels */
+   --fs-body: 1.0625rem;                          /* 17px */
+   --fs-title: 1.25rem;                           /* 20px */
+   --fs-display: clamp(1.5rem, 3.1vw, 2.75rem);   /* 24–44px */
+@@ -80,10 +80,6 @@
+   --ease-quart: cubic-bezier(.25, 1, .5, 1);
+ }
+ 
+-@media (min-width: 900px) {
+-  :root { --fs-label: .75rem; }
+-}
+-
+ /* Paper: black-glass objects on warm bone. Crimson is used for graphic accents, never body text. */
+ .paper {
+   --ground: var(--c-paper);
+diff --git a/components/site/forms.tsx b/components/site/forms.tsx
+index e59959c..c785802 100644
+--- a/components/site/forms.tsx
++++ b/components/site/forms.tsx
+@@ -105,7 +105,6 @@ export function NextSteps({ className = "" }: { className?: string }) {
+ 
+ /** The coaching enquiry. */
+ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null; typed?: Typed }) {
+-  const price = `${coaching.currency}${coaching.weekly}`;
+   const bad = (f: FormField) => retry?.error === "invalid" && retry.field === f;
+   return (
+     <form className="form-card" id="enquire" method="post" action="/api/enquiries?from=coaching" data-form="enquiry" data-email={contact.email} data-founder={site.founder}
+@@ -119,7 +118,7 @@ export function EnquiryForm({ retry = null, typed = {} }: { retry?: Retry | null
+       <div className="field"><label htmlFor="e-phone">Mobile for a text reply<span className="opt">OPTIONAL</span></label>
+         <input id="e-phone" name="phone" type="tel" defaultValue={typed.phone} autoComplete="tel" inputMode="tel" maxLength={30} pattern="\+?[0-9\s\(\)\.\-]{7,30}" aria-describedby={bad("phone") ? "e-phone-hint enquire-error" : "e-phone-hint"} autoFocus={bad("phone")} aria-invalid={bad("phone") || undefined} /><span className="hint" id="e-phone-hint">Only used to reply to this enquiry.</span></div>
+       <div className="field"><label htmlFor="e-route">What are you looking for?</label>
+-        <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"}><option value="coaching">{coaching.weeks}-week coaching ({price}/week)</option><option value="programme">A personal training programme</option></select></div>
++        <select id="e-route" name="route" defaultValue={typed.route === "programme" ? "programme" : "coaching"}><option value="coaching">{coaching.weeks}-week coaching</option><option value="programme">Programme only</option></select></div>
+       <div className="field"><label htmlFor="e-goal">What do you want to change?</label>
+         <textarea id="e-goal" name="goal" defaultValue={typed.goal} rows={4} maxLength={600} required aria-describedby={bad("goal") ? "e-goal-hint enquire-error" : "e-goal-hint"} autoFocus={bad("goal")} aria-invalid={bad("goal") || undefined} placeholder="Your goal, where you're at, and what has been getting in the way" /><span className="hint" id="e-goal-hint">Please don&rsquo;t include medical details. {site.founder} will ask what&rsquo;s relevant.</span></div>
+       <div className="trap" aria-hidden="true"><label htmlFor="e-website">Leave blank</label><input id="e-website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
+diff --git a/content/faq.ts b/content/faq.ts
+index eec8a1c..7ccbbb4 100644
+--- a/content/faq.ts
++++ b/content/faq.ts
+@@ -60,13 +60,17 @@ export const coachingFaq: Faq[] = [
+     q: "What does the founding price cover?",
+     a: `${price} each week for ${coaching.weeks} weeks, ${coaching.currency}${coaching.total} in total. It includes an initial training plan built around your week, one check-in each week, and training adjustments as you progress. Josh confirms the full service and payment terms in writing before you commit.`,
+   },
++  {
++    q: "Do I need to be in Dunedin?",
++    a: `No. Coaching runs ${coaching.format.charAt(0).toLowerCase()}${coaching.format.slice(1)}.`,
++  },
+   {
+     q: "Do I need the app to start coaching?",
+     a: "No. The Android app is in development and isn't part of the paid coaching offer. Josh will confirm the tools used for coaching before you start.",
+   },
+   {
+     q: "Can I get a programme without weekly coaching?",
+-    a: "Yes. Choose \"A personal training programme\" in the enquiry form. Its scope and price are agreed separately.",
++    a: "Yes. Choose \"Programme only\" in the enquiry form. Its scope and price are agreed separately.",
+   },
+ ];
+ 
+diff --git a/content/site.ts b/content/site.ts
+index e2d6ea9..41cde6b 100644
+--- a/content/site.ts
++++ b/content/site.ts
+@@ -48,6 +48,8 @@ export const coaching = {
+   weekly: 59,
+   weeks: 12,
+   currency: "NZ$",
++  /** Josh's decisions: both formats (4 Oct 2026); online is anywhere in New Zealand (7 Oct 2026). */
++  format: "In person in Dunedin, or online anywhere in New Zealand",
+   get total() { return this.weekly * this.weeks; },
+ };
+ 

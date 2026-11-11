@@ -2,6 +2,8 @@
 
 **Prepared:** 7 November 2026
 
+> **Note, 8 November 2026 (Claude lead):** §10 and §11 describe the older GitHub source (v16). The live site is Sites v34, with a lime signal, the headline "One session. Then the next." and a brand intro on `/`. Its source is on PR #9. See the note at the top of `docs/CLAUDE_HANDOVER.md`.
+
 Status labels:
 - **Verified present** means current repository documentation or visible product evidence supports it. Re-test before calling it release-ready.
 - **Requested requirement** means a feature or quality bar captured from product conversations. It is not proof the current code implements it.

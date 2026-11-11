@@ -27,12 +27,6 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .paper::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .03;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-/* Hairline column grid, desktop only. Difference-blended so the same 4% line reads on Glass and Paper. */
-@media (min-width: 900px) {
-  body::after { content: ""; position: fixed; inset: 0 max(var(--gutter), calc((100vw - var(--max)) / 2)); z-index: 60; pointer-events: none; mix-blend-mode: difference; opacity: .045;
-    background: linear-gradient(90deg, #fff var(--hair), transparent var(--hair)) 0 0 / calc(100% / 12) 100%; border-right: var(--hair) solid #fff; }
-}
-
 /* ---- Type: five sizes ---- */
 .label { margin: 0; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); }
 .display { font-weight: 750; font-size: var(--fs-display); line-height: .98; letter-spacing: -.035em; text-transform: uppercase; }
@@ -62,6 +56,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .sh-dash { width: 16px; border-top: var(--hair) solid var(--rule-strong); }
 .sh-rule { flex: 1; min-width: 24px; border-top: var(--hair) solid var(--rule); }
 .sh-meta { white-space: nowrap; }
+@media (max-width: 479.98px) { .sh { gap: 8px; } .sh-dash { display: none; } } /* keeps "Get started", "Why it helps" on one line */
 
 /* Spec card: label–value, hairline-ruled, square. */
 .spec { position: relative; display: grid; gap: 12px; align-content: start; padding: 24px 0 28px; border-top: var(--hair) solid var(--rule); }
@@ -91,7 +86,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .btn:active::before, .btn[data-press]::before { transform: none; }
 .btn:active .arrow, .btn[data-press] .arrow { transform: translate(4px, -4px); }
 .btn:active .arrow-down, .btn[data-press] .arrow-down { transform: rotate(90deg) translate(4px, -4px); }
-/* Chamfered fill: crimson on Glass, ink on Paper (the --action token switches with the ground). */
+/* Chamfered fill: the signal colour on Glass (lime since v34), ink on Paper (the --action token switches with the ground). */
 .btn-primary { color: var(--on-action); }
 .btn-primary::before { background: var(--action); }
 .btn-primary::after { inset: 0; pointer-events: none; background: linear-gradient(128deg, transparent 78%, rgba(255, 255, 255, .17) 78% 80%, transparent 80%); }
@@ -125,7 +120,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 /* ---- Header ---- */
 .hdr { position: sticky; top: 0; z-index: 70; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 var(--gutter); background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
 .hdr::before { content: ""; position: absolute; left: var(--gutter); bottom: -1px; width: 42px; height: 2px; background: var(--c-volt); }
-.hdr-brand { display: block; margin-right: auto; }
+.hdr-brand { display: flex; align-items: center; min-height: 24px; margin-right: auto; } /* WCAG 2.5.8: a 24px target around the 22px mark */
 .hdr-brand img { height: 22px; width: auto; }
 .hdr-mark { display: none; }
 @media (max-width: 419.98px) { .hdr-lockup { display: none; } .hdr-mark { display: block; height: 28px !important; } }
@@ -169,11 +164,11 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .form-card.is-done > :not(.title, .msg) { display: none; }
 .form-card.is-done .msg { margin-top: 16px; }
 .msg .msg-action { margin-top: 14px; }
-.field { display: grid; gap: 10px; margin-top: 22px; }
+.field { display: grid; gap: 10px; min-width: 0; margin-top: 22px; }
 .field label { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .5em; font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg); }
 .field .hint { font-size: .875rem; color: var(--fg-3); }
 .opt { color: var(--fg-3); white-space: nowrap; }
-.field input, .field select, .field textarea { width: 100%; min-height: 52px; padding: 14px 16px; border: var(--hair) solid var(--rule-strong); border-radius: 0; background: var(--ground); color: var(--fg); font: 400 1rem/1.4 var(--font-sans); }
+.field input, .field select, .field textarea { width: 100%; min-width: 0; min-height: 52px; padding: 14px 16px; border: var(--hair) solid var(--rule-strong); border-radius: 0; background: var(--ground); color: var(--fg); font: 400 1rem/1.4 var(--font-sans); }
 .field textarea { min-height: 128px; resize: vertical; }
 .field select { appearance: none; padding-right: 44px; background: var(--ground) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M2 4.5 6 8.5 10 4.5' fill='none' stroke='%23c3c6c0' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat calc(100% - 16px) 50%; }
 .field input::placeholder, .field textarea::placeholder { color: var(--fg-3); }
@@ -245,6 +240,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 .rl-path i { position: absolute; left: -5px; top: -5px; width: 11px; height: 11px; background: var(--c-volt); outline: 2px solid var(--c-glass); will-change: transform; }
 .rl-floor { top: var(--fl); left: 5cqw; right: 5cqw; height: var(--hair); background: var(--rule-strong); }
 .rl-tempo { left: 58cqw; right: 5cqw; bottom: calc(100cqh - var(--fl) + 4cqh); display: grid; gap: 1.2cqh; }
+@container reel (max-width: 359.98px) { .rl-tempo { left: 52cqw; } } /* three 12px columns need ~130px; still clear of the figure */
 .rl-cols { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 8px; }
 .rl-col { display: grid; gap: 6px; }
 .rl-n { font-weight: 800; font-size: 13.2cqw; line-height: .8; letter-spacing: -.065em; font-variant-numeric: tabular-nums; color: var(--fg); }
@@ -343,7 +339,7 @@ a, button, summary, [role="tab"], label { -webkit-tap-highlight-color: transpare
 
 /* Inner page heroes */
 .crumbs { margin: 0 0 28px; }
-.crumbs a { color: var(--fg-3); text-decoration: none; }
+.crumbs a { display: inline-flex; align-items: center; min-height: 24px; color: var(--fg-3); text-decoration: none; }
 .crumbs a:hover { color: var(--fg); }
 .spec .actions { margin-top: 8px; }
 .page-hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 88px); border-bottom: var(--hair) solid var(--rule); }
@@ -393,6 +389,7 @@ html:not(.js) .demo-tabs { display: none; }
 .demo-tabs[data-ink] .demo-sq { display: block; top: 50%; width: var(--signal-size); height: var(--signal-size); margin-top: -3px; background: var(--c-volt); transform: translateX(calc(var(--sx, 0) * 1px)); }
 .demo-tabs[data-ink] button::after, .demo-tabs[data-ink] button .sq { visibility: hidden; }
 .demo-tabs[data-ink-live] .demo-bar, .demo-tabs[data-ink-live] .demo-sq { transition: transform var(--t-drive) var(--ease-expo); }
+@media (max-width: 359.98px) { .demo-tabs { gap: 10px; } } /* all three tabs fit at 320px instead of "03 LE" */
 .demo-panel { display: grid; gap: 40px; align-items: center; }
 html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .js .demo-ui { display: grid; }
@@ -568,8 +565,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .links-inner > p { text-align: center; color: var(--fg-2); margin-bottom: 32px; }
 .link-list { display: grid; gap: 10px; }
 .link-list .btn { width: 100%; min-height: 68px; white-space: normal; }
-.link-list .btn small { display: block; margin-top: 8px; opacity: .8; }
+.link-list .btn small { display: block; margin-top: 8px; font-size: .75rem; line-height: 1.5; opacity: .8; text-wrap: balance; }
 .links-foot { margin-top: 32px; text-align: center; line-height: 2; }
+.links-foot a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* Prose (privacy) */
 .prose { max-width: 70ch; }
@@ -642,9 +640,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-frame video { display: block; width: 100%; height: auto; aspect-ratio: 768 / 588; background: var(--c-glass); }
 .ms-transport { display: none; margin-top: 16px; }
 .ms-studio[data-enhanced] .ms-transport { display: block; }
-.ms-play-row { display: flex; align-items: center; gap: 8px; }
+.ms-play-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ms-studio .ms-play { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 100px; background: var(--action); color: var(--on-action); border-color: var(--action); }
-.ms-state { margin-left: auto; letter-spacing: .04em; white-space: nowrap; }
+/* Sized for the longest state ("Loading"), so the row wraps the same way whatever it says and never jumps on Play. */
+.ms-state { min-width: 7.5ch; margin-left: auto; letter-spacing: .04em; white-space: nowrap; text-align: right; }
 .ms-scrub { display: grid; grid-template-columns: auto minmax(0, 1fr) 4ch; gap: 12px; align-items: center; margin-top: 12px; }
 .ms-scrub input { appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: ew-resize; accent-color: var(--c-volt); }
 .ms-scrub input::-webkit-slider-runnable-track { height: 2px; background: var(--rule-strong); }
@@ -664,7 +663,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .ms-phases p { margin: 10px 0 0; color: var(--fg-2); }
 .ms-studio[data-enhanced] .ms-static-phase { display: none; }
 .ms-studio[data-enhanced] .ms-fallback:not([data-media-error]) { display: none; }
-.ms-fallback { margin: 20px 0 0; font-size: var(--fs-label); }
+.ms-fallback { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 20px 0 0; font-size: max(.75rem, var(--fs-label)); }
+/* The clip links stand alone (no-JS view and the media-error state), so they get full 44px targets. */
+.ms-fallback a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; }
 .ms-error { margin: 20px 0 0; color: var(--c-danger); }
 .movement-next .display { max-width: 24em; }
 .movement-next .body-2 { margin-top: 20px; }
@@ -674,10 +675,11 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
   .movement-hero .sh-meta { max-width: 12ch; white-space: normal; text-align: right; }
 }
 @media (max-width: 419.98px) {
-  .ms-exercises .label { font-size: .625rem; letter-spacing: .04em; }
+  /* 12px like every label; the tighter tracking keeps "01 / Squat" on one line at 320px. */
+  .ms-exercises .label { font-size: .75rem; letter-spacing: .04em; }
   .ms-exercises .title { font-size: 1.0625rem; }
-  .ms-state { font-size: .625rem; }
-  .ms-studio .ms-play { min-width: 88px; }
+  .ms-state { font-size: .75rem; }
+  .ms-studio .ms-play { min-width: 94px; } /* fits "Pause" (92px), so Play and Pause match and the row never re-wraps on the tap */
 }
 @media (min-width: 900px) {
   .ms-panel { grid-template-columns: minmax(0, 1.65fr) minmax(250px, 1fr); gap: 48px; align-items: start; }
@@ -713,7 +715,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 @keyframes pane-drive { from { transform: translateX(24px); } }
 @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) { .hero-pane .pane-glass { animation: pane-drive var(--t-load) var(--ease-load) both; } }
 
-/* Poster field: one engineered crimson arc and one diagonal plane. Both sit behind the actual app screen and copy.
+/* Poster field (switched off by app/performance.css since v34): one engineered arc and one diagonal plane in the signal colour. Both sit behind the actual app screen and copy.
    The rest of the reference's tiny marks become a single factual rail, so the page stays legible on phones. */
 .hero { isolation: isolate; background: var(--c-glass); border-bottom: var(--hair) solid var(--rule); }
 .hero::before { content: ""; position: absolute; z-index: -1; top: -26vw; right: -15vw; width: min(88vw, 1120px); aspect-ratio: 1; border-radius: 50%; pointer-events: none;
@@ -721,10 +723,9 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .hero::after { content: ""; position: absolute; z-index: -1; right: -8vw; bottom: -12vw; width: 60vw; height: 34vw; pointer-events: none; opacity: .82;
   clip-path: polygon(72% 0, 84% 0, 19% 100%, 0 100%); background: linear-gradient(115deg, var(--c-ember), var(--c-volt)); }
 .hero-grid { position: relative; z-index: 1; }
-.hero-kicker { margin: 0 0 24px; color: var(--fg-2); }
+.hero-kicker { margin: 0 0 24px; color: var(--fg-2); text-wrap: balance; }
 .hero-kicker span { margin-right: 12px; color: var(--c-volt); font-weight: 700; letter-spacing: -.08em; }
 .hero h1 { max-width: 11ch; font-weight: 850; line-height: .86; letter-spacing: -.058em; text-transform: uppercase; }
-.hero .body-2 { max-width: 36ch; }
 .poster-rail { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 16px; padding-bottom: 16px; margin-top: clamp(38px, 6vw, 80px);
   border-top: var(--hair) solid var(--rule-strong); color: var(--fg-2); }
 .poster-rail span:first-child { color: var(--fg); }
@@ -750,7 +751,10 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .sticky-cta .btn { flex: 1 1 auto; padding: 0 14px; gap: 12px; }
 .sticky-cta .btn-ghost { flex: 0 0 auto; }
 html[data-sticky-on] body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-@media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] body { padding-bottom: 0; } }
+@media (min-width: 900px) { .sticky-cta { display: none !important; } html[data-sticky-on] { scroll-padding-bottom: 0; } html[data-sticky-on] body { padding-bottom: 0; } }
+/* Short screens (landscape phones, 400% zoom at 320x256): the sticky header already carries the same action, so the bar
+   stays away instead of leaving the page a strip between two copies of it. */
+@media (max-height: 499.98px) { .sticky-cta { display: none !important; } html[data-sticky-on] { scroll-padding-bottom: 0; } html[data-sticky-on] body { padding-bottom: 0; } }
 
 /* Reduced motion: nothing moves, draws or scales; state changes are colour and opacity only. */
 @media (prefers-reduced-motion: reduce) {
