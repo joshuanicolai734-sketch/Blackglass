@@ -52,6 +52,25 @@ export const coaching = {
 };
 
 /**
+ * Blackglass Cut: a self-serve 8-week fat-loss plan (PDF), sold and delivered by an external store, with a free
+ * calculator on /cut. The buy buttons appear only when `storeUrl` holds a real, checked product link; until then
+ * the page offers the calculator and coaching. Set `available: false` to hide the page.
+ */
+export const cutPlan = {
+  available: true,
+  name: "Blackglass Cut",
+  price: 39,
+  currency: "NZ$",
+  /** The store's product page, e.g. "https://payhip.com/b/XXXX". Only once it's live and checked. */
+  storeUrl: null as string | null,
+  /** The store's name, shown beside the button, e.g. "Payhip". */
+  storeName: null as string | null,
+  /** Facts about the file, shown on the page. Keep them true to the current edition. */
+  pages: 55,
+  weeks: 8,
+};
+
+/**
  * Social accounts. Add a full profile URL only after checking the account exists and is Blackglass's.
  * Empty accounts are never linked publicly.
  */
