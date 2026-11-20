@@ -443,7 +443,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .price-labels { display: grid; gap: 6px; min-width: 14ch; padding-bottom: .4em; }
 
 /* The fork: two equal chamfered cards, stacked on phones, side by side from 900px. Actions sit on the card's floor. */
-.offer-grid { display: grid; gap: 20px; }
+.offer-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
 .offer-grid.single { max-width: 46rem; }
 /* The second door, stated once under the two cards: a body-size line and a text link on one row (stacked on phones). */
 .fork-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; margin-top: 40px; }
@@ -469,6 +469,7 @@ html:not(.js) .demo-panel + .demo-panel { margin-top: 72px; }
 .offer-card .price { margin: 28px 0 24px; }
 .offer-card .monument { font-size: clamp(6rem, 11vw, 10rem); }
 .offer-card .actions { margin-top: auto; padding-top: 32px; }
+.offer-card .btn { max-width: 100%; white-space: normal; } /* 320px: a long label wraps instead of widening the card */
 .offer-card .form-note { margin-top: 20px; }
 @media (min-width: 900px) { .offer-grid { grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; } }
 
