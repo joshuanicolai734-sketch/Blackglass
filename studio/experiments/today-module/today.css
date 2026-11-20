@@ -1,0 +1,108 @@
+/* Today module prototype. Standalone: tokens are copied from app/tokens.css, except the action colour,
+   which follows the 4 Oct owner decision (lime). Nothing here edits or depends on the site's CSS. */
+@font-face{font-family:"Inter Tight";src:url(../../../public/fonts/inter-tight-latin-wght.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../../public/fonts/geist-mono-latin-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(../../../public/fonts/geist-mono-latin-700.woff2) format("woff2");font-weight:700;font-display:swap}
+
+:root{
+  --c-glass:#0b0d0e; --c-pane:#15191b; --c-facet:#2b3032;
+  --c-bone:#f1eee6; --c-bone-2:#c8c6c0; --c-bone-3:#aaa9a4;
+  --c-lime:#dfff00;
+  --rule:rgba(241,238,230,.17); --rule-strong:rgba(241,238,230,.38);
+  --font-sans:"Inter Tight",Arial,Helvetica,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --fs-label:.75rem; --cut:10px;
+  --chamfer:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  --t-load:350ms; --t-drive:220ms; --t-snap:120ms;
+  --ease-expo:cubic-bezier(.16,1,.3,1); --ease-load:cubic-bezier(.45,0,.55,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--c-glass);color:var(--c-bone);font:400 1.0625rem/1.55 var(--font-sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+.label{margin:0;font:500 var(--fs-label)/1.4 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--c-bone-3)}
+.sep{color:var(--c-facet)}
+
+.skip{position:fixed;top:8px;left:8px;z-index:10;padding:12px 16px;background:var(--c-lime);color:var(--c-glass);font:500 var(--fs-label)/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;transform:translateY(-160%)}
+.skip:focus{transform:none}
+
+.stage{max-width:720px;margin:0 auto;padding:20px clamp(16px,5vw,32px) 48px}
+.proto-note{margin:0 0 20px;padding:10px 12px;border:1px solid var(--rule);font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.06em;color:var(--c-bone-2)}
+.proto-note span{margin-right:8px;padding:2px 6px;background:var(--c-bone);color:var(--c-glass);text-transform:uppercase;letter-spacing:.12em}
+
+.today{position:relative;background:var(--c-pane);padding:clamp(20px,5vw,32px);clip-path:var(--chamfer);box-shadow:inset 0 0 0 1px var(--rule)}
+.today-head h1{margin:6px 0 8px;font-weight:700;font-size:clamp(2.25rem,9vw,3.5rem);line-height:1;letter-spacing:-.02em}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--c-bone-2)}
+
+/* Structure: a vertical rail with one row per movement. */
+.structure{position:relative;display:grid;grid-template-columns:8px 1fr;gap:0 16px;margin:28px 0 24px}
+.rail{width:8px;height:100%;overflow:visible}
+.rail line{stroke-width:2}
+.rail-base{stroke:var(--rule-strong)}
+.rail-fill{stroke:var(--c-lime);stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset var(--t-load) var(--ease-load)}
+.moves{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.move{position:relative;display:grid;grid-template-columns:2.25rem 1fr;gap:2px 8px;padding:14px 0;border-top:1px solid var(--rule);transition:background-color var(--t-drive) var(--ease-expo)}
+.move:first-child{border-top:0;padding-top:0}
+.idx{grid-row:1/3;font:500 var(--fs-label)/1.9 var(--font-mono);letter-spacing:.08em;color:var(--c-bone-3)}
+.name{font-weight:600;font-size:1.25rem;line-height:1.25}
+.spec{font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--c-bone-2)}
+.ticks{grid-column:2;display:flex;gap:6px;margin-top:6px}
+.tick{width:24px;height:12px;border:1px solid var(--rule-strong);transition:background-color var(--t-drive) var(--ease-expo),border-color var(--t-drive) var(--ease-expo)}
+.tick.done{background:var(--c-bone);border-color:var(--c-bone)}
+.count{grid-column:2;margin-top:2px;font:500 var(--fs-label)/1.4 var(--font-mono);letter-spacing:.06em;color:var(--c-bone-3)}
+/* Without JS the ticks are empty, so the count text is the readable state. */
+.move[aria-current="step"] .name::after{content:"";display:inline-block;width:8px;height:8px;margin-left:10px;background:var(--c-lime);vertical-align:middle}
+.move[aria-current="step"] .idx{color:var(--c-lime)}
+.move.complete .name{color:var(--c-bone-2)}
+
+/* Next action. */
+.next{padding:16px 0 4px;border-top:1px solid var(--rule-strong)}
+.next-line{margin:4px 0 2px;font-weight:700;font-size:clamp(1.5rem,6vw,2rem);line-height:1.15;letter-spacing:-.01em}
+.next-sub{margin:0;color:var(--c-bone-2)}
+
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.btn{min-height:52px;min-width:52px;padding:0 22px;border:1px solid var(--rule-strong);background:transparent;cursor:pointer;font:700 .9375rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;touch-action:manipulation;transition:background-color var(--t-snap),color var(--t-snap),border-color var(--t-snap),transform var(--t-snap)}
+.btn[hidden]{display:none}
+.btn.primary{flex:1 1 220px;background:var(--c-lime);border-color:var(--c-lime);color:var(--c-glass)}
+.btn.quiet:hover{border-color:var(--c-bone)}
+.btn:active{transform:translateY(1px)}
+.btn[aria-disabled="true"]{cursor:progress}
+.btn.primary[aria-disabled="true"]{background:var(--c-bone);border-color:var(--c-bone)}
+:focus-visible{outline:3px solid var(--c-lime);outline-offset:3px}
+.btn.primary:focus-visible{outline-color:var(--c-bone)}
+
+.status{min-height:1.55em;margin:16px 0 0;font:500 var(--fs-label)/1.5 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--c-bone-2)}
+.noscript{margin:12px 0 0;color:var(--c-bone-2)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:20px 0 0}
+.link{min-height:44px;padding:0;border:0;background:none;color:var(--c-bone);cursor:pointer;font:500 var(--fs-label)/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px}
+.link[hidden]{display:none}
+
+/* State feedback. A logged set flashes its tick once and the lime square lands; then the surface is still. */
+.tick.just{animation:tick-lock var(--t-drive) var(--ease-expo)}
+@keyframes tick-lock{0%{transform:scaleX(.4);background:var(--c-lime);border-color:var(--c-lime)}100%{transform:none}}
+.today[data-state="done"] .next-line{color:var(--c-lime)}
+.today[data-state="paused"] .rail-fill{opacity:.45}
+
+/* Intro assembly, JS only: lines draw, then rows resolve, then the action lands. Plays once, then everything is still. */
+.js .today.assembling .actions{pointer-events:none}
+.js .today.assembling .structure .rail-base{stroke-dasharray:100;stroke-dashoffset:100}
+.js .today.assembling .move,.js .today.assembling .today-head,.js .today.assembling .next,.js .today.assembling .actions{opacity:0;transform:translateX(-10px)}
+.today.assemble .rail-base{stroke-dashoffset:0;transition:stroke-dashoffset 600ms var(--ease-expo)}
+.today.assemble .today-head{opacity:1;transform:none;transition:opacity var(--t-drive),transform var(--t-drive) var(--ease-expo)}
+.today.assemble .move{opacity:1;transform:none;transition:opacity var(--t-drive),transform var(--t-drive) var(--ease-expo);transition-delay:calc(180ms + var(--i,0) * 90ms)}
+.today.assemble .next{opacity:1;transform:none;transition:opacity var(--t-drive),transform var(--t-drive) var(--ease-expo);transition-delay:640ms}
+.today.assemble .actions{opacity:1;transform:none;transition:opacity var(--t-drive),transform var(--t-drive) var(--ease-expo);transition-delay:760ms}
+
+/* Reduced motion: no assembly, no tween. State still changes and is still marked. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .today.assembling .move,.js .today.assembling .today-head,.js .today.assembling .next,.js .today.assembling .actions{opacity:1;transform:none}
+  .js .today.assembling .structure .rail-base{stroke-dasharray:none;stroke-dashoffset:0}
+}
+@media (max-width:359px){.tick{width:20px}.btn{padding:0 16px}}
+@media (max-width:599px){.next-line{min-height:2.3em}} /* reserve two lines only where the title can wrap */
+@media (min-width:900px){
+  /* One column at every width: the rail is only truthful when rows stack in order. */
+  .stage{max-width:720px;padding-top:48px}
+  .structure{margin-block:36px 28px}
+}
