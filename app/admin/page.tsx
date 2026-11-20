@@ -69,6 +69,7 @@ export default async function Admin() {
         <span className="simple-kicker">BLACKGLASS / OWNER INBOX</span>
         <h1>TURN INTEREST<br />INTO ACTION.</h1>
         <p className="admin-intro">Reply to new enquiries, book a conversation, and update each status. This inbox shows the latest 100; it does not send email notifications.</p>
+        <p className="lead-meta">Private backup (all records, not just the latest 100): <a href="/api/admin/export?kind=enquiries">DOWNLOAD ENQUIRIES ↓</a> · <a href="/api/admin/export?kind=events">DOWNLOAD ACTIVITY ↓</a>. Keep these files private; enquiries contain personal contact details.</p>
         <section className="admin-activity" aria-label="Site activity">
           <h2>Last 30 days</h2>
           <p className="lead-meta">Daily counts from the website: no cookies and no personal data. A tap on a download button is not an install.</p>
