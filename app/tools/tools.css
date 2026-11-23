@@ -1,0 +1,120 @@
+/* Training tools (/tools). Built from the site's tokens: bone on glass, one lime signal per view, mono labels.
+   Text stays at 12px or more and every control at 24px or more. Nothing here animates except the rest timer's
+   countdown, which is information, not decoration. */
+
+.tool-hero .display { max-width: 18ch; }
+.tool-hero .body-2 { margin-top: 20px; }
+.tool-privacy { margin-top: 18px; font: 500 max(.75rem, var(--fs-label))/1.5 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); }
+
+.tool-grid { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 960px) { .tool-grid { grid-template-columns: minmax(300px, 5fr) 7fr; gap: 40px; } }
+
+.tool-form { --cut: 20px; padding: clamp(20px, 4vw, 32px); clip-path: var(--chamfer); background: var(--surface); }
+.tool-form > .field:first-of-type { margin-top: 0; }
+.tool-form .row2 .field { margin-top: 22px; }
+.tool-form .btn { width: 100%; margin-top: 28px; }
+.tool-check { display: flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 18px; font-size: .9375rem; color: var(--fg-2); cursor: pointer; }
+.tool-check input { width: 22px; height: 22px; margin: 0; accent-color: var(--c-volt); }
+
+.tool-result { position: relative; min-width: 0; padding: clamp(20px, 4vw, 32px) 0 0; border-top: 2px solid var(--c-volt); }
+.tool-result h2 { margin: 0; }
+.tool-kicker { margin: 0 0 8px; }
+.tool-headline { margin: 0; font-weight: 750; font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: .95; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.tool-headline small { font-size: .38em; font-weight: 500; letter-spacing: 0; color: var(--fg-2); margin-left: .2em; }
+.tool-sub { margin: 12px 0 0; color: var(--fg-2); max-width: 46ch; }
+.tool-note { margin: 16px 0 0; font-size: .9375rem; color: var(--fg-2); max-width: 52ch; }
+.tool-error { margin: 0; padding: 16px 18px; background: var(--c-facet); border-left: 2px solid var(--c-danger); color: var(--fg); }
+
+.tool-block { margin-top: 32px; }
+.tool-block > .label { margin-bottom: 12px; }
+
+/* Plates for one side, heaviest first: the text list is the answer; the drawing helps it read at a glance. */
+.plate-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.plate-list li { display: inline-flex; align-items: baseline; gap: 6px; min-height: 36px; padding: 6px 12px; border: var(--hair) solid var(--rule-strong); font-variant-numeric: tabular-nums; }
+.plate-list b { font-weight: 650; }
+.plate-list span { color: var(--fg-3); font: 500 max(.75rem, var(--fs-label))/1 var(--font-mono); }
+.plate-svg { display: block; width: 100%; max-width: 560px; height: auto; margin-top: 20px; }
+.plate-svg .bar { fill: var(--fg-3); }
+.plate-svg .collar { fill: var(--c-volt); }
+.plate-svg .plate { fill: var(--c-facet); stroke: var(--fg-2); stroke-width: 1; }
+.plate-svg text { fill: var(--fg); font: 500 12px var(--font-mono); }
+
+.tool-alt { display: grid; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+.tool-alt a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Tables: numbers line up, rows stay at least 44px for thumbs. */
+.tool-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tool-table th, .tool-table td { height: 44px; padding: 0 12px 0 0; text-align: left; border-bottom: var(--hair) solid var(--rule); }
+.tool-table th { font: 500 max(.75rem, var(--fs-label))/1.4 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); }
+.tool-table td:last-child, .tool-table th:last-child { padding-right: 0; }
+.tool-table .num { text-align: right; }
+.tool-table tr[data-mark] td { color: var(--c-volt); }
+.tool-tables { display: grid; gap: 32px; }
+@media (min-width: 720px) { .tool-tables { grid-template-columns: 1fr 1fr; } }
+
+/* Warm-up: one row per set. */
+.warm-list { display: grid; margin: 0; padding: 0; list-style: none; counter-reset: w; }
+.warm-list li { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: 4px 12px; align-items: baseline; padding: 14px 0; border-bottom: var(--hair) solid var(--rule); counter-increment: w; }
+.warm-list li::before { content: "0" counter(w); grid-row: span 2; font: 500 max(.75rem, var(--fs-label))/1.4 var(--font-mono); letter-spacing: var(--tr-label); color: var(--fg-3); }
+.warm-list .w-load { font-weight: 650; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.warm-list .w-reps { font-variant-numeric: tabular-nums; color: var(--fg-2); text-align: right; }
+.warm-list .w-plates { grid-column: 2 / -1; font-size: .9375rem; color: var(--fg-3); }
+.warm-list li[data-work] .w-load { color: var(--c-volt); }
+
+/* Rest timer. */
+.timer { display: grid; gap: 24px; justify-items: start; }
+.timer-clock { margin: 0; font-weight: 750; font-size: clamp(4.5rem, 22vw, 9rem); line-height: .9; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.timer[data-state="done"] .timer-clock { color: var(--c-volt); }
+.timer-bar { position: relative; width: 100%; height: 6px; background: var(--rule); }
+.timer-bar span { position: absolute; inset: 0 auto 0 0; background: var(--c-volt); }
+.timer-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.timer-row .btn { min-width: 112px; }
+.timer-presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.timer-presets button, .timer-presets a { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 44px; padding: 0 14px; border: var(--hair) solid var(--rule-strong); background: none; color: var(--fg); font: 500 .9375rem var(--font-mono); text-decoration: none; cursor: pointer; }
+.timer-presets [aria-pressed="true"], .timer-presets [aria-current="true"] { border-color: var(--c-volt); color: var(--c-volt); }
+.timer-prefs { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+/* Without JavaScript, the countdown is CSS: an integer custom property animated from the chosen seconds to 0. */
+@property --tool-left { syntax: "<integer>"; inherits: false; initial-value: 0; }
+.timer-css { margin: 0; font-weight: 750; font-size: clamp(4.5rem, 22vw, 9rem); line-height: .9; font-variant-numeric: tabular-nums; counter-reset: left var(--tool-left); animation: tool-count var(--tool-seconds, 90s) linear forwards; }
+.timer-css::after { content: counter(left); }
+@keyframes tool-count { from { --tool-left: var(--tool-from, 90); } to { --tool-left: 0; } }
+
+/* Weekly volume. */
+.vol-rows { display: grid; gap: 0; }
+.vol-row { display: grid; grid-template-columns: minmax(0, 1fr) 88px; gap: 10px; align-items: end; }
+.vol-row .field { margin-top: 16px; }
+.vol-row[hidden] { display: none; }
+.vol-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.vol-actions .btn { width: auto; margin-top: 0; }
+.vol-muscles { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.vol-muscle { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 4.5rem; gap: 12px; align-items: center; }
+.vol-name { font-weight: 600; }
+.vol-sets { text-align: right; font-variant-numeric: tabular-nums; }
+.vol-track { position: relative; height: 24px; background: var(--c-facet); }
+.vol-guide { position: absolute; top: 0; bottom: 0; border-left: var(--hair) dashed var(--fg-3); border-right: var(--hair) dashed var(--fg-3); background: rgba(223, 255, 0, .08); }
+.vol-fill { position: absolute; inset: 6px auto 6px 0; background: var(--fg-2); }
+.vol-muscle[data-status="in-range"] .vol-fill { background: var(--c-volt); }
+.vol-status { grid-column: 2 / -1; margin-top: -8px; font: 500 max(.75rem, var(--fs-label))/1.4 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); }
+.vol-muscle[data-status="in-range"] .vol-status { color: var(--fg-2); }
+@media (max-width: 479px) { .vol-muscle { grid-template-columns: 5.5rem minmax(0, 1fr) 3.5rem; gap: 8px; } }
+
+/* Hub and the "more tools" strip. */
+.tool-cards { display: grid; gap: 0 32px; }
+@media (min-width: 720px) { .tool-cards { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1100px) { .tool-cards { grid-template-columns: 1fr 1fr 1fr; } }
+.tool-card { position: relative; display: grid; gap: 10px; align-content: start; padding: 24px 0 28px; border-top: var(--hair) solid var(--rule); color: inherit; text-decoration: none; }
+.tool-card h2, .tool-card h3 { margin: 0; font-size: var(--fs-title); font-weight: 600; }
+.tool-card p { margin: 0; color: var(--fg-2); }
+.tool-card .link { margin-top: 4px; }
+@media (hover: hover) { .tool-card:hover h2, .tool-card:hover h3 { color: var(--c-volt); } }
+.tool-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.tool-more { padding-top: 0; }
+.tool-method { max-width: 60rem; }
+.tool-method p, .tool-method li { color: var(--fg-2); }
+.tool-method a { color: var(--fg); }
+
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-bar span { transition: none; }
+}
