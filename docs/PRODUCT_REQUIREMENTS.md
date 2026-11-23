@@ -150,6 +150,8 @@ Requested tools:
 - Exercise substitution that preserves programme/session integrity.
 - Robust animated exercise demonstrations.
 
+**Website note, 23 Nov 2026:** web versions of the plate calculator, one-rep max and RPE estimate, warm-up generator, muscle-volume distribution and rest timer exist in this repository at `/tools` (PR #9; not yet published). They are separate from the app. The app versions remain unverified: the Android source is not reachable from this repository.
+
 ### Movement animation QA
 
 A conversation brief requested replacing remaining older-style exercise animations with a newer movement-figure style. The exploration described a sleek synthetic figure, bright pink/blue future palette, neon-green accents and a holographic/horn-like silhouette. Confirm whether this remains the accepted direction and which surface it applies to before a sweeping redesign.

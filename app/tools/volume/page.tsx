@@ -4,7 +4,7 @@ import { VolumeTool, type VolumeRow } from "@/components/tools/volume-tool";
 import { ogBase } from "@/content/site";
 import { EXAMPLE_PLAN, GUIDE, MAX_ROWS } from "@/lib/tools/volume";
 
-const description = "Free weekly training volume calculator: hard sets per muscle from a week of exercises, against the range the evidence supports for muscle growth.";
+const description = "Free weekly training volume calculator: hard sets per muscle from a week of exercises, against a common guide of 10 to 20 hard sets a week for muscle growth.";
 
 export const metadata: Metadata = {
   title: "Weekly volume calculator",

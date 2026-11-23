@@ -20,11 +20,11 @@ export function StrengthTool({ initial }: { initial: StrengthInput }) {
   const update = (patch: Partial<StrengthInput>) => {
     const next = { ...input, ...patch };
     setInput(next);
-    syncQuery("/tools/one-rep-max", strengthQuery(next));
+    syncQuery("/tools/one-rep-max", strengthQuery(next), "tool_1rm");
   };
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    syncQuery("/tools/one-rep-max", strengthQuery(input));
+    syncQuery("/tools/one-rep-max", strengthQuery(input), "tool_1rm");
   };
 
   const filled = input.kg.trim() !== "" && input.reps.trim() !== "";

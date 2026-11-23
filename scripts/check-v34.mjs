@@ -40,6 +40,13 @@ const sha256 = (buffer) => createHash("sha256").update(buffer).digest("hex");
 // 12 px text on the home page: BG-002 item 1, approved by Josh on 9 Nov 2026 (v34 used 9 to 11 px here).
 // Link-preview titles that match the page titles on / and /links: approved by Josh on 9 Nov 2026.
 // A "too many requests" message for HTTP 429 on the enquiry forms: PR #10's reviewed patch (pnpm check:enquiry).
+// A way in to the training tools (/tools): a footer link on every page with the footer, and a button on /links. Added
+// by the Claude lead on 23 Nov 2026 under Josh's go-ahead for new website tools; the header and menu are unchanged.
+const FOOTER = ['<a href="/movements">Movement Studio</a><a href="/get">Preview list</a>', '<a href="/movements">Movement Studio</a><a href="/tools">Training tools</a><a href="/get">Preview list</a>'];
+const ARROW = '<svg class="arrow" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"></path></svg>';
+const HOW = `<a class="btn btn-ghost" href="/#how-it-works" data-track="links_how"><span>See how the app works<small>Real screens from the Android build</small></span>${ARROW}</a>`;
+const clauses = (parts) => parts.map((t, i) => `<span>${i ? "\u00a0· " : ""}<span class="nb">${t}</span></span>`).join("");
+const TOOLS_ITEM = `<a class="btn btn-ghost" href="/tools" data-track="links_tools"><span>Training tools<small>${clauses(["Free", "plates", "one-rep max", "rest timer"])}</small></span>${ARROW}</a>`;
 const HOME_TITLE = "Blackglass — Training, technique and food in one app";
 const UNSURE = "          : 'We couldn’t confirm whether this was received. Your answers are still here. You can try again, or send it by email instead.', false, a);";
 const CHANGES = {
@@ -63,12 +70,15 @@ const CHANGES = {
   "page/home": [
     ['<meta property="og:title" content="Blackglass — One session. Then the next."/>', `<meta property="og:title" content="${HOME_TITLE}"/>`],
     ['<meta name="twitter:title" content="Blackglass — One session. Then the next."/>', `<meta name="twitter:title" content="${HOME_TITLE}"/>`],
+    FOOTER,
   ],
   "page/links": [
     ['<meta property="og:title" content="Blackglass"/>', '<meta property="og:title" content="Links | Blackglass"/>'],
     ['<meta name="twitter:title" content="Blackglass"/>', '<meta name="twitter:title" content="Links | Blackglass"/>'],
+    [HOW, HOW + TOOLS_ITEM],
   ],
 };
+for (const page of ["movements", "coaching", "coaching_sent", "get", "get_joined", "privacy", "this-page-does-not-exist"]) CHANGES[`page/${page}`] = [FOOTER];
 function withChanges(key, text) {
   for (const [from, to] of CHANGES[key] ?? []) {
     assert.equal(text.split(from).length - 1, 1, `${key}: v34 should contain this exactly once: ${from}`);

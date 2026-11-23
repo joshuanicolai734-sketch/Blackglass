@@ -41,6 +41,7 @@ export default function Links() {
           <Item primary href="/get" track="links_get" title={appCta}
             note={clauses(hasDownload ? ["Android", "download and install"] : ["Free", "in development", "no iPhone app"])} />
           <Item href="/#how-it-works" track="links_how" title="See how the app works" note="Real screens from the Android build" />
+          <Item href="/tools" track="links_tools" title="Training tools" note={clauses(["Free", "plates", "one-rep max", "rest timer"])} />
           {coaching.available && <Item href="/coaching" track="links_coaching" title={`Coaching with ${site.founder}`}
             note={clauses(["Available now", `${coaching.currency}${coaching.weekly}/wk`, `${coaching.weeks} weeks`, "Dunedin or online", "any phone"])} />}
           {socialLinks.map((s) => (

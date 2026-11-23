@@ -51,11 +51,11 @@ export function PlateTool({ initial }: { initial: PlateInput }) {
   const update = (patch: Partial<PlateInput>) => {
     const next = { ...input, ...patch };
     setInput(next);
-    syncQuery("/tools/plates", plateQuery(next));
+    syncQuery("/tools/plates", plateQuery(next), "tool_plates");
   };
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    syncQuery("/tools/plates", plateQuery(input));
+    syncQuery("/tools/plates", plateQuery(input), "tool_plates");
   };
 
   const said = useSettled(

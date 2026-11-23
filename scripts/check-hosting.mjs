@@ -1,6 +1,7 @@
 // Checks for the own-account hosting code: clip byte ranges (lib/byte-range.ts) and Cloudflare Access tokens
 // (lib/access-jwt.ts). Run: node --experimental-strip-types scripts/check-hosting.mjs
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { rangeResponse } from "../lib/byte-range.ts";
 import { accessKeys, importAccessKeys, tokenKid, verifyAccessJwt } from "../lib/access-jwt.ts";
 
@@ -116,5 +117,15 @@ await check("an unknown key id refetches Access keys, at most once per 30 s", as
   assert.equal(tokenKid(await token(good)), "k1");
   assert.equal(tokenKid("not-a-token"), null);
 });
+
+// --- Worker config (from the last pnpm build) ---
+const built = new URL("../dist/server/wrangler.json", import.meta.url);
+if (fs.existsSync(built)) {
+  await check("request logs are off in the built Worker config (privacy notice: no IP addresses kept)", async () => {
+    assert.deepEqual(JSON.parse(fs.readFileSync(built, "utf8")).observability, { enabled: false });
+  });
+} else {
+  console.log("skip  Worker config: run pnpm build first");
+}
 
 console.log(`\n${passed} checks passed.`);

@@ -14,11 +14,11 @@ export function WarmupTool({ initial }: { initial: WarmupInput }) {
   const update = (patch: Partial<WarmupInput>) => {
     const next = { ...input, ...patch };
     setInput(next);
-    syncQuery("/tools/warm-up", warmupQuery(next));
+    syncQuery("/tools/warm-up", warmupQuery(next), "tool_warmup");
   };
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    syncQuery("/tools/warm-up", warmupQuery(input));
+    syncQuery("/tools/warm-up", warmupQuery(input), "tool_warmup");
   };
   const bar = Number(input.bar) || 20;
   const set = (input.set in PLATE_SETS ? input.set : "standard") as PlateSetId;

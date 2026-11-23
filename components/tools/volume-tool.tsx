@@ -27,16 +27,16 @@ export function VolumeTool({ initial, example }: { initial: VolumeRow[]; example
     const next = rows.map((r, j) => (j === i ? { ...r, ...patch } : r));
     setRows(next);
     setIsExample(false);
-    syncQuery("/tools/volume", volumeQuery(next));
+    syncQuery("/tools/volume", volumeQuery(next), "tool_volume");
   };
   const remove = (i: number) => {
     const next = [...rows.filter((_, j) => j !== i), { exercise: "", sets: "" }];
     setRows(next);
     setShown((n) => Math.max(1, n - 1));
     setIsExample(false);
-    syncQuery("/tools/volume", volumeQuery(next));
+    syncQuery("/tools/volume", volumeQuery(next), "tool_volume");
   };
-  const submit = (e: FormEvent) => { e.preventDefault(); syncQuery("/tools/volume", volumeQuery(rows)); };
+  const submit = (e: FormEvent) => { e.preventDefault(); syncQuery("/tools/volume", volumeQuery(rows), "tool_volume"); };
   const trained = result.totals.filter((t) => t.sets > 0);
   const said = useSettled(trained.length ? trained.map((t) => `${t.name} ${fmt(t.sets)}`).join(", ") : "No sets yet.", 900);
 

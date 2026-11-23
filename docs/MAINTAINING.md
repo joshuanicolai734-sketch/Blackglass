@@ -2,7 +2,7 @@
 
 The short version: **settings live in `content/`, pages in `app/`, styles in `app/site.css`**, plus the Sites v34 layers in `app/performance.css` (all pages), `app/home.css` (home) and `components/site/force-opening.css`.
 
-**Sites v34 (live since late October 2026).** This source was rebuilt from the published v34 site on 7 November 2026 (`studio/reference/sites-v34-2026-11-07/`); `pnpm check:v34` proves the build still matches it, apart from the changes Josh approved on 9 November, which the script lists (12 px home-page text, two link-preview titles and the enquiry forms' 429 message). Any other change from v34 makes it fail, so add an approved change there in the same commit. Where an older note below conflicts with v34, v34 wins and the note says so.
+**Sites v34 (live since late October 2026).** This source was rebuilt from the published v34 site on 7 November 2026 (`studio/reference/sites-v34-2026-11-07/`); `pnpm check:v34` proves the build still matches it, apart from the changes Josh approved on 9 November, which the script lists (12 px home-page text, two link-preview titles and the enquiry forms' 429 message), and the two ways in to the training tools added on 23 November (a footer link and a /links button). Any other change from v34 makes it fail, so add an approved change there in the same commit. Where an older note below conflicts with v34, v34 wins and the note says so.
 
 ## Change these most often
 
@@ -20,6 +20,8 @@ The short version: **settings live in `content/`, pages in `app/`, styles in `ap
 | Get Blackglass page | `app/get/page.tsx` |
 | Coaching page and enquiry form | `app/coaching/page.tsx` |
 | Link in bio | `app/links/page.tsx` |
+| Training tools: list, names, card lines | `content/tools.ts` (the hub, "More tools" and the sitemap read it) |
+| A tool's page, maths or behaviour | `app/tools/<tool>/page.tsx`, `lib/tools/`, `components/tools/`; see Training tools below |
 | Privacy notice | `app/privacy/page.tsx` |
 | Short redirects (/download, /apply…) | `next.config.ts` |
 
@@ -43,6 +45,30 @@ Paste the full profile URL into `content/site.ts → social` (for example `insta
 ## Funnel
 
 How the home page moves visitors towards coaching (revenue now) and the preview list, and how `/admin` measures each path: `docs/FUNNEL.md`.
+
+## Training tools
+
+Five free tools at `/tools`, added on 23 November 2026: a plate calculator, one-rep max and RPE, a warm-up builder, a rest timer and a weekly volume check. They're separate from the Android app and don't describe it.
+
+- **Where things live:**
+  - the list: `content/tools.ts`;
+  - the maths: `lib/tools/` (plain TypeScript, no React), tested by `tests/tools.test.mjs` (`pnpm check:tools`);
+  - the interactive parts: `components/tools/`;
+  - the pages: `app/tools/`, sharing `components/tools/tool-page.tsx` and `app/tools/tools.css`.
+- **Without JavaScript,** each calculator is a GET form that the server answers. **With JavaScript,** it updates as you type and keeps the address bar in step (`history.replaceState`), so a result can be bookmarked or shared. The rest timer's presets are links (`?s=90`); without JavaScript they start a CSS-only countdown.
+- **Privacy:** the server works out answers from the address and keeps nothing. The rest timer keeps its end time and settings in the browser (localStorage `bg-rest-timer-v1` and `bg-rest-prefs-v1`) and never sends them. Cloudflare's request logs are off for the same reason (`vite.config.ts`, checked by `pnpm check:hosting`).
+- **Sources the pages cite:** Epley and Brzycki for one-rep max; the reps-in-reserve RPE scale (Zourdos et al. 2016); Schoenfeld, Ogborn and Krieger 2017 for weekly sets. That study found 10 or more hard sets a week beat fewer. The guide's top end of 20 is a common coaching range, not a finding of the study; keep the copy that way.
+- **Measurement:**
+  - visits count as `tools_view` and `tool_<name>_view`;
+  - the first change on each visit counts as `tool_<name>_used` (for the timer, a start);
+  - only the name is sent, never what was entered.
+- **Adding a tool:**
+  1. Add it to `content/tools.ts`.
+  2. Give it a page under `app/tools/` built on `ToolPage`.
+  3. Put its maths in `lib/tools/`, with tests.
+  4. Add its `_view` and `_used` names to `db/events.ts` and `app/admin/page.tsx`.
+
+  The hub and the sitemap pick it up from the list.
 
 ## Design system
 
@@ -128,7 +154,7 @@ The Android 89.0 source build, historical alignment work and remaining device re
 `/api/events` stores **daily counts** only: date, event name and campaign source (`utm_source`). There are no tracking cookies, no IP addresses and no form contents. The only cookie is `bg-retry` (HttpOnly, 120 s, path-scoped to the retry pages), set only when a no-JS form post is rejected so the form can be pre-filled; the privacy page says so.
 
 - **Where to see it:** the owner inbox `/admin` shows the last 30 days.
-- **Events:** page visits (`home_view`, `get_view`, `coaching_view`, `links_view`), CTA taps (`cta_*`, `links_*`), `demo_engaged`, outbound app taps (`outbound_play`, `outbound_apk`), plus `preview_signup` and `enquiry_sent`. The last two are counted by the server only when the database save succeeds.
+- **Events:** page visits (`home_view`, `get_view`, `coaching_view`, `links_view`, `tools_view`, `tool_*_view`), CTA taps (`cta_*`, `links_*`), `demo_engaged`, training-tool use (`tool_*_used`), outbound app taps (`outbound_play`, `outbound_apk`), plus `preview_signup` and `enquiry_sent`. The last two are counted by the server only when the database save succeeds.
 - **To add an event:** add `data-track="name"` to the link and add the name to `db/events.ts → EVENTS`.
 - **What the numbers mean:** a download tap is not an install, and nothing here measures app activation.
 
@@ -156,6 +182,9 @@ CSS time tokens (`--t-load`, `--t-drive`, `--t-snap`) are read in JavaScript onl
 
 ```sh
 pnpm lint && pnpm exec tsc --noEmit && pnpm build
+pnpm check:tools && pnpm check:enquiry && pnpm check:hosting
+pnpm start &   # then, against the local build:
+pnpm check:v34 --pages http://127.0.0.1:8787
 ```
 
 Database changes: edit `db/schema.ts`, run `pnpm db:generate`, and commit the new file in `drizzle/`. Publishing applies it in production. Local steps are in `README.md → Local D1 migrations`.

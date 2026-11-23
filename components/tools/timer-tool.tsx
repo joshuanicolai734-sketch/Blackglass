@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { adjust, ANNOUNCE_AT, clock, idle, left, pause, PRESETS, spoken, start, type TimerState } from "@/lib/tools/timer";
+import { markUsed } from "./client";
 
 /* The timer's state lives in localStorage, read through useSyncExternalStore: it survives a reload, stays in step
    across tabs, and the component never copies it into React state. */
@@ -128,7 +129,7 @@ export function TimerTool({ initialSeconds, autostart }: { initialSeconds: numbe
       if (audio.current.state === "suspended") audio.current.resume();
     } catch { audio.current = null; }
   };
-  const go = (base: TimerState) => { unlockAudio(); save(start(base, nowMs())); };
+  const go = (base: TimerState) => { unlockAudio(); save(start(base, nowMs())); markUsed("tool_timer"); };
   const toggle = () => (counting ? save(pause(state, nowMs())) : go(finished ? idle(total) : state));
   const reset = () => save(idle(total));
   const nudge = (delta: number) => save(adjust(finished ? idle(total) : state, delta, nowMs()));

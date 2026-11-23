@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Footer, Header } from "@/components/site/chrome";
+import { Footer, hasDownload, Header } from "@/components/site/chrome";
 import { SectionHead } from "@/components/site/ui";
-import { TOOLS } from "@/components/tools/tool-page";
+import { TOOLS } from "@/content/tools";
 import { ogBase } from "@/content/site";
 
 const description = "Free training tools from Blackglass: a plate calculator, one-rep max and RPE estimates, a warm-up builder, a rest timer and a weekly volume check.";
@@ -24,7 +24,7 @@ export default function ToolsPage() {
             <SectionHead title="Training tools" meta="Free" />
             <h1 className="display">The maths between sets.</h1>
             <p className="body-2">Small tools for the gym floor: load the bar, plan the next set, warm up, rest and check your week. They work on your phone, without an account.</p>
-            <p className="tool-privacy">Nothing you enter is saved or shared</p>
+            <p className="tool-privacy">No account · Nothing you enter is kept by Blackglass</p>
           </div>
         </section>
         <section className="section" style={{ paddingTop: 48 }} data-sec>
@@ -46,7 +46,11 @@ export default function ToolsPage() {
             <SectionHead title="About these tools" />
             <div className="prose">
               <p>They do the arithmetic lifters do in their heads, with the working shown on each page. Estimates are estimates: use them as a starting point and adjust to how the bar moves.</p>
-              <p>The Android app is in development. These tools are separate from it and don&rsquo;t need it. <a href="/get">Join the preview list</a> to hear when there&rsquo;s a build to try.</p>
+              {hasDownload ? (
+                <p>These tools are separate from the Blackglass app and don&rsquo;t need it. <a href="/get" data-track="cta_get_tools">Get Blackglass</a> for Android.</p>
+              ) : (
+                <p>The Android app is in development. These tools are separate from it and don&rsquo;t need it. <a href="/get" data-track="cta_get_tools">Join the preview list</a> to hear when there&rsquo;s a build to try.</p>
+              )}
             </div>
           </div>
         </section>

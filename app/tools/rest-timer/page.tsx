@@ -4,7 +4,7 @@ import { qs, ToolPage, type SearchParams } from "@/components/tools/tool-page";
 import { ogBase } from "@/content/site";
 import { clampSeconds } from "@/lib/tools/timer";
 
-const description = "Free rest timer for the gym: one tap for 1, 1.5, 2, 3 or 4 minutes, a big countdown, sound and vibration at the end, and it keeps time while your phone sleeps.";
+const description = "Free rest timer for the gym: one tap for 1, 1.5, 2, 3 or 4 minutes, a big countdown, sound and vibration at the end, and the time stays right if you switch apps.";
 
 export const metadata: Metadata = {
   title: "Rest timer",
@@ -18,10 +18,10 @@ export default async function RestTimerPage({ searchParams }: { searchParams: Se
   const s = qs(q.s);
   return (
     <ToolPage page="tool_timer" name="Rest timer" title="Rest on purpose."
-      intro="One tap starts the rest. The countdown is big enough to read from the bench, and it ends with a sound and a buzz."
+      intro="One tap starts the rest. The countdown is big enough to read from the bench, and it ends with a sound, plus a buzz on phones that allow it."
       method={
         <div className="prose">
-          <p>The timer remembers when your rest ends, not a ticking count, so it stays right if your phone sleeps, you switch apps or the page reloads. While it runs it can keep the screen on, where your browser allows it.</p>
+          <p>The timer remembers when your rest ends, not a ticking count, so it stays right if your phone sleeps, you switch apps or the page reloads. That time and your settings are kept in this browser only, never sent to Blackglass. The sound and buzz need the page open on screen, because phones pause web pages in the background. While it runs it can keep the screen on, where your browser allows it.</p>
           <p>As a rough guide, rest about 2 to 3 minutes before heavy compound sets and 1 to 2 minutes for lighter accessory work. Start the next set when you can give it a real effort.</p>
         </div>
       }>

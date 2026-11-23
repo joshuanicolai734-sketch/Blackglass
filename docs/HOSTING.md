@@ -8,9 +8,10 @@ This replaces ChatGPT Sites as the way blackglass.co.nz is published (the plan a
 - **Owner sign-in** (`app/owner-auth.ts`): with `CF_ACCESS_TEAM_DOMAIN` and `CF_ACCESS_AUD` set, `/admin` and `/api/admin` accept only a valid Cloudflare Access token. The signature, issuer, audience and expiry are checked in `lib/access-jwt.ts`. The owner list in `db/enquiries.ts` still applies.
   - ChatGPT sign-in headers are trusted only in local development, or with `OWNER_AUTH=chatgpt-sites`.
   - Without either, the owner area stays locked.
+- **Request logs off** (`vite.config.ts`, `observability: { enabled: false }`): Cloudflare turns Workers Logs on by default for new Workers, and they record every request. The privacy notice says the site stores no IP addresses, and the training tools carry weights and reps in their URLs. Dashboard metrics (requests, errors, CPU time) still work; `wrangler tail` shows live requests without storing them. Turning logs on is Josh's decision, together with a privacy-notice update.
 - **Account settings come from the environment at build time** (`vite.config.ts`): `D1_DATABASE_NAME`, `D1_DATABASE_ID`, `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`. The repository holds no account ids or keys.
 
-Checks: `pnpm check:hosting` (range and Access-token unit checks), plus the usual `pnpm lint && pnpm exec tsc --noEmit && pnpm build`.
+Checks: `pnpm check:hosting` (range and Access-token unit checks, and request logs off in the built config), plus the usual `pnpm lint && pnpm exec tsc --noEmit && pnpm build`.
 
 ## One-time setup
 
@@ -42,6 +43,7 @@ Then check the preview:
   - Movement Studio: a clip plays, and dragging its scrubber shows the matching frame.
   - Home page: the motion's play button ("Replay the sequence") works on the first tap.
   - With the phone turned sideways, the header and action bar leave most of the screen for the page.
+  - Rest timer (`/tools/rest-timer`): tap 1:00 and leave the page open; it ends with a sound, plus a buzz on Android.
 
 ## Moving the domain (only on Josh's approval)
 

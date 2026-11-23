@@ -28,6 +28,10 @@ const localBindingConfig = {
   main: "./worker/index.ts",
   assets: { binding: "ASSETS", run_worker_first: ["/movements/*.mp4", "/movements/*/*.mp4"] },
   compatibility_flags: ["nodejs_compat"],
+  // Cloudflare would otherwise keep a log of every request (its URL, headers and metadata). The privacy notice says the
+  // site stores no IP addresses, and the training tools carry weights and reps in their URLs, so request logs stay off.
+  // Dashboard metrics (requests, errors, CPU time) don't need them; `wrangler tail` shows live requests without storing.
+  observability: { enabled: false },
   vars: { CF_ACCESS_TEAM_DOMAIN: ownAccount.accessTeamDomain, CF_ACCESS_AUD: ownAccount.accessAud },
   d1_databases: d1
     ? [

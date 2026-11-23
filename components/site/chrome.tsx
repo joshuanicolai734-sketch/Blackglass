@@ -73,6 +73,7 @@ export function Footer() {
           <p className="label">Blackglass</p>
           <a href="/#how-it-works">How it works</a>
           <a href="/movements">Movement Studio</a>
+          <a href="/tools">Training tools</a>
           <a href="/get">{hasDownload ? "Get Blackglass" : "Preview list"}</a>
           <a href="/#questions">Questions</a>
         </nav>

@@ -47,6 +47,7 @@ Start with `docs/MAINTAINING.md` (what to edit for common changes), `docs/DIRECT
 | Settings: app availability, links, prices, socials, nav, UTMs | `content/site.ts` |
 | Questions and answers | `content/faq.ts` |
 | Pages | `app/page.tsx` (home), `app/get/`, `app/coaching/`, `app/links/`, `app/privacy/`, `app/not-found.tsx` |
+| Training tools at /tools (plates, one-rep max, warm-up, rest timer, weekly volume) | `content/tools.ts`, `app/tools/`, `components/tools/`, `lib/tools/`; see `docs/MAINTAINING.md` → Training tools |
 | Shared components | `components/site/` (header, footer, buttons, panes, FAQ, showreel) |
 | Design system and page styles | `app/tokens.css`, `app/site.css` (owner inbox styles are in `app/globals.css`) |
 | Homepage showreel | `components/site/reel.tsx` + `public/reel.js`; see `docs/MAINTAINING.md` |

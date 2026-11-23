@@ -4,6 +4,8 @@
 
 .tool-hero .display { max-width: 18ch; }
 .tool-hero .body-2 { margin-top: 20px; }
+/* Links in section heads and result lines get a full 24px target, like the breadcrumbs. */
+.tool-page .sh a, .warm-list .w-plates a { display: inline-flex; align-items: center; min-height: 24px; }
 .tool-privacy { margin-top: 18px; font: 500 max(.75rem, var(--fs-label))/1.5 var(--font-mono); letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--fg-3); }
 
 .tool-grid { display: grid; gap: 24px; align-items: start; }
@@ -86,7 +88,7 @@
 .vol-row[hidden] { display: none; }
 .vol-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .vol-actions .btn { width: auto; margin-top: 0; }
-.vol-muscles { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.vol-muscles { display: grid; gap: 14px; margin: 24px 0 0; padding: 0; list-style: none; }
 .vol-muscle { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 4.5rem; gap: 12px; align-items: center; }
 .vol-name { font-weight: 600; }
 .vol-sets { text-align: right; font-variant-numeric: tabular-nums; }
@@ -108,8 +110,8 @@
 .tool-card .link { margin-top: 4px; }
 @media (hover: hover) { .tool-card:hover h2, .tool-card:hover h3 { color: var(--c-volt); } }
 .tool-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-.tool-more { padding-top: 0; }
-.tool-method { max-width: 60rem; }
+.tool-more { padding-top: 48px; }
+.tool-method > * { max-width: 60rem; } /* the measure narrows; the left edge stays on the page grid */
 .tool-method p, .tool-method li { color: var(--fg-2); }
 .tool-method a { color: var(--fg); }
 
