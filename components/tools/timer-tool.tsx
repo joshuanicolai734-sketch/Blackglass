@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { adjust, ANNOUNCE_AT, clock, idle, left, pause, PRESETS, spoken, start, type TimerState } from "@/lib/tools/timer";
 import { markUsed } from "./client";
 
@@ -45,6 +45,12 @@ function subscribeClock(cb: () => void) {
 }
 const noSubscribe = () => () => {};
 const getTick = () => tick;
+/** Whether a rest is counting or paused in this browser right now (read once, when the timer opens). */
+function restInProgress() {
+  const s = parse<TimerState>(readRaw(STORE));
+  if (!s) return false;
+  return s.endsAt != null ? nowMs() < s.endsAt : s.pausedLeft != null;
+}
 const save = (s: TimerState) => { tick = nowMs(); writeRaw(STORE, JSON.stringify(s)); };
 const setTitle = (t: string) => { document.title = t; };
 
@@ -74,8 +80,14 @@ export function TimerTool({ initialSeconds, autostart }: { initialSeconds: numbe
   const now = useSyncExternalStore(running ? subscribeClock : noSubscribe, getTick, () => 0);
   const ended = running && now >= stored!.endsAt!;
   const stale = ended && now - stored!.endsAt! > STALE_MS;
-  const state = stored && !stale ? stored : idle(stored?.duration ?? initialSeconds);
-  const finished = ended && !stale;
+  const pausedStored = stored != null && stored.endsAt == null && stored.pausedLeft != null;
+  // A link with ?s= (a bookmark, a shared link or a preset tapped without JavaScript) shows that rest, ready to start,
+  // unless a rest was counting or paused when the page opened. The first action on the page hands over to the stored
+  // timer. Decided once, at load, so a rest that was already counting still ends here with its sound.
+  const [fromLink, setFromLink] = useState(() => autostart && !restInProgress());
+  const linkWins = fromLink && !(running && !ended) && !pausedStored;
+  const state = linkWins ? idle(initialSeconds) : stored && !stale ? stored : idle(stored?.duration ?? initialSeconds);
+  const finished = ended && !stale && !linkWins;
   const counting = running && !finished && !stale;
   const secondsLeft = finished ? 0 : left(state, now);
   const total = state.duration;
@@ -129,10 +141,10 @@ export function TimerTool({ initialSeconds, autostart }: { initialSeconds: numbe
       if (audio.current.state === "suspended") audio.current.resume();
     } catch { audio.current = null; }
   };
-  const go = (base: TimerState) => { unlockAudio(); save(start(base, nowMs())); markUsed("tool_timer"); };
+  const go = (base: TimerState) => { setFromLink(false); unlockAudio(); save(start(base, nowMs())); markUsed("tool_timer"); };
   const toggle = () => (counting ? save(pause(state, nowMs())) : go(finished ? idle(total) : state));
-  const reset = () => save(idle(total));
-  const nudge = (delta: number) => save(adjust(finished ? idle(total) : state, delta, nowMs()));
+  const reset = () => { setFromLink(false); save(idle(total)); };
+  const nudge = (delta: number) => { setFromLink(false); save(adjust(finished ? idle(total) : state, delta, nowMs())); };
   const setPref = (patch: Partial<Prefs>) => writeRaw(PREFS, JSON.stringify({ ...prefs, ...patch }));
 
   // Announced as the rest crosses 1 minute, 30 and 10 seconds, and at the end; never on every tick.
