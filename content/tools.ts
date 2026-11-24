@@ -7,4 +7,5 @@ export const TOOLS = [
   { href: "/tools/warm-up", page: "tool_warmup", name: "Warm-up builder", line: "A ramp from the empty bar to your working weight, with the plates for every set." },
   { href: "/tools/rest-timer", page: "tool_timer", name: "Rest timer", line: "A big countdown you can read from the bench, with sound and vibration at the end. It can keep your screen on while you rest." },
   { href: "/tools/volume", page: "tool_volume", name: "Weekly volume", line: "Hard sets per muscle from a week of training, against a common guide of 10 to 20 sets." },
+  { href: "/tools/dots", page: "tool_dots", name: "Strength score", line: "A DOTS score for your total or a single lift, so lifters of different bodyweights can compare." },
 ] as const;

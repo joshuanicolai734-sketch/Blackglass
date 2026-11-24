@@ -16,6 +16,7 @@ const eventLabels: Record<string, string> = {
   tool_1rm_view: "One-rep max visits", tool_1rm_used: "Used the one-rep max tool", tool_warmup_view: "Warm-up builder visits",
   tool_warmup_used: "Used the warm-up builder", tool_timer_view: "Rest timer visits", tool_timer_used: "Started the rest timer",
   tool_volume_view: "Weekly volume visits", tool_volume_used: "Used the weekly volume check",
+  tool_dots_view: "Strength score visits", tool_dots_used: "Used the strength score",
 };
 // The two money paths: taps that head for coaching (revenue now) and for the app (the preview list).
 const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_fork_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "cta_enquire_header", "cta_coaching_sticky", "cta_enquire_sticky", "links_coaching"];

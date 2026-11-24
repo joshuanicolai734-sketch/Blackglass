@@ -4,7 +4,7 @@ import { SectionHead } from "@/components/site/ui";
 import { TOOLS } from "@/content/tools";
 import { ogBase } from "@/content/site";
 
-const description = "Free training tools from Blackglass: a plate calculator, one-rep max and RPE estimates, a warm-up builder, a rest timer and a weekly volume check.";
+const description = "Free training tools from Blackglass: a plate calculator, one-rep max and RPE estimates, a warm-up builder, a rest timer, a weekly volume check and a DOTS strength score.";
 
 export const metadata: Metadata = {
   title: "Training tools",
@@ -23,7 +23,7 @@ export default function ToolsPage() {
           <div className="wrap">
             <SectionHead title="Training tools" meta="Free" />
             <h1 className="display">The maths between sets.</h1>
-            <p className="body-2">Small tools for the gym floor: load the bar, plan the next set, warm up, rest and check your week. They work on your phone, without an account.</p>
+            <p className="body-2">Small tools for the gym floor: load the bar, plan the next set, warm up, rest, check your week and score your total. They work on your phone, without an account.</p>
             <p className="tool-privacy">No account · Nothing you enter is kept by Blackglass</p>
           </div>
         </section>
