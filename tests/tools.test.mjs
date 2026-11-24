@@ -5,6 +5,7 @@ import { formatKg, nearestLoadable, parseKg, plateLoading } from "../lib/tools/p
 import { brzycki, epley, estimate, loadFor, plannedLoad, repsAt, repsToFailure } from "../lib/tools/strength.ts";
 import { warmup } from "../lib/tools/warmup.ts";
 import { EXAMPLE_PLAN, EXERCISES, GUIDE, MUSCLES, statusFor, weeklyVolume } from "../lib/tools/volume.ts";
+import { clampBodyweight, denominator, dots, resultFor, score } from "../lib/tools/dots.ts";
 import { adjust, clock, clampSeconds, idle, left, pause, remaining, spoken, start } from "../lib/tools/timer.ts";
 
 const side = (r) => r.loading.perSide.map((p) => `${p.count}×${p.kg}`).join(" ");
@@ -162,4 +163,56 @@ test("timer: end-time arithmetic survives sleep and pauses", () => {
   s = adjust(s, -100, 100_000);
   assert.equal(left(s, 100_000), 0);
   assert.equal(left(adjust(idle(90), -15, 0), 0), 75);
+});
+
+test("dots: matches the formula by hand", () => {
+  // Men's coefficients at 100 kg: -109.3 + 739.1293 - 1918.759221 + 2409.00756 - 307.75076 = 812.3268...
+  assert.ok(Math.abs(denominator(100, "men") - 812.32678) < 1e-4);
+  assert.ok(Math.abs(dots(700, 100, "men") - 430.865) < 0.01);
+  // Women's at 60 kg: -13.8754 + 111.4251 - 405.5960 + 817.0502 - 57.9629 = 451.0410...
+  assert.ok(Math.abs(denominator(60, "women") - 451.041) < 0.01);
+  assert.ok(Math.abs(dots(400, 60, "women") - 443.42) < 0.01);
+});
+
+test("dots: bodyweight is held to the fitted range", () => {
+  assert.equal(clampBodyweight(250, "men"), 210);
+  assert.equal(clampBodyweight(180, "women"), 150);
+  assert.equal(clampBodyweight(35, "women"), 40);
+  assert.equal(dots(500, 230, "men"), dots(500, 210, "men"));
+  const r = score({ bodyweight: 160, result: 500, formula: "women" });
+  assert.equal(r.ok && r.clamped, true);
+  assert.equal(score({ bodyweight: 83, result: 500 }).clamped, false);
+});
+
+test("dots: the score rises with the lift and falls with bodyweight", () => {
+  for (const f of ["men", "women"]) {
+    let last = Infinity;
+    for (let bw = 40; bw <= (f === "men" ? 210 : 150); bw += 5) {
+      const s = dots(500, bw, f);
+      assert.ok(s < last, `${f} ${bw} kg scores below ${bw - 5} kg`);
+      last = s;
+    }
+  }
+  assert.ok(dots(510, 90, "men") > dots(500, 90, "men"));
+});
+
+test("dots: equivalents run the formula backwards", () => {
+  assert.ok(Math.abs(resultFor(dots(612.5, 93, "men"), 93, "men") - 612.5) < 1e-9);
+  const r = score({ bodyweight: 83, result: 600 });
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.equivalents.map((e) => e.bodyweight), [75, 80, 85, 90, 95]);
+  const own = r.equivalents.find((e) => e.bodyweight === 85);
+  assert.ok(own.result > 600, "heavier needs more for the same score");
+  assert.equal(own.result % 0.5, 0, "rounded to 0.5 kg");
+  // Near the edge, only bodyweights inside the range are listed.
+  const edge = score({ bodyweight: 148, result: 400, formula: "women" });
+  assert.deepEqual(edge.equivalents.map((e) => e.bodyweight), [140, 145, 150]);
+});
+
+test("dots: bad input gets a plain message", () => {
+  assert.equal(score({ bodyweight: NaN, result: 500 }).ok, false);
+  assert.equal(score({ bodyweight: 20, result: 500 }).ok, false);
+  assert.equal(score({ bodyweight: 80, result: 0 }).ok, false);
+  assert.equal(score({ bodyweight: 80, result: 2000 }).ok, false);
+  assert.equal(score({ bodyweight: 80, result: 500, formula: "other" }).ok, false);
 });

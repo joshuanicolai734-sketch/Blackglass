@@ -9,8 +9,8 @@ export const EVENTS = new Set([
   "links_get", "links_how", "links_coaching", "links_instagram", "links_tiktok", "links_youtube", "links_facebook",
   "outbound_play", "outbound_apk", "demo_engaged", "teaser_open",
   "cta_movement_home", "cta_movement_preview", "movement_engaged",
-  "tools_view", "tool_plates_view", "tool_1rm_view", "tool_warmup_view", "tool_timer_view", "tool_volume_view",
-  "tool_plates_used", "tool_1rm_used", "tool_warmup_used", "tool_timer_used", "tool_volume_used", "links_tools", "cta_get_tools",
+  "tools_view", "tool_plates_view", "tool_1rm_view", "tool_warmup_view", "tool_timer_view", "tool_volume_view", "tool_dots_view",
+  "tool_plates_used", "tool_1rm_used", "tool_warmup_used", "tool_timer_used", "tool_volume_used", "tool_dots_used", "links_tools", "cta_get_tools",
   // Counted on the server when the database insert succeeds, never from the browser:
   "preview_signup", "enquiry_sent",
 ]);
