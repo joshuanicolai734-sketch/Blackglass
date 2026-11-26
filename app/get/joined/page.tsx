@@ -16,12 +16,12 @@ export default function Joined() {
       <main id="main">
         <section className="page-hero result" aria-labelledby="joined-title" data-sec>
           <div className="wrap">
-            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/get">Get Blackglass</a> / Sign-up received</nav>
+            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/get">Get Blackglass</a> / <span className="nb">Sign-up received</span></nav>
             <h1 id="joined-title" className="display">Sign-up received.</h1>
             <div className="msg is-ok result-msg" role="status">
               <p>This page confirms a preview-list sign-up. {site.founder} will email the address that was given when there&rsquo;s an Android build you can try. No newsletter, and you can ask to be removed at any time.</p>
             </div>
-            <p className="body-2 result-next"><strong>Next:</strong> there&rsquo;s nothing else to do. {coaching.available ? <>If you&rsquo;d rather not wait for the app, <a href="/coaching">coaching with {site.founder}</a> is available now, with any phone.</> : "Watch for the email."}</p>
+            <p className="body-2 result-next"><strong>Next:</strong> there&rsquo;s nothing else to do. {coaching.available ? <>If you&rsquo;d rather not wait for the app, <a className="inline-link" href="/coaching">coaching with {site.founder}</a> is available now, with any phone.</> : "Watch for the email."}</p>
             <div className="actions">
               <Button href="/#how-it-works" variant="ghost">See how the app works</Button>
               {coaching.available && <TextLink href="/coaching">{`Coaching with ${site.founder}`}</TextLink>}

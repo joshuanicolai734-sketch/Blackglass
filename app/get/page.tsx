@@ -5,19 +5,20 @@ import { Faqs } from "@/components/site/faqs";
 import { PreviewForm } from "@/components/site/forms";
 import { Brackets, Button, JsonLd, Pane, SectionHead, Signal, TextLink } from "@/components/site/ui";
 import { getFaq, getFaqLive, previewSteps } from "@/content/faq";
-import { app, coaching, contact, site } from "@/content/site";
+import { app, coaching, contact, ogBase, qrTarget, site } from "@/content/site";
 
 const hasPlay = Boolean(app.android.playUrl);
 const hasApk = !hasPlay && Boolean(app.android.apkUrl);
 const hasDownload = hasPlay || hasApk;
 
 export const metadata: Metadata = {
-  title: "Get Blackglass for Android",
+  // Until there is a download, the title says what the page offers instead of implying one.
+  title: hasDownload ? "Get Blackglass for Android" : { absolute: "Blackglass for Android: join the preview list" },
   description: hasDownload
     ? "Download Blackglass for Android and follow the install steps. Your programme, sessions, movement guides and food targets in one app."
     : "Blackglass for Android is in development. Join the free preview list to hear first when there's a build you can install. There is no iPhone app.",
   alternates: { canonical: "/get" },
-  openGraph: { title: "Get Blackglass for Android", description: hasDownload ? "Download Blackglass for Android." : "Blackglass for Android is in development. Join the preview list.", url: "/get", images: [{ url: "/og/get.png", width: 1200, height: 630, alt: "Get Blackglass for Android" }] },
+  openGraph: { ...ogBase, title: hasDownload ? "Get Blackglass for Android" : "Blackglass for Android: join the preview list", description: hasDownload ? "Download Blackglass for Android." : "Blackglass for Android is in development. Join the preview list.", url: "/get", images: [{ url: "/og/get.png", width: 1200, height: 630, alt: hasDownload ? "Get Blackglass for Android" : "Be first on the Android build. Blackglass for Android is in development." }] },
 };
 
 export default function Get() {
@@ -116,7 +117,7 @@ export default function Get() {
             <div className="qr">
               {/* eslint-disable-next-line @next/next/no-img-element -- static QR code */}
               <img src="/qr/get.svg" alt="QR code that opens blackglass.co.nz/get on your phone" width="132" height="132" loading="lazy" />
-              <p><strong>On a computer?</strong>Scan with your phone’s camera to open this page there{hasDownload ? " and install Blackglass." : "."}</p>
+              <p><strong>On a computer?</strong>Scan with your phone’s camera to open this page there{hasDownload ? " and install Blackglass." : "."} <a href={qrTarget}>Open the same page</a></p>
             </div>
           </div>
         </section>

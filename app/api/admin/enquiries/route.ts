@@ -1,12 +1,12 @@
-import { getChatGPTUser } from "../../../chatgpt-auth";
+import { ownerAuth } from "../../../owner-auth";
 import { enquiriesDb, isOwner, sameOrigin } from "../../../../db/enquiries";
 
 const noStore = { "Cache-Control": "no-store" };
 const statuses = new Set(["new", "contacted", "call", "won", "lost"]);
 
 export async function PATCH(request: Request) {
-  const user = await getChatGPTUser();
-  if (!user || !isOwner(user.email)) {
+  const { email } = await ownerAuth();
+  if (!email || !isOwner(email)) {
     return Response.json({ error: "Forbidden" }, { status: 403, headers: noStore });
   }
   if (!sameOrigin(request)) return Response.json({ error: "Invalid request" }, { status: 403, headers: noStore });
@@ -33,8 +33,8 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const user = await getChatGPTUser();
-  if (!user || !isOwner(user.email)) {
+  const { email } = await ownerAuth();
+  if (!email || !isOwner(email)) {
     return Response.json({ error: "Forbidden" }, { status: 403, headers: noStore });
   }
   if (!sameOrigin(request)) return Response.json({ error: "Invalid request" }, { status: 403, headers: noStore });

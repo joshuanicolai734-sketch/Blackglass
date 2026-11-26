@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Home requires a document load to initialize its static interactions. */
 import type { Metadata } from "next";
 import Image from "next/image";
-import { chatGPTSignInPath, getChatGPTUser } from "../chatgpt-auth";
+import { ownerAuth } from "../owner-auth";
 import { enquiriesDb, isOwner, type Enquiry } from "../../db/enquiries";
 import StatusControl from "./StatusControl";
 import { nzDay } from "../../db/events";
@@ -12,10 +12,15 @@ const eventLabels: Record<string, string> = {
   preview_signup: "Preview list sign-ups", enquiry_sent: "Coaching enquiries", demo_engaged: "Used the app demo", teaser_open: "Opened the teaser",
   outbound_play: "Play Store taps", outbound_apk: "APK download taps",
   movements_view: "Movement Studio visits", movement_engaged: "Used the Movement Studio",
+  tools_view: "Training tools visits", tool_plates_view: "Plate calculator visits", tool_plates_used: "Used the plate calculator",
+  tool_1rm_view: "One-rep max visits", tool_1rm_used: "Used the one-rep max tool", tool_warmup_view: "Warm-up builder visits",
+  tool_warmup_used: "Used the warm-up builder", tool_timer_view: "Rest timer visits", tool_timer_used: "Started the rest timer",
+  tool_volume_view: "Weekly volume visits", tool_volume_used: "Used the weekly volume check",
+  tool_dots_view: "Strength score visits", tool_dots_used: "Used the strength score",
 };
 // The two money paths: taps that head for coaching (revenue now) and for the app (the preview list).
 const COACH_TAPS = ["cta_coaching_hero", "cta_offer_coaching", "cta_fork_coaching", "cta_coaching_closer", "cta_coaching_home", "cta_enquire_hero", "cta_enquire_header", "cta_coaching_sticky", "cta_enquire_sticky", "links_coaching"];
-const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "cta_preview_header", "cta_get_sticky", "links_get", "cta_movement_preview"];
+const APP_TAPS = ["cta_get_header", "cta_get_menu", "cta_get_hero", "cta_offer_app", "cta_get_closer", "cta_get_steps", "cta_preview_anchor", "cta_preview_header", "cta_get_sticky", "links_get", "cta_movement_preview", "cta_get_tools"];
 type Activity = { name: string; source: string; total: number };
 
 /** Last 30 days of site action counts, or none if the events table isn't there yet. */
@@ -36,11 +41,11 @@ function Header() {
 }
 
 export default async function Admin() {
-  const user = await getChatGPTUser();
-  if (!user) {
-    return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>FOLLOW THE<br />CONVERSATION.</h1><p>Sign in to view coaching enquiries.</p><p><a href={chatGPTSignInPath("/admin")} target="_top">Sign in with ChatGPT ↗</a></p></main></div>;
+  const auth = await ownerAuth("/admin");
+  if (!auth.email) {
+    return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>FOLLOW THE<br />CONVERSATION.</h1><p>Sign in to view coaching enquiries.</p>{auth.mode === "chatgpt" && auth.signInPath ? <p><a href={auth.signInPath} target="_top">Sign in with ChatGPT ↗</a></p> : auth.mode === "cloudflare-access" ? <p>Sign-in is handled by Cloudflare Access. If you see this, open the page again, or check that Access protects /admin.</p> : <p>Owner sign-in isn&rsquo;t set up on this deployment yet (Cloudflare Access; see docs/HOSTING.md).</p>}</main></div>;
   }
-  if (!isOwner(user.email)) {
+  if (!isOwner(auth.email)) {
     return <div className="admin-page"><Header /><main className="simple-content admin-content"><span className="simple-kicker">OWNER / ENQUIRIES</span><h1>PRIVATE<br />AREA.</h1><p>This account cannot access the Blackglass enquiry inbox.</p></main></div>;
   }
   let leads: Enquiry[] = [];

@@ -15,7 +15,8 @@ No ranking is guaranteed. This follows Google Search Central guidance (people-fi
 - **Structured data**, only where the visible content supports it:
   - **Organization** (name, URL, logo, email, Dunedin NZ; `sameAs` only for verified social accounts) and **WebSite** on the homepage.
   - **BreadcrumbList** on `/get` and `/coaching`.
-  - **Deliberately not added:** FAQPage (Google limits these results to government and health sites), SoftwareApplication (the app isn't available to download, and there are no ratings), and Product or Offer prices for coaching (not eligible for a rich result, and prices are confirmed in writing).
+  - **Service** on `/coaching`: the coaching offer, its provider and where it runs (Dunedin, and New Zealand for online coaching), with no price.
+  - **Deliberately not added:** FAQPage (Google limits these results to government and health sites), SoftwareApplication (the app isn't available to download, and there are no ratings), and Product or Offer prices for coaching (not eligible for a rich result, and prices are confirmed in writing; that's why the Service block has no `offers`).
 - **Lab checks** (Lighthouse mobile, production build): SEO 100 on every indexable page.
 
 ## Needs account access (not done)
@@ -25,8 +26,8 @@ No ranking is guaranteed. This follows Google Search Central guidance (people-fi
    - Use URL Inspection on `/`, `/get` and `/coaching`, then request indexing.
    - After the first month, check Pages (indexing), Core Web Vitals (real-user LCP, INP and CLS) and Performance (queries). Search Console is where the real-user Core Web Vitals appear once there's enough traffic.
 2. **Bing Webmaster Tools.** Import from Search Console. This also covers DuckDuckGo and Ecosia results.
-3. **Google Business Profile**, only if coaching is offered at a Dunedin location people can visit, or as a service-area business. Don't create one for the app alone.
-4. **Fix `www.blackglass.co.nz`.** It currently resets the connection. Add it in the Sites custom-domain settings, or redirect it to the apex domain, so shared `www` links work and don't split signals.
+3. **Google Business Profile.** Coaching now runs in person in Dunedin, so Blackglass can have one. Set it up as a service-area business (Dunedin, with the address hidden) unless clients visit a staffed Blackglass location. This needs Josh's Google account. Don't create one for the app alone.
+4. **Redirect `www` and `http` permanently.** Checked 15 Oct: `https://www.blackglass.co.nz` serves a full copy of the site (200, with canonicals to the apex), and `http://` redirects to `https://` with a temporary `302`. In the Sites or Cloudflare domain settings, make `www` a `301` to `https://blackglass.co.nz` (keeping the path), and make the `http` upgrade a `301`. Canonicals cover it for now, but permanent redirects consolidate signals faster.
 5. **Social profiles.** Once they exist, add them to `content/site.ts → social`. That updates `sameAs` and the footer.
 
 ## Search intent (no volume figures; check them in Search Console once data exists)
@@ -35,10 +36,11 @@ No ranking is guaranteed. This follows Google Search Central guidance (people-fi
 |---|---|
 | "blackglass app", "blackglass fitness" (brand) | Home, /get |
 | "strength training app android", "workout planner app", "gym programme app" | Home (demo) → /get. Honest availability matters more than ranking here. |
-| "strength coaching dunedin", "personal training dunedin", "physique coaching nz" | /coaching (Dunedin-based offer, stated price) |
+| "strength coaching dunedin", "personal training dunedin", "physique coaching nz" | /coaching (in person in Dunedin, stated price) |
+| "online strength coach nz", "online personal trainer new zealand", "online physique coaching" | /coaching (online anywhere in New Zealand, stated price) |
 | "push pull legs 6 day split", "ab wheel rollout form" (informational) | Backlog below. Only publish with Josh's review. |
 
-New Zealand and Dunedin wording is used only where the offer is local: coaching, and "built in Dunedin" as a brand fact.
+New Zealand and Dunedin wording is used only where it's true of the offer: coaching runs in person in Dunedin or online anywhere in New Zealand, and "built in Dunedin" is a brand fact.
 
 ## Content backlog (useful pages, not keyword pages)
 

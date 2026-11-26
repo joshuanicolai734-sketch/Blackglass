@@ -26,7 +26,7 @@ export const ogImages = [
     html: og("Be first on the Android build.", "Blackglass for Android is in development. Join the free preview list.",
       `<div style="position:absolute;right:120px;top:70px">${pane({ src: screens.move, width: 300, crop: 560, pos: "center 30%" })}</div>`) },
   { id: "og-coaching", out: "public/og/coaching.png", w: 1200, h: 630,
-    html: og("Coaching with Josh.", "12 weeks of strength and physique coaching. NZ$59 a week. Based in Dunedin.",
+    html: og("Coaching with Josh.", "12 weeks of strength and physique coaching. NZ$59 a week. In person in Dunedin, or online anywhere in New Zealand.",
       `<div style="position:absolute;right:100px;top:120px;width:330px;padding:36px;background:${C.bone};color:${C.ink};clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)">
         <p class="mono" style="font-size:16px;color:#45484d">Founding coaching</p>
         <p class="display" style="font-size:80px;margin-top:22px">NZ$59</p>

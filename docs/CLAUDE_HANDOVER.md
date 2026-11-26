@@ -3,6 +3,13 @@
 **Prepared:** 7 November 2026  
 **Purpose:** Transfer the app, website, design and delivery context into the repository so a new Claude session can continue without relying on old chat history.
 
+> **Note, 8 November 2026 (Claude lead):** the live site is Sites v34, not v16. Its source is on PR #9, rebuilt from the published site and checked with `pnpm check:v34`. Three things in §3 and §5 describe the older GitHub source rather than what visitors see:
+> - v34's signal is lime (`#DFFF00`), not crimson;
+> - its home headline is "One session. Then the next.";
+> - `/` opens with a brief, skippable brand intro.
+>
+> Whether v34 stays the design baseline is Josh's decision, open as of this note. Evidence is in `studio/reviews/2026-11-07-source-reconciliation.md`.
+
 ## Start here
 
 Read in this order:

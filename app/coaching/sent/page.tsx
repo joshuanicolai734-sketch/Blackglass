@@ -19,7 +19,7 @@ export default function Sent() {
       <main id="main">
         <section className="page-hero result" aria-labelledby="sent-title" data-sec>
           <div className="wrap">
-            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/coaching">Coaching</a> / Enquiry received</nav>
+            <nav className="crumbs label" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/coaching">Coaching</a> / <span className="nb">Enquiry received</span></nav>
             <h1 id="sent-title" className="display">Enquiry received.</h1>
             <div className="msg is-ok result-msg" role="status">
               <p>This page confirms a coaching enquiry. Here&rsquo;s what happens next:</p>
