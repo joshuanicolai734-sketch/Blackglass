@@ -33,8 +33,7 @@ export function DotsTool({ initial }: { initial: DotsInput }) {
   const result = filled ? score({ bodyweight: parseKg(input.bw) ?? NaN, result: parseKg(input.kg) ?? NaN, formula, lift }) : null;
   const what = lift === "total" ? "total" : LIFT_NAMES[lift].toLowerCase();
   const said = useSettled(!result ? "" : !result.ok ? result.error : `DOTS score ${two(result.score)} for that ${what}.`);
-  const invalid = result && !result.ok ? true : undefined;
-  const described = result && !result.ok ? "dots-error" : undefined;
+  const bad = result && !result.ok ? result.field : null;
 
   return (
     <div className="tool-grid">
@@ -44,12 +43,14 @@ export function DotsTool({ initial }: { initial: DotsInput }) {
           <div className="field">
             <label htmlFor="dots-bw">Bodyweight <span className="opt">kg</span></label>
             <input id="dots-bw" name="bw" inputMode="decimal" autoComplete="off" placeholder="e.g. 83" value={input.bw}
-              aria-invalid={invalid} aria-describedby={described} onChange={(e) => update({ bw: e.target.value })} />
+              aria-invalid={bad === "bw" ? true : undefined} aria-describedby={bad === "bw" ? "dots-error" : undefined}
+              onChange={(e) => update({ bw: e.target.value })} />
           </div>
           <div className="field">
             <label htmlFor="dots-kg">Weight lifted <span className="opt">kg</span></label>
             <input id="dots-kg" name="kg" inputMode="decimal" autoComplete="off" placeholder="e.g. 500" value={input.kg}
-              aria-invalid={invalid} aria-describedby={described} onChange={(e) => update({ kg: e.target.value })} />
+              aria-invalid={bad === "kg" ? true : undefined} aria-describedby={bad === "kg" ? "dots-error" : undefined}
+              onChange={(e) => update({ kg: e.target.value })} />
           </div>
         </div>
         <div className="field">
@@ -92,7 +93,9 @@ export function DotsTool({ initial }: { initial: DotsInput }) {
                   <thead><tr><th scope="col">Bodyweight</th><th scope="col" className="num">{lift === "total" ? "Total" : LIFT_NAMES[lift]}</th></tr></thead>
                   <tbody>
                     {result.equivalents.map((r) => (
-                      <tr key={r.bodyweight}><td>{r.bodyweight} kg</td><td className="num">{r.result} kg</td></tr>
+                      <tr key={r.bodyweight} data-mark={r.own ? "" : undefined}>
+                        <td>{r.bodyweight} kg{r.own ? " · you" : ""}</td><td className="num">{r.result} kg</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

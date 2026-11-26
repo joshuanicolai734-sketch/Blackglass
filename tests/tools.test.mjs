@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { formatKg, nearestLoadable, parseKg, plateLoading } from "../lib/tools/plates.ts";
-import { brzycki, epley, estimate, loadFor, plannedLoad, repsAt, repsToFailure } from "../lib/tools/strength.ts";
+import { brzycki, epley, estimate, loadFor, MAX_REPS, plannedLoad, repsAt, repsText, repsToFailure } from "../lib/tools/strength.ts";
 import { warmup } from "../lib/tools/warmup.ts";
 import { EXAMPLE_PLAN, EXERCISES, GUIDE, MUSCLES, statusFor, weeklyVolume } from "../lib/tools/volume.ts";
 import { clampBodyweight, denominator, dots, resultFor, score } from "../lib/tools/dots.ts";
@@ -88,6 +88,19 @@ test("strength: estimate with RPE and the tables", () => {
   assert.equal(estimate({ weight: 100, reps: 12 }).reliable, false);
   assert.equal(plannedLoad(140, 5, 8), 112.5);
   assert.equal(estimate({ weight: 100, reps: 5, round: 1 }).percentages[0].load, 117);
+});
+
+test("strength: the table reads in whole reps, capped like the input, and Brzycki only where it holds", () => {
+  const r = estimate({ weight: 100, reps: 5, rpe: 8 });
+  assert.deepEqual(r.percentages.map((p) => p.reps), [1, 2, 3, 5, 8, 10, 13, 16, 20, 25, 30]);
+  assert.deepEqual(r.percentages.map((p) => repsText(p.reps)).slice(-3), ["20 reps", `${MAX_REPS}+ reps`, `${MAX_REPS}+ reps`]);
+  assert.equal(repsText(1), "1 rep");
+  // 7 reps to failure: Brzycki is shown, and close to Epley.
+  assert.ok(Math.abs(r.brzycki - 120) < 0.01);
+  // 10 reps to failure is the last that shows it; 60 × 20 at RPE 6 (24 to failure) would give a misleading 166 kg.
+  assert.notEqual(estimate({ weight: 100, reps: 10 }).brzycki, null);
+  assert.equal(estimate({ weight: 100, reps: 11 }).brzycki, null);
+  assert.equal(estimate({ weight: 60, reps: 20, rpe: 6 }).brzycki, null);
 });
 
 test("strength: bad input is explained", () => {
@@ -200,13 +213,22 @@ test("dots: equivalents run the formula backwards", () => {
   assert.ok(Math.abs(resultFor(dots(612.5, 93, "men"), 93, "men") - 612.5) < 1e-9);
   const r = score({ bodyweight: 83, result: 600 });
   assert.equal(r.ok, true);
-  assert.deepEqual(r.equivalents.map((e) => e.bodyweight), [75, 80, 85, 90, 95]);
-  const own = r.equivalents.find((e) => e.bodyweight === 85);
-  assert.ok(own.result > 600, "heavier needs more for the same score");
-  assert.equal(own.result % 0.5, 0, "rounded to 0.5 kg");
-  // Near the edge, only bodyweights inside the range are listed.
+  // Five 5 kg steps around the lifter, plus the lifter's own bodyweight and result.
+  assert.deepEqual(r.equivalents.map((e) => e.bodyweight), [75, 80, 83, 85, 90, 95]);
+  assert.deepEqual(r.equivalents.filter((e) => e.own), [{ bodyweight: 83, result: 600, own: true }]);
+  const heavier = r.equivalents.find((e) => e.bodyweight === 85);
+  assert.ok(heavier.result > 600, "heavier needs more for the same score");
+  assert.equal(heavier.result % 0.5, 0, "rounded to 0.5 kg");
+  // On a step, the lifter's own row is that step.
+  assert.deepEqual(score({ bodyweight: 85, result: 600 }).equivalents.map((e) => `${e.bodyweight}${e.own ? "*" : ""}`), ["75", "80", "85*", "90", "95"]);
+  // Near the edge the window shifts inside the range, so it keeps five steps.
   const edge = score({ bodyweight: 148, result: 400, formula: "women" });
-  assert.deepEqual(edge.equivalents.map((e) => e.bodyweight), [140, 145, 150]);
+  assert.deepEqual(edge.equivalents.map((e) => e.bodyweight), [130, 135, 140, 145, 148, 150]);
+  // Past the edge, the row for the bodyweight the score used is the lifter's (230 kg is scored as 210 kg).
+  const past = score({ bodyweight: 230, result: 800 });
+  assert.equal(past.clamped, true);
+  assert.deepEqual(past.equivalents.map((e) => `${e.bodyweight}${e.own ? "*" : ""}`), ["190", "195", "200", "205", "210*"]);
+  assert.deepEqual(score({ bodyweight: 35, result: 200, formula: "women" }).equivalents.map((e) => `${e.bodyweight}${e.own ? "*" : ""}`), ["40*", "45", "50", "55", "60"]);
 });
 
 test("dots: bad input gets a plain message", () => {
@@ -215,4 +237,8 @@ test("dots: bad input gets a plain message", () => {
   assert.equal(score({ bodyweight: 80, result: 0 }).ok, false);
   assert.equal(score({ bodyweight: 80, result: 2000 }).ok, false);
   assert.equal(score({ bodyweight: 80, result: 500, formula: "other" }).ok, false);
+  // Each message names the field at fault, so only that input is marked invalid.
+  assert.equal(score({ bodyweight: 20, result: 500 }).field, "bw");
+  assert.equal(score({ bodyweight: 80, result: 2000 }).field, "kg");
+  assert.equal(score({ bodyweight: 80, result: 500, formula: "other" }).field, "f");
 });

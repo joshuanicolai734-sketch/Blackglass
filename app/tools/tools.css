@@ -86,6 +86,11 @@
 .vol-row { display: grid; grid-template-columns: minmax(0, 1fr) 88px; gap: 10px; align-items: end; }
 .vol-row .field { margin-top: 16px; }
 .vol-row[hidden] { display: none; }
+/* On phones the sets column narrows and the select's padding tightens, so more of each exercise name shows. */
+@media (max-width: 479.98px) {
+  .vol-row { grid-template-columns: minmax(0, 1fr) 64px; gap: 8px; }
+  .vol-row select { padding-left: 12px; padding-right: 32px; background-position: calc(100% - 12px) 50%; }
+}
 .vol-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .vol-actions .btn { width: auto; margin-top: 0; }
 .vol-muscles { display: grid; gap: 14px; margin: 24px 0 0; padding: 0; list-style: none; }

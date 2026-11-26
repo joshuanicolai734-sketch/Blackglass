@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { parseKg } from "@/lib/tools/plates";
-import { estimate, plannedLoad, RELIABLE_REPS, ROUNDINGS, RPE_STEPS } from "@/lib/tools/strength";
+import { estimate, plannedLoad, RELIABLE_REPS, repsText, ROUNDINGS, RPE_STEPS } from "@/lib/tools/strength";
 import { syncQuery, useSettled } from "./client";
 
 export type StrengthInput = { kg: string; reps: string; rpe: string; round: string; preps: string; prpe: string };
@@ -109,7 +109,7 @@ export function StrengthTool({ initial }: { initial: StrengthInput }) {
                 <thead><tr><th scope="col">% of 1RM</th><th scope="col" className="num">Load</th><th scope="col" className="num">About</th></tr></thead>
                 <tbody>
                   {result.percentages.map((p) => (
-                    <tr key={p.percent}><td>{p.percent}%</td><td className="num">{p.load} kg</td><td className="num">{p.reps} rep{p.reps === 1 ? "" : "s"}</td></tr>
+                    <tr key={p.percent}><td>{p.percent}%</td><td className="num">{p.load} kg</td><td className="num">{repsText(p.reps)}</td></tr>
                   ))}
                 </tbody>
               </table>
@@ -123,6 +123,7 @@ export function StrengthTool({ initial }: { initial: StrengthInput }) {
                 </tbody>
               </table>
             </div>
+            <p className="tool-note">Loads in the tables are rounded to the nearest {round} kg, so the 100% row can differ a little from the estimate above.</p>
           </>
         )}
         <p className="vh" aria-live="polite">{said}</p>

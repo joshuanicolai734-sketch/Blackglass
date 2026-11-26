@@ -43,21 +43,24 @@ export type DotsResult =
       ok: true;
       score: number;
       clamped: boolean;
-      /** The same score at nearby bodyweights, in 5 kg steps, within the formula’s range. */
-      equivalents: { bodyweight: number; result: number }[];
+      /** The same score at five nearby bodyweights in 5 kg steps, kept inside the formula’s range, plus the lifter’s own
+          bodyweight (`own`), where the score was worked out. */
+      equivalents: { bodyweight: number; result: number; own?: boolean }[];
     }
-  | { ok: false; error: string };
+  | { ok: false; error: string; field: "bw" | "kg" | "f" };
 
 export function score({ bodyweight, result, formula = "men" }: DotsInput): DotsResult {
-  if (!FORMULAS.includes(formula)) return { ok: false, error: "Choose which coefficients to use." };
-  if (!Number.isFinite(bodyweight) || bodyweight < 30 || bodyweight > 250) return { ok: false, error: "Enter your bodyweight, from 30 to 250 kg." };
-  if (!Number.isFinite(result) || result <= 0 || result > 1500) return { ok: false, error: "Enter the weight lifted, up to 1500 kg." };
+  if (!FORMULAS.includes(formula)) return { ok: false, error: "Choose which coefficients to use.", field: "f" };
+  if (!Number.isFinite(bodyweight) || bodyweight < 30 || bodyweight > 250) return { ok: false, error: "Enter your bodyweight, from 30 to 250 kg.", field: "bw" };
+  if (!Number.isFinite(result) || result <= 0 || result > 1500) return { ok: false, error: "Enter the weight lifted, up to 1500 kg.", field: "kg" };
   const s = dots(result, bodyweight, formula);
   const { min, max } = COEFFICIENTS[formula];
-  const base = Math.round(bodyweight / 5) * 5;
-  const equivalents = [-10, -5, 0, 5, 10]
-    .map((step) => base + step)
-    .filter((bw) => bw >= min && bw <= max)
-    .map((bw) => ({ bodyweight: bw, result: Math.round(resultFor(s, bw, formula) * 2) / 2 }));
-  return { ok: true, score: s, clamped: clampBodyweight(bodyweight, formula) !== bodyweight, equivalents };
+  const scored = clampBodyweight(bodyweight, formula);
+  // Five 5 kg steps around the bodyweight the score used, shifted to stay inside the range near its edges.
+  const start = Math.min(Math.max(Math.round(scored / 5) * 5 - 10, min), max - 20);
+  const steps = [0, 5, 10, 15, 20].map((k) => start + k);
+  const rows = steps.includes(scored) ? steps : [...steps, scored].sort((a, b) => a - b);
+  const equivalents = rows.map((bw) =>
+    bw === scored ? { bodyweight: bw, result, own: true } : { bodyweight: bw, result: Math.round(resultFor(s, bw, formula) * 2) / 2 });
+  return { ok: true, score: s, clamped: scored !== bodyweight, equivalents };
 }

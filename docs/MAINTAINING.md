@@ -48,7 +48,7 @@ How the home page moves visitors towards coaching (revenue now) and the preview 
 
 ## Training tools
 
-Five free tools at `/tools`, added on 23 November 2026: a plate calculator, one-rep max and RPE, a warm-up builder, a rest timer and a weekly volume check. They're separate from the Android app and don't describe it.
+Six free tools at `/tools`: a plate calculator, one-rep max and RPE, a warm-up builder, a rest timer and a weekly volume check (added on 23 November 2026), and a DOTS strength score (Claude Builder, PR #19, integrated on 26 November). They're separate from the Android app and don't describe it.
 
 - **Where things live:**
   - the list: `content/tools.ts`;
@@ -57,7 +57,7 @@ Five free tools at `/tools`, added on 23 November 2026: a plate calculator, one-
   - the pages: `app/tools/`, sharing `components/tools/tool-page.tsx` and `app/tools/tools.css`.
 - **Without JavaScript,** each calculator is a GET form that the server answers. **With JavaScript,** it updates as you type and keeps the address bar in step (`history.replaceState`), so a result can be bookmarked or shared. The rest timer's presets are links (`?s=90`): without JavaScript they start a CSS-only countdown; with it, opening such a link (a bookmark, say) shows that rest ready to start, unless one is already counting or paused.
 - **Privacy:** the server works out answers from the address and keeps nothing. The rest timer keeps its end time and settings in the browser (localStorage `bg-rest-timer-v1` and `bg-rest-prefs-v1`) and never sends them. Cloudflare's request logs are off for the same reason (`vite.config.ts`, checked by `pnpm check:hosting`).
-- **Sources the pages cite:** Epley and Brzycki for one-rep max; the reps-in-reserve RPE scale (Zourdos et al. 2016); Schoenfeld, Ogborn and Krieger 2017 for weekly sets. That study found 10 or more hard sets a week beat fewer. The guide's top end of 20 is a common coaching range, not a finding of the study; keep the copy that way.
+- **Sources the pages cite:** Epley and Brzycki for one-rep max; the reps-in-reserve RPE scale (Zourdos et al. 2016); Schoenfeld, Ogborn and Krieger 2017 for weekly sets. That study found 10 or more hard sets a week beat fewer. The guide's top end of 20 is a common coaching range, not a finding of the study; keep the copy that way. The DOTS coefficients and bodyweight ranges match OpenPowerlifting's implementation (`crates/coefficients/src/dots.rs`).
 - **Measurement:**
   - visits count as `tools_view` and `tool_<name>_view`;
   - the first change on each visit counts as `tool_<name>_used` (for the timer, a start);

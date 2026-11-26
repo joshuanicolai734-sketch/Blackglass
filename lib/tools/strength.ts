@@ -14,6 +14,9 @@ export const RELIABLE_REPS = 10;
 export const RPE_STEPS = [10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6] as const;
 export const ROUNDINGS = [2.5, 1, 0.5, 5] as const;
 
+/** "1 rep", "8 reps", and "20+ reps" past what the tool accepts as input. */
+export const repsText = (n: number) => (n > MAX_REPS ? `${MAX_REPS}+ reps` : `${n} rep${n === 1 ? "" : "s"}`);
+
 /** Reps to failure that a set represents, given its RPE (10 when not given). */
 export const repsToFailure = (reps: number, rpe: number = 10) => reps + (10 - rpe);
 
@@ -41,6 +44,7 @@ export type StrengthResult =
   | {
       ok: true;
       e1rm: number;
+      /** Brzycki's estimate, for comparison: only from sets of RELIABLE_REPS or fewer, where the two agree closely. */
       brzycki: number | null;
       effectiveReps: number;
       reliable: boolean;
@@ -56,11 +60,11 @@ export function estimate({ weight, reps, rpe = 10, round = 2.5 }: StrengthInput)
   const step = ROUNDINGS.includes(round as (typeof ROUNDINGS)[number]) ? round : 2.5;
   const effectiveReps = repsToFailure(reps, rpe);
   const e1rm = epley(weight, effectiveReps);
-  const b = effectiveReps < 37 ? brzycki(weight, effectiveReps) : null;
+  const b = effectiveReps <= RELIABLE_REPS ? brzycki(weight, effectiveReps) : null;
   const percentages = [100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50].map((percent) => ({
     percent,
     load: roundTo((e1rm * percent) / 100, step),
-    reps: Math.max(1, Math.round(repsAt(percent / 100) * 2) / 2),
+    reps: Math.max(1, Math.round(repsAt(percent / 100))),
   }));
   const repMaxes = Array.from({ length: 12 }, (_, i) => ({ reps: i + 1, load: roundTo(loadFor(e1rm, i + 1), step) }));
   return { ok: true, e1rm, brzycki: b, effectiveReps, reliable: effectiveReps <= RELIABLE_REPS, percentages, repMaxes };

@@ -37,9 +37,9 @@ export const EXERCISES: Exercise[] = [
   { id: "rear-delt", name: "Face pull or rear-delt fly", primary: ["shoulders"], secondary: ["back"] },
   { id: "pull-up", name: "Pull-up or chin-up", primary: ["back"], secondary: ["biceps"] },
   { id: "lat-pulldown", name: "Lat pulldown", primary: ["back"], secondary: ["biceps"] },
-  { id: "row", name: "Row (barbell, dumbbell or cable)", primary: ["back"], secondary: ["biceps", "shoulders"] },
+  { id: "row", name: "Row (any kind)", primary: ["back"], secondary: ["biceps", "shoulders"] },
   { id: "curl", name: "Biceps curl", primary: ["biceps"], secondary: [] },
-  { id: "triceps-extension", name: "Triceps extension or pushdown", primary: ["triceps"], secondary: [] },
+  { id: "triceps-extension", name: "Triceps isolation", primary: ["triceps"], secondary: [] },
   { id: "plank", name: "Plank or ab wheel", primary: ["core"], secondary: [] },
   { id: "leg-raise", name: "Hanging leg raise", primary: ["core"], secondary: [] },
 ];
